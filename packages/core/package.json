@@ -10,9 +10,27 @@
 	},
 	"files": ["dist", "README.md"],
 	"exports": {
-		".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
 		"./package.json": "./package.json"
 	},
-	"publishConfig": { "access": "public", "provenance": true },
-	"peerDependencies": { "tailwindcss": "^4.3.3" }
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"peerDependencies": {
+		"tailwindcss": "^4.3.3"
+	},
+	"devDependencies": {
+		"@tailwindcss/cli": "^4.3.3",
+		"@types/bun": "^1.4.4",
+		"@types/node": "^26.6.5",
+		"@types/postcss-js": "^4.1.0",
+		"postcss": "^8.5.32",
+		"postcss-js": "^5.1.0",
+		"publint": "^0.3.25",
+		"typescript": "^7.0.2"
+	}
 }
