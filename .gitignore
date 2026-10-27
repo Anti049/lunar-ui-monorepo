@@ -1,0 +1,24 @@
+# Dependencies. Bun, npm and pnpm all land here.
+node_modules
+
+# Build output — every package, every framework.
+.output
+.vercel
+.svelte-kit
+dist
+build
+*.tgz
+
+# The plugin's code generator writes here (guide 2), and the build scripts
+# write scratch compiles to .tmp/. Both are reproducible from source.
+packages/core/generated/
+.tmp/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+
+# Secrets. The example file is committed so people know what to fill in.
+.env
+.env.*
+!.env.example

@@ -1,0 +1,13 @@
+# Lockfiles: machine-generated, and reformatting one produces a diff nobody
+# can review.
+bun.lock
+pnpm-lock.yaml
+package-lock.json
+
+# Build output. Formatting it is wasted work that reappears next build.
+packages/core/generated/
+dist/
+.svelte-kit/
+
+# Static assets served verbatim.
+packages/docs/static/

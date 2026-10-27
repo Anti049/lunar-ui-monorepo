@@ -1,0 +1,18 @@
+/*
+	A stylesheet that exists solely for prettier-plugin-tailwindcss.
+
+	WHY IT EXISTS
+	The class sorter has to resolve your own utilities. Given no stylesheet it
+	knows only Tailwind's built-ins, treats `.button` as unknown, and hoists
+	every unknown class to the front of every class attribute — churning every
+	file in the repo and making real diffs unreadable.
+
+	WHY IT LOADS THE PLUGIN FROM SOURCE
+	`@plugin './packages/core/index.ts'` — a relative path to the TypeScript
+	entry, NOT the package specifier '@anti049/test'. Tailwind loads
+	plugins through jiti, which reads TypeScript directly, so formatting never
+	depends on the package having been compiled. Point this at the built
+	`dist/` and every `prettier --check` fails on a clean checkout.
+*/
+@import 'tailwindcss';
+@plugin './packages/core/index.ts';

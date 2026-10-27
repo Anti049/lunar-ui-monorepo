@@ -1,0 +1,33 @@
+{
+	"name": "lunar-ui-monorepo",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "bun run --filter '@anti049/lunar-ui-docs' dev",
+		"build": "bun run --filter '*' build",
+		"build:packages": "bun run --filter '@anti049/lunar-ui' --filter '@anti049/lunar-ui-svelte' --filter '@anti049/lunar-ui-react' --filter '@anti049/lunar-ui-vue' build",
+		"check": "bun run --filter '*' check",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"changeset": "changeset",
+		"release": "bun run build:packages && changeset publish"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^3.0.3",
+		"@eslint/js": "^10.0.1",
+		"eslint": "^10.13.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-svelte": "^3.23.1",
+		"eslint-plugin-vue": "^10.12.0",
+		"globals": "^17.13.0",
+		"prettier": "^3.9.10",
+		"publint": "^0.3.25",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^7.0.2",
+		"typescript-eslint": "^8.72.1"
+	}
+}

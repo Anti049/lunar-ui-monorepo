@@ -1,0 +1,46 @@
+{
+	"compilerOptions": {
+		// Modern output. Bun and every current browser handle ES2022; lowering
+		// this only adds downlevel helpers nobody needs.
+		"target": "ES2022",
+		"module": "ESNext",
+
+		// "bundler" matches how the plugin, the bindings and the docs site are
+		// all actually consumed. It allows extensionless relative imports while
+		// still respecting "exports" maps, which "node16" would not.
+		"moduleResolution": "bundler",
+
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+		// Deliberate. Left unset, TypeScript pulls in EVERY @types/* package it
+		// can find in node_modules — so a package silently compiles against
+		// types it never declared, then fails for a consumer who did not
+		// install them. Each package opts in via its own "types" array.
+		"types": [],
+
+		// Emit .d.ts. Every publishable package needs them; the docs site
+		// overrides this to false.
+		"declaration": true,
+
+		"esModuleInterop": true,
+
+		// Windows and macOS have case-insensitive filesystems, Linux does not.
+		// Without this, an import that works locally fails only in CI.
+		"forceConsistentCasingInFileNames": true,
+
+		// Each file must be transpilable alone — which is how esbuild, swc and
+		// Bun actually process them. Catches const-enum and type-reexport
+		// patterns that only break at bundle time.
+		"isolatedModules": true,
+
+		"resolveJsonModule": true,
+
+		// Do not typecheck dependencies' .d.ts files. They are not yours to fix
+		// and a single broken one would block your build.
+		"skipLibCheck": true,
+
+		// Everything on. Turning strictness on later means fixing it later,
+		// across more code.
+		"strict": true
+	}
+}

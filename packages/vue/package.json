@@ -1,0 +1,18 @@
+{
+	"name": "@anti049/lunar-ui-vue",
+	"version": "0.0.0",
+	"type": "module",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Anti049/lunar-ui.git",
+		"directory": "packages/vue"
+	},
+	"files": ["dist", "README.md"],
+	"exports": {
+		".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+		"./package.json": "./package.json"
+	},
+	"publishConfig": { "access": "public", "provenance": true },
+	"peerDependencies": { "tailwindcss": "^4.3.3" }
+}
