@@ -1,0 +1,21 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		/*
+			The base config sets "types": [] deliberately, so everything has to be
+			opted into by name here.
+
+			"node" for the build scripts (node:fs, node:path, node:child_process).
+			"bun"  for `bun:test`, which guide 3's first test file imports. Without
+			       it, tsc reports "Cannot find module 'bun:test'" even though
+			       `bun test` runs perfectly — the tests work, only the typecheck
+			       fails, which makes the error read as far more alarming than it is.
+		*/
+		"types": ["node", "bun"],
+		// `build` owns emission. This config exists to find type errors.
+		"noEmit": true
+	},
+	// Everything, including functions/ and test/ — you want errors in those too.
+	"include": ["**/*.ts"],
+	"exclude": ["dist", "node_modules"]
+}

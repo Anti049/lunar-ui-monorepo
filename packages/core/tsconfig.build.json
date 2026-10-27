@@ -1,0 +1,35 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"types": ["node"],
+		// Without rootDir, tsc infers it from the inputs — so adding a second
+		// entry point later silently changes every output path.
+		"rootDir": "."
+	},
+	/*
+		List ENTRY POINTS, never a glob.
+
+		tsc follows imports, so `generated/` is emitted because index.ts imports
+		it, while `functions/` and `test/` stay out of dist because nothing
+		shipped imports them.
+
+		A glob like "functions/**" would ship your entire compiler — and its
+		node: imports — to every consumer.
+	*/
+	/*
+		Entry points, plus the generated data they import.
+
+		tsc follows imports from here, so `functions/addPrefix.ts` and the theme
+		modules come along because the entries reach them — while the rest of
+		`functions/` stays out of dist, because nothing shipped imports it.
+
+		A glob like "functions/**" would ship the entire compiler, and its node:
+		imports, to every consumer.
+
+		Guides 14–16 ADD to this list. Forget to, and `bun run build` still
+		succeeds while `dist/theme.js` simply does not exist — the failure
+		surfaces as an unresolved `exports` entry in a consumer's app.
+	*/
+	"include": ["index.ts", "types.ts", "generated/**/*.ts"]
+}

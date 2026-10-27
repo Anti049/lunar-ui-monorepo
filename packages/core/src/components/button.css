@@ -1,0 +1,21 @@
+/*
+ * FOUNDATION
+*/
+@layer button.l1.l2.l3 {
+    .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-button, var(--radius-field));
+    }
+}
+
+/*
+ * COLORS
+*/
+@layer button.l1.l2 {
+    .button-primary {
+        background-color: var(--color-primary);
+        color: var(--color-on-primary);
+    }
+}

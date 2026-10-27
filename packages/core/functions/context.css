@@ -1,0 +1,10 @@
+/*
+	`source(none)` is load-bearing. Without it Tailwind scans the repository for
+	candidates, so any class-like string anywhere — including one written in a
+	comment — becomes a real utility baked into the shipped bundle. Every compile
+	that uses this file supplies its candidates explicitly with `@source inline()`.
+*/
+@import 'tailwindcss' source(none);
+@import '../src/base/_index.css';
+@import '../src/utilities/_index.css';
+@import '../src/themes/_index.css';
