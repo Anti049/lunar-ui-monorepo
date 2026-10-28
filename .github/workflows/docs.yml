@@ -51,4 +51,4 @@ jobs:
         # adapter-static writes here; `pages` in vite.config.ts must agree.
         with: { path: packages/docs/build }
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
