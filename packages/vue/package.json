@@ -1,6 +1,6 @@
 {
 	"name": "@anti049/lunar-ui-vue",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"type": "module",
 	"license": "MIT",
 	"description": "Vue 3 components for the test design system.",
@@ -36,7 +36,7 @@
 		"**/*.css"
 	],
 	"peerDependencies": {
-		"@anti049/lunar-ui": "^0.1.0",
+		"@anti049/lunar-ui": "^0.1.1",
 		"vue": "^3.5.0"
 	},
 	"dependencies": {
