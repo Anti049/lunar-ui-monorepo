@@ -1,22 +1,457 @@
-/*
- * FOUNDATION
-*/
-@layer button.l1.l2.l3 {
-	.button {
-		@apply interactive;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
+/* =============================================================================
+ * BUTTON
+ * =============================================================================
+ *
+ * Three orthogonal axes compose into every button:
+ *   variant   — filled | tonal | elevated | outlined | text
+ *   color     — primary | secondary | tertiary | error | surface
+ *                | success | warning | info | alert
+ *   size      — xs | sm | md | lg | xl
+ *
+ * Plus optional modifiers:
+ *   shape     — button-square | button-circle
+ *   slots     — button-leading | button-trailing (icon adjacency)
+ *   state     — .selected | [disabled] | :disabled | .disabled
+ *
+ * Usage:
+ *   <button class="button button-filled button-primary button-md">Save</button>
+ *   <button class="button button-outlined button-error button-sm" disabled>…</button>
+ *
+ * State exposure:
+ *   Custom variant `selected` targets `.selected` on the button:
+ *     <button class="button button-filled selected:bg-primary-container">
+ *
+ * Layer priority (deeper nests weaker, LOW → HIGH):
+ *   l1.l2.l3 foundation (base .button, always-on)
+ *   l1.l2    axes (variants, colors, sizes, shapes, icon slots)
+ *   l1       state (disabled, selected — override everything else)
+
+/* =============================================================================
+ * CUSTOM VARIANTS
+ *
+ * Enable consumers to write utilities that respond to selected state, e.g.
+ *   <button class="button selected:bg-primary-container">
+ * ========================================================================== */
+
+@custom-variant selected {
+	&:where(.selected) {
+		@slot;
+	}
+}
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * The base .button utility. Every button has this.
+ * ========================================================================== */
+
+@utility button {
+	@layer button.l1.l2.l3 {
+		@apply interactive inline-flex h-fit min-h-fit w-fit min-w-fit origin-center items-center justify-center gap-2 text-center align-middle focusable outline-(--button-outline-color)! transition-[background-color,color,border-color,box-shadow,scale] select-none;
+
+		/*
+			Corner radius, lowest priority first:
+
+			  --radius-field    the shared default for field-shaped controls
+			  --radius-button   a theme's button-specific override, if it sets one
+			  rounded-*         a utility on the element itself
+
+			The fallback is written here rather than given to `--radius-button` as
+			a `:root` default on purpose. A custom property's `var()` resolves
+			where the property is declared, so `--radius-button: var(--radius-field)`
+			at `:root` would freeze the root's `--radius-field` and a theme's
+			override would never reach a button. Resolved here, it reads whichever
+			`--radius-field` is in scope.
+
+			A utility still wins: `.rounded-full` lands unlayered inside
+			`@layer utilities`, and unlayered content outranks that layer's
+			sublayers, which is where this rule sits.
+		*/
 		border-radius: var(--radius-button, var(--radius-field));
+		/* Default size is medium */
+		@apply button-md;
+		/* Default variant is filled */
+		@apply button-filled;
+		/* Default color is surface */
+		@apply button-surface;
+	}
+}
+
+/* =============================================================================
+ * STATE (l1)
+ * Highest per-component priority. Wins over variants, colors, sizes, shapes.
+ * ========================================================================== */
+
+/*
+ * DISABLED — covers all four ways to express it:
+ *   <button class="button button-disabled">   (explicit modifier class)
+ *   <button class="button disabled">          (generic "disabled" class)
+ *   <button class="button" disabled>          (HTML boolean attribute)
+ *   <button class="button">…</button>         when :disabled matches natively
+ */
+@utility button-disabled {
+	@layer button.l1 {
+		@apply pointer-events-none border-on-surface/12 text-on-surface/38 elevation-0 before:bg-transparent;
+
+		/*
+		 * Body fill is the disabled tint UNLESS this is a text button (text
+		 * buttons don't have a fill by default, so filling them here would
+		 * be wrong). Exception: selected text buttons DO get filled — the
+		 * selection is conceptually "the fill."
+		 */
+		&:not(.button-text),
+		&.button-text.selected {
+			@apply bg-on-surface/10 selected:bg-on-surface/20;
+		}
 	}
 }
 
 /*
- * COLORS
-*/
-@layer button.l1.l2 {
-	.button-primary {
-		background-color: var(--color-primary);
-		color: var(--color-on-primary);
+ * The compound disabled forms live inside `@utility button` so they compile as
+ * utilities rather than plain selectors, which land in a top-level cascade
+ * layer the JS plugin API cannot reach.
+ */
+@utility button {
+	@layer button.l1 {
+		&.disabled,
+		&[disabled],
+		&:disabled {
+			@apply pointer-events-none border-on-surface/12 text-on-surface/38 elevation-0 before:bg-transparent;
+
+			&:not(.button-text),
+			&.button-text.selected {
+				@apply bg-on-surface/10 selected:bg-on-surface/20;
+			}
+		}
+	}
+}
+
+/* =============================================================================
+ * VARIANTS (l2)
+ *
+ * Each variant defines its OWN colors using CSS variables that the color
+ * utilities (below) set. This decouples "shape/fill treatment" from "hue"
+ * so we don't repeat variant logic per color.
+ *
+ * Variables consumed by variants:
+ *   --button-color             main themed color
+ *   --button-on-color          contrast color (text on top of --button-color)
+ *   --button-container         container variant of the color
+ *   --button-on-container      contrast color for the container
+ * ========================================================================== */
+
+/*
+ * ELEVATED — surface-container background with elevation, colored text.
+ * Adds elevation-1 when enabled, drops to elevation-0 when selected.
+ */
+@utility button-elevated {
+	@layer button.l1.l2 {
+		@apply bg-surface-container enabled:elevation-1;
+		color: var(--button-color, var(--color-primary));
+
+		&.selected {
+			@apply elevation-0;
+			background-color: var(--button-color, var(--color-primary));
+			color: var(--button-on-color, var(--color-on-primary));
+		}
+	}
+}
+
+/*
+ * FILLED — solid background using the chosen color.
+ * The Material 3 default; what most people mean by "a button."
+ */
+@utility button-filled {
+	@layer button.l1.l2 {
+		background-color: var(--button-color, var(--color-primary));
+		color: var(--button-on-color, var(--color-on-primary));
+
+		&.selected {
+			background-color: var(--button-container, var(--color-primary-container));
+			color: var(--button-on-container, var(--color-on-primary-container));
+		}
+
+		&::selection {
+			background-color: color-mix(
+				in srgb,
+				var(--button-container, var(--color-primary-container)) 75%,
+				transparent
+			);
+			color: var(--button-on-container, var(--color-on-primary-container));
+		}
+	}
+}
+
+/*
+ * TONAL — softer fill using the container color.
+ * Lower visual weight than filled, higher than text/outlined.
+ */
+@utility button-tonal {
+	@layer button.l1.l2 {
+		background-color: var(--button-container, var(--color-primary-container));
+		color: var(--button-on-container, var(--color-on-primary-container));
+
+		&.selected {
+			background-color: var(--button-color, var(--color-primary));
+			color: var(--button-on-color, var(--color-on-primary));
+		}
+	}
+}
+
+/*
+ * OUTLINED — transparent background, colored border + text.
+ * Border uses a color-mix to soften; on selected, fills with the color.
+ */
+@utility button-outlined {
+	@layer button.l1.l2 {
+		@apply bg-transparent;
+		color: var(--button-color, var(--color-on-surface));
+		border: 2px solid
+			color-mix(in srgb, var(--button-color, var(--color-on-surface-variant)) 85%, transparent);
+
+		&.selected {
+			background-color: var(--button-color, var(--color-primary));
+			color: var(--button-on-color, var(--color-on-primary));
+			border-color: transparent;
+		}
+	}
+}
+
+/*
+ * TEXT — no background, no border, just colored text.
+ * Lowest visual weight; use for tertiary actions inline with text.
+ */
+@utility button-text {
+	@layer button.l1.l2 {
+		@apply bg-transparent;
+		color: var(--button-color, var(--color-on-surface));
+
+		&.selected {
+			background-color: var(--button-color, var(--color-primary));
+			color: var(--button-on-color, var(--color-on-primary));
+		}
+	}
+}
+
+/* =============================================================================
+ * COLORS (l2)
+ *
+ * Each color utility sets the four CSS variables that variants consume.
+ * Variants pick those variables up automatically — no need to repeat variant
+ * logic per color.
+ *
+ * ⚠️  These utilities can only define CSS variables (no @apply matches for
+ *     `--custom-var: value`), so all remain raw declarations.
+ *
+ * ⚠️  Reads from --color-* (Tailwind semantic tokens), NOT --theme-color-*.
+ *     This is what makes scoped [data-theme] work: --color-primary is
+ *     re-declared inside [data-theme] scopes by semantics.css's
+ *     `:root, [data-theme]` propagation block.
+ * ========================================================================== */
+
+@utility button-surface {
+	@layer button.l1.l2 {
+		--button-color: var(--color-inverse-surface);
+		--button-on-color: var(--color-on-inverse-surface);
+		--button-container: var(--color-surface-container);
+		--button-on-container: var(--color-on-surface);
+		--button-outline-color: var(--color-on-surface);
+	}
+}
+@utility button-primary {
+	@layer button.l1.l2 {
+		--button-color: var(--color-primary);
+		--button-on-color: var(--color-on-primary);
+		--button-container: var(--color-primary-container);
+		--button-on-container: var(--color-on-primary-container);
+		--button-outline-color: var(--color-primary);
+	}
+}
+@utility button-secondary {
+	@layer button.l1.l2 {
+		--button-color: var(--color-secondary);
+		--button-on-color: var(--color-on-secondary);
+		--button-container: var(--color-secondary-container);
+		--button-on-container: var(--color-on-secondary-container);
+		--button-outline-color: var(--color-secondary);
+	}
+}
+@utility button-tertiary {
+	@layer button.l1.l2 {
+		--button-color: var(--color-tertiary);
+		--button-on-color: var(--color-on-tertiary);
+		--button-container: var(--color-tertiary-container);
+		--button-on-container: var(--color-on-tertiary-container);
+		--button-outline-color: var(--color-tertiary);
+	}
+}
+@utility button-error {
+	@layer button.l1.l2 {
+		--button-color: var(--color-error);
+		--button-on-color: var(--color-on-error);
+		--button-container: var(--color-error-container);
+		--button-on-container: var(--color-on-error-container);
+		--button-outline-color: var(--color-error);
+	}
+}
+@utility button-success {
+	@layer button.l1.l2 {
+		--button-color: var(--color-success);
+		--button-on-color: var(--color-on-success);
+		--button-container: var(--color-success-container);
+		--button-on-container: var(--color-on-success-container);
+		--button-outline-color: var(--color-success);
+	}
+}
+@utility button-warning {
+	@layer button.l1.l2 {
+		--button-color: var(--color-warning);
+		--button-on-color: var(--color-on-warning);
+		--button-container: var(--color-warning-container);
+		--button-on-container: var(--color-on-warning-container);
+		--button-outline-color: var(--color-warning);
+	}
+}
+@utility button-info {
+	@layer button.l1.l2 {
+		--button-color: var(--color-info);
+		--button-on-color: var(--color-on-info);
+		--button-container: var(--color-info-container);
+		--button-on-container: var(--color-on-info-container);
+		--button-outline-color: var(--color-info);
+	}
+}
+@utility button-alert {
+	@layer button.l1.l2 {
+		--button-color: var(--color-alert);
+		--button-on-color: var(--color-on-alert);
+		--button-container: var(--color-alert-container);
+		--button-on-container: var(--color-on-alert-container);
+		--button-outline-color: var(--color-alert);
+	}
+}
+
+/* =============================================================================
+ * SIZES (l2)
+ * Padding, gap, font size, icon size. Each is independent of variant/color.
+ * ========================================================================== */
+
+@utility button-xs {
+	@layer button.l1.l2 {
+		@apply gap-1 px-2 py-1 text-caption-medium;
+		& svg {
+			@apply size-4;
+		}
+	}
+}
+@utility button-sm {
+	@layer button.l1.l2 {
+		@apply gap-1.5 px-2.5 py-1.5 text-label-small;
+		& svg {
+			@apply size-5;
+		}
+	}
+}
+@utility button-md {
+	@layer button.l1.l2 {
+		@apply gap-1.5 px-3 py-1.5 text-label-medium;
+		& svg {
+			@apply size-6;
+		}
+	}
+}
+@utility button-lg {
+	@layer button.l1.l2 {
+		@apply gap-2 px-5 py-3 text-label-large;
+		& svg {
+			@apply size-8;
+		}
+	}
+}
+@utility button-xl {
+	@layer button.l1.l2 {
+		@apply gap-3 px-6 py-4 text-label-large;
+		& svg {
+			@apply size-8;
+		}
+	}
+}
+
+/* =============================================================================
+ * SHAPES (l2)
+ * Override aspect ratio + border radius for icon-only buttons.
+ * ========================================================================== */
+
+@utility button-square {
+	@layer button.l1.l2 {
+		@apply aspect-square;
+	}
+}
+@utility button-circle {
+	@layer button.l1.l2 {
+		@apply aspect-square rounded-full;
+	}
+}
+
+/* =============================================================================
+ * ICON SLOTS (l2)
+ *
+ * When a button has a leading or trailing icon, reduce padding on that side
+ * so the icon sits closer to the edge.
+ *
+ * Two opt-in mechanisms:
+ *   1. Explicit `.button-leading` / `.button-trailing` classes
+ *      (preferred for SSR + Svelte components — deterministic)
+ *   2. :has() progressive enhancement — auto-detects SVG icons in hand-written
+ *      HTML. Skipped when the icon is the only child (icon-only button)
+ *      or when a .sr-only sibling exists (accessible label pattern).
+ *
+ * ⚠️  Padding values match half of the base horizontal padding for each size.
+ *     Keep in sync with SIZES utilities if you tune the base padding.
+ * ========================================================================== */
+@utility button {
+	@layer button.l1.l2 {
+		/* Leading icon: pad the start so the glyph is not flush to the edge. */
+		&:has(> svg:first-child:not(:only-child)):not(:has(> .sr-only)):not(.button-square):not(
+				.button-circle
+			),
+		&:has(> .button-leading) {
+			@apply pl-2;
+			&.button-xs {
+				@apply pl-1;
+			}
+			&.button-sm {
+				@apply pl-1.5;
+			}
+			&.button-lg {
+				@apply pl-3;
+			}
+			&.button-xl {
+				@apply pl-3.5;
+			}
+		}
+
+		/* Trailing icon: the same, mirrored. */
+		&:has(> svg:last-child:not(:only-child)):not(:has(> .sr-only)):not(.button-square):not(
+				.button-circle
+			),
+		&:has(> .button-trailing) {
+			@apply pr-2;
+			&.button-xs {
+				@apply pr-1;
+			}
+			&.button-sm {
+				@apply pr-1.5;
+			}
+			&.button-lg {
+				@apply pr-3;
+			}
+			&.button-xl {
+				@apply pr-3.5;
+			}
+		}
+
+		& svg {
+			@apply pointer-events-none;
+		}
 	}
 }

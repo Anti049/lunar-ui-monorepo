@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Button } from '@anti049/lunar-ui-svelte';
 	import DocPage from '#lib/components/DocPage.svelte';
 	import Example from '#lib/components/Example.svelte';
 </script>
@@ -11,9 +10,9 @@
 	</p>
 
 	<Example>
-		<Button variant="filled">Filled</Button>
-		<Button variant="tonal">Tonal</Button>
-		<Button variant="outlined">Outlined</Button>
+		<button class="button button-filled">Filled</button>
+		<button class="button button-tonal">Tonal</button>
+		<button class="button button-outlined">Outlined</button>
 	</Example>
 
 	<h2>Variants</h2>
