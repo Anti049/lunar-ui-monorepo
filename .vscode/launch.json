@@ -1,0 +1,82 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			// Server: launches Vite itself under the Node debugger.
+			"type": "node",
+			"request": "launch",
+			"name": "Debug: docs (server)",
+			"cwd": "${workspaceFolder}/packages/docs",
+			"runtimeExecutable": "bun",
+			// The explicit port matters: Vite picks the next free one when 5173 is
+			// taken, and the client config below would then attach to a server
+			// that is not yours.
+			"runtimeArgs": ["--bun", "run", "dev", "--", "--port", "5173"],
+			"console": "integratedTerminal",
+			"skipFiles": ["<node_internals>/**", "**/node_modules/vite/**"],
+			// Watches the terminal for Vite's `Local:` line and opens Chrome
+			// against it, so nothing races the server's startup.
+			"serverReadyAction": {
+				"pattern": "Local:\\s+(https?://\\S+)",
+				"uriFormat": "%s",
+				"action": "debugWithChrome"
+			}
+		},
+		{
+			// Client: attaches to the browser the server config opened.
+			"type": "chrome",
+			"request": "launch",
+			"name": "Debug: docs (client)",
+			"url": "http://localhost:5173",
+			// The DOCS PACKAGE, not the repository root. Wrong here and no
+			// breakpoint in a .svelte file will ever bind.
+			"webRoot": "${workspaceFolder}/packages/docs",
+			"sourceMapPathOverrides": {
+				// Not optional in a monorepo: Vite serves any file outside the
+				// project root through this prefix, which here is most of your code.
+				"/@fs/*": "/*"
+			},
+			"skipFiles": ["**/node_modules/**", "**/.svelte-kit/**"]
+		},
+		{
+			// The plugin build — where most of the interesting bugs are.
+			// Runs the entry file DIRECTLY, not through an npm script: Bun's
+			// inspector needs the file to be the entry or breakpoints never bind.
+			"type": "node",
+			"request": "launch",
+			"name": "Debug: plugin build",
+			"cwd": "${workspaceFolder}/packages/core",
+			"runtimeExecutable": "bun",
+			"runtimeArgs": ["functions/build.ts"],
+			"console": "integratedTerminal"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Debug: unit tests",
+			"cwd": "${workspaceFolder}/packages/core",
+			"runtimeExecutable": "bun",
+			"runtimeArgs": ["test", "test/unit"],
+			"console": "integratedTerminal"
+		},
+		{
+			// Whatever file is focused in the editor.
+			"type": "node",
+			"request": "launch",
+			"name": "Debug: current test file",
+			"cwd": "${workspaceFolder}/packages/core",
+			"runtimeExecutable": "bun",
+			"runtimeArgs": ["test", "${relativeFile}"],
+			"console": "integratedTerminal"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Debug: docs (full stack)",
+			"configurations": ["Debug: docs (server)", "Debug: docs (client)"],
+			// Stopping one stops both. Without it you leave orphaned Vite
+			// processes holding the port, and the next launch fails EADDRINUSE.
+			"stopAll": true
+		}
+	]
+}
