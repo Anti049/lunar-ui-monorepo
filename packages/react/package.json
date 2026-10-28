@@ -1,6 +1,6 @@
 {
 	"name": "@anti049/lunar-ui-react",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"type": "module",
 	"license": "MIT",
 	"description": "React components for the test design system.",
@@ -40,7 +40,7 @@
 		"**/*.css"
 	],
 	"peerDependencies": {
-		"@anti049/lunar-ui": "^0.1.0",
+		"@anti049/lunar-ui": "^0.1.1",
 		"react": "^18 || ^19",
 		"react-dom": "^18 || ^19"
 	},

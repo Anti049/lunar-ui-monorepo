@@ -1,5 +1,11 @@
 # @anti049/lunar-ui
 
+## 0.1.1
+
+### Patch Changes
+
+- [`ef8e501`](https://github.com/Anti049/lunar-ui-monorepo/commit/ef8e501b19dabbf4e1b9a76c686584b649315ba2) Thanks [@Anti049](https://github.com/Anti049)! - Brought button up to parity
+
 ## 0.1.0
 
 ### Minor Changes
