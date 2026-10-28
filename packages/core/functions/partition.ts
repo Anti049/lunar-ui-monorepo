@@ -120,6 +120,15 @@ export function partition(
 			});
 			return;
 		}
+		/*
+			A component's own `@layer <name>.lN` goes to addUtilities too, so it
+			lands as `utilities.<name>.lN`. Through addBase it would be a sublayer
+			of `base`, where Preflight's unlayered `button { … }` outranks it.
+		*/
+		if (node.type === 'atrule' && node.name === 'layer' && LAYER_OWNER.test(node.params.trim())) {
+			if (!take(node, 'utilities')) unattributed.push(describe(node));
+			return;
+		}
 		if (!take(node, 'standalone')) unattributed.push(describe(node));
 	});
 

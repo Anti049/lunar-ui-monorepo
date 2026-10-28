@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+
+/* Fonts come from the consumer, not the plugin. */
+@import '@fontsource-variable/inter/wght.css';
+
+/* Components, tokens and themes all arrive through the plugin. */
+@plugin '@anti049/lunar-ui';
+
+/*
+	A custom theme goes here too, once the plugin can generate one:
+
+	    @plugin '@anti049/lunar-ui/theme' { name: brand; seed-primary: #0956aa; }
+
+	That entry point does not exist yet — guide 15 builds it, and adds this
+	block back along with the alias and the SSR entry it needs.
+*/
+
+/*
+	Components live in another package, so Tailwind has to be told where. This
+	points at SOURCE rather than the built package because the dev alias in
+	vite.config.ts resolves the package to source too — the two must agree or the
+	site is styled in production and unstyled in dev.
+*/
+@source '../../svelte/src/lib/**/*.svelte';
+
+/* The docs site's own components and pages. */
+@source './lib/**/*.svelte';
+@source './routes/**/*.svelte';
