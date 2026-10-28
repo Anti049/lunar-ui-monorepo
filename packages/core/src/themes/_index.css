@@ -1,0 +1,11 @@
+/* Default */
+@import './default.css';
+
+/* Gaziter */
+@import './gaziter.css';
+
+/* Catppuccin */
+@import './catppuccin/_index.css';
+
+/* Dracula */
+@import './dracula/_index.css';

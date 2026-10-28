@@ -1,0 +1,76 @@
+/* 
+	Alucard Theme (Light)
+
+	Alucard is a light theme with a focus on readability and contrast.
+	It is designed to be easy on the eyes and to reduce eye strain.
+*/
+[data-theme='alucard'],
+[data-theme='dracula'].light {
+	/* Primary */
+	--theme-color-primary: #644ac9; /* Color(0xFF644AC9) */
+	--theme-color-on-primary: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-primary-container: #b3abdb; /* Color(0xFFB3ABDB) */
+	--theme-color-on-primary-container: #281e50; /* Color(0xFF281E50) */
+
+	/* Secondary */
+	--theme-color-secondary: #444472; /* Color(0xFF444472) */
+	--theme-color-on-secondary: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-secondary-container: #aaaac0; /* Color(0xFFAAAAC0) */
+	--theme-color-on-secondary-container: #1b1b2e; /* Color(0xFF1B1B2E) */
+
+	/* Tertiary */
+	--theme-color-tertiary: #a3144d; /* Color(0xFFA3144D) */
+	--theme-color-on-tertiary: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-tertiary-container: #c69bb5; /* Color(0xFFC69BB5) */
+	--theme-color-on-tertiary-container: #41081f; /* Color(0xFF41081F) */
+
+	/* Error */
+	--theme-color-error: #cb3a2a; /* Color(0xFFCB3A2A) */
+	--theme-color-on-error: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-error-container: #d2a6ab; /* Color(0xFFD2A6AB) */
+	--theme-color-on-error-container: #511711; /* Color(0xFF511711) */
+
+	/* Success */
+	--theme-color-success: #14710a; /* Color(0xFF14710A) */
+	--theme-color-on-success: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-success-container: #9bb7a1; /* Color(0xFF9BB7A1) */
+	--theme-color-on-success-container: #082d04; /* Color(0xFF082D04) */
+
+	/* Warning */
+	--theme-color-warning: #a34d14; /* Color(0xFFA34D14) */
+	--theme-color-on-warning: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-warning-container: #c6aca4; /* Color(0xFFC6ACA4) */
+	--theme-color-on-warning-container: #411f08; /* Color(0xFF411F08) */
+
+	/* Alert */
+	--theme-color-alert: #846e15; /* Color(0xFF846E15) */
+	--theme-color-on-alert: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-alert-container: #bdb6a4; /* Color(0xFFBDB6A4) */
+	--theme-color-on-alert-container: #352c08; /* Color(0xFF352C08) */
+
+	/* Info */
+	--theme-color-info: #036a96; /* Color(0xFF036A96) */
+	--theme-color-on-info: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-info-container: #96b5cb; /* Color(0xFF96B5CB) */
+	--theme-color-on-info-container: #012a3c; /* Color(0xFF012A3C) */
+
+	/* Surface */
+	--theme-color-surface-dim: #7f7faf; /* Color(0xFF7F7FAF) */
+	--theme-color-surface: #d5d5e2; /* Color(0xFFD5D5E2) */
+	--theme-color-surface-bright: #d5d5e2; /* Color(0xFFD5D5E2) */
+	--theme-color-surface-container-lowest: #cfcfde; /* Color(0xFFCFCFDE) */
+	--theme-color-surface-container-low: #dedee8; /* Color(0xFFDEDEE8) */
+	--theme-color-surface-container: #b1b1ca; /* Color(0xFFB1B1CA) */
+	--theme-color-surface-container-high: #9696b7; /* Color(0xFF9696B7) */
+	--theme-color-surface-container-highest: #8989b3; /* Color(0xFF8989B3) */
+	--theme-color-on-surface: #2f2f51; /* Color(0xFF2F2F51) */
+	--theme-color-on-surface-variant: #444472; /* Color(0xFF444472) */
+
+	/* Outline */
+	--theme-color-outline: var(--theme-color-on-surface);
+	--theme-color-outline-variant: var(--theme-color-on-surface-variant);
+
+	/* Shadow/Scrim */
+	--theme-color-shadow: oklch(0 0 0); /* Color(0xFF000000) */
+	--theme-color-scrim: oklch(0 0 0); /* Color(0xFF000000) */
+}

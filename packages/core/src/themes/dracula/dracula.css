@@ -1,0 +1,75 @@
+/* 
+	Dracula Theme (Dark)
+
+	Dracula is a dark theme with a focus on readability and contrast.
+	It is designed to be easy on the eyes and to reduce eye strain.
+*/
+[data-theme='dracula'].dark {
+	/* Primary */
+	--theme-color-primary: #bd93f9; /* Color(0xFFBD93F9) */
+	--theme-color-on-primary: #302940; /* Color(0xFF302940) */
+	--theme-color-primary-container: #4b3f63; /* Color(0xFF4B3F63) */
+	--theme-color-on-primary-container: #ebdffd; /* Color(0xFFEBDFFD) */
+
+	/* Secondary */
+	--theme-color-secondary: #cdd0e4; /* Color(0xFFCDD0E4) */
+	--theme-color-on-secondary: #33353c; /* Color(0xFF33353C) */
+	--theme-color-secondary-container: #50515d; /* Color(0xFF50515D) */
+	--theme-color-on-secondary-container: #f0f1f7; /* Color(0xFFF0F1F7) */
+
+	/* Tertiary */
+	--theme-color-tertiary: #ff9fd6; /* Color(0xFFFF9FD6) */
+	--theme-color-on-tertiary: #3d2b39; /* Color(0xFF3D2B39) */
+	--theme-color-tertiary-container: #5f4359; /* Color(0xFF5F4359) */
+	--theme-color-on-tertiary-container: #ffe2f3; /* Color(0xFFFFE2F3) */
+
+	/* Error */
+	--theme-color-error: #ff7b7b; /* Color(0xFFFF7B7B) */
+	--theme-color-on-error: #3d2427; /* Color(0xFF3D2427) */
+	--theme-color-error-container: #5f383d; /* Color(0xFF5F383D) */
+	--theme-color-on-error-container: #ffd7d7; /* Color(0xFFFFD7D7) */
+
+	/* Success */
+	--theme-color-success: #73fc96; /* Color(0xFF73FC96) */
+	--theme-color-on-success: #213e2c; /* Color(0xFF213E2C) */
+	--theme-color-success-container: #355e45; /* Color(0xFF355E45) */
+	--theme-color-on-success-container: #d5fee0; /* Color(0xFFD5FEE0) */
+
+	/* Warning */
+	--theme-color-warning: #ffb86c; /* Color(0xFFFFB86C) */
+	--theme-color-on-warning: #3d3024; /* Color(0xFF3D3024) */
+	--theme-color-warning-container: #5f4a39; /* Color(0xFF5F4A39) */
+	--theme-color-on-warning-container: #ffead3; /* Color(0xFFFFEAD3) */
+
+	/* Alert */
+	--theme-color-alert: #f1fa8c; /* Color(0xFFF1FA8C) */
+	--theme-color-on-alert: #3b3d2a; /* Color(0xFF3B3D2A) */
+	--theme-color-alert-container: #5b5e42; /* Color(0xFF5B5E42) */
+	--theme-color-on-alert-container: #fbfedd; /* Color(0xFFFBFEDD) */
+
+	/* Info */
+	--theme-color-info: #aff0fe; /* Color(0xFFAFF0FE) */
+	--theme-color-on-info: #2d3b41; /* Color(0xFF2D3B41) */
+	--theme-color-info-container: #475b65; /* Color(0xFF475B65) */
+	--theme-color-on-info-container: #e7fbff; /* Color(0xFFE7FBFF) */
+
+	/* Surface */
+	--theme-color-surface-dim: #1a1b23; /* Color(0xFF1A1B23) */
+	--theme-color-surface: #1a1b23; /* Color(0xFF1A1B23) */
+	--theme-color-surface-bright: #727690; /* Color(0xFF727690) */
+	--theme-color-surface-container-lowest: #1e1f23; /* Color(0xFF1E1F23) */
+	--theme-color-surface-container-low: #282a36; /* Color(0xFF282A36) */
+	--theme-color-surface-container: #323443; /* Color(0xFF323443) */
+	--theme-color-surface-container-high: #44475a; /* Color(0xFF44475A) */
+	--theme-color-surface-container-highest: #595d75; /* Color(0xFF595D75) */
+	--theme-color-on-surface: #dfe1ed; /* Color(0xFFDFE1ED) */
+	--theme-color-on-surface-variant: #bdc3d6; /* Color(0xFFBDC3D6) */
+
+	/* Outline */
+	--theme-color-outline: var(--theme-color-on-surface);
+	--theme-color-outline-variant: var(--theme-color-on-surface-variant);
+
+	/* Shadow/Scrim */
+	--theme-color-shadow: oklch(0 0 0); /* Color(0xFF000000) */
+	--theme-color-scrim: oklch(0 0 0); /* Color(0xFF000000) */
+}

@@ -1,0 +1,11 @@
+/* Latte (Light) */
+@import './latte.css';
+
+/* Frappe (Dark) */
+@import './frappe.css';
+
+/* Macchiato (Dark) */
+@import './macchiato.css';
+
+/* Mocha (Dark) */
+@import './mocha.css';

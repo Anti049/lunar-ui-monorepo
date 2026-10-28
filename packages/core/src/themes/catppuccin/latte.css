@@ -1,0 +1,77 @@
+/* 
+	Catppuccin - Latte Flavor
+
+	The only light flavor of the Catppuccin theme set,
+	Latte is a warm, soft, and muted color palette that is easy on the eyes.
+*/
+
+[data-theme='catppuccin-latte'],
+[data-theme='catppuccin'].light {
+	/* Primary */
+	--theme-color-primary: oklch(0.5547 0.2505 297.02); /* Color(0xFF8839EF) */
+	--theme-color-on-primary: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-primary-container: oklch(0.8088 0.0847 301.32); /* Color(0xFFCAB4EF) */
+	--theme-color-on-primary-container: oklch(0.2983 0.0581 312.32); /* Color(0xFF372442) */
+
+	/* Secondary */
+	--theme-color-secondary: oklch(0.6638 0.1752 273.14); /* Color(0xFF7287FD) */
+	--theme-color-on-secondary: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-secondary-container: oklch(0.8505 0.056 275.74); /* Color(0xFFC3CCF3) */
+	--theme-color-on-secondary-container: oklch(0.3307 0.0304 281.99); /* Color(0xFF333445) */
+
+	/* Tertiary */
+	--theme-color-tertiary: oklch(0.7255 0.174 338.41); /* Color(0xFFEA76CB) */
+	--theme-color-on-tertiary: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-tertiary-container: oklch(0.8647 0.0539 328.89); /* Color(0xFFE7C6E4) */
+	--theme-color-on-tertiary-container: oklch(0.346 0.0417 353.68); /* Color(0xFF4B303B) */
+
+	/* Error */
+	--theme-color-error: oklch(0.5505 0.2155 19.8); /* Color(0xFFD20F39) */
+	--theme-color-on-error: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-error-container: oklch(0.7874 0.0696 359.15); /* Color(0xFFE0A8B8) */
+	--theme-color-on-error-container: oklch(0.2888 0.065 19.11); /* Color(0xFF461C1E) */
+
+	/* Success */
+	--theme-color-success: oklch(0.6251 0.1771 140.46); /* Color(0xFF40A02B) */
+	--theme-color-on-success: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-success-container: oklch(0.836 0.0538 145.16); /* Color(0xFFB4D3B4) */
+	--theme-color-on-success-container: oklch(0.3211 0.0536 131.91); /* Color(0xFF29391B) */
+
+	/* Warning */
+	--theme-color-warning: oklch(0.692 0.204 42.42); /* Color(0xFFFE640B) */
+	--theme-color-on-warning: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-warning-container: oklch(0.8441 0.0592 48.43); /* Color(0xFFEDC1AB) */
+	--theme-color-on-warning-container: oklch(0.3341 0.062 54.17); /* Color(0xFF4F2D15) */
+
+	/* Alert */
+	--theme-color-alert: oklch(0.714 0.1494 67.77); /* Color(0xFFDF8E1D) */
+	--theme-color-on-alert: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-alert-container: oklch(0.8613 0.0468 75.06); /* Color(0xFFE4CEB0) */
+	--theme-color-on-alert-container: oklch(0.3447 0.0515 75.61); /* Color(0xFF493518) */
+
+	/* Info */
+	--theme-color-info: oklch(0.5586 0.2256 262.1); /* Color(0xFF1E66F5) */
+	--theme-color-on-info: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-info-container: oklch(0.8117 0.0719 263.96); /* Color(0xFFAAC2F1) */
+	--theme-color-on-info-container: oklch(0.2986 0.0435 263.45); /* Color(0xFF222D43) */
+
+	/* Surface */
+	--theme-color-surface-dim: oklch(0.7077 0.0238 274.6); /* Color(0xFF9CA0B0) */
+	--theme-color-surface: oklch(0.9335 0.0088 264.61); /* Color(0xFFE6E9EF) */
+	--theme-color-surface-bright: oklch(0.9335 0.0088 264.61); /* Color(0xFFE6E9EF) */
+	--theme-color-surface-container-lowest: oklch(0.9578 0.0059 264.66); /* Color(0xFFEFF1F5) */
+	--theme-color-surface-container-low: oklch(0.906 0.0118 264.57); /* Color(0xFFDCE0E8) */
+	--theme-color-surface-container: oklch(0.8575 0.0146 268.5); /* Color(0xFFCCD0DA) */
+	--theme-color-surface-container-high: oklch(0.8083 0.0175 271.2); /* Color(0xFFBCC0CC) */
+	--theme-color-surface-container-highest: oklch(0.7584 0.0205 273.15); /* Color(0xFFACB0BE) */
+	--theme-color-on-surface: oklch(0.4355 0.0431 279.32); /* Color(0xFF4C4F69) */
+	--theme-color-on-surface-variant: oklch(0.5471 0.0344 279.08); /* Color(0xFF6C6F85) */
+
+	/* Outline */
+	--theme-color-outline: var(--theme-color-on-surface);
+	--theme-color-outline-variant: var(--theme-color-on-surface-variant);
+
+	/* Shadow/Scrim */
+	--theme-color-shadow: oklch(0 0 0); /* Color(0xFF000000) */
+	--theme-color-scrim: oklch(0 0 0); /* Color(0xFF000000) */
+}
