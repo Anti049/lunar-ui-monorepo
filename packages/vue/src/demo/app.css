@@ -1,0 +1,15 @@
+/*
+	The playground's stylesheet, never published — `files` lists only `dist`.
+
+	It loads the plugin exactly as a consumer would. If the playground needs
+	something a consumer could not write, that is a bug in the plugin.
+*/
+@import 'tailwindcss';
+@plugin '@anti049/lunar-ui';
+
+/*
+	Scan this package's own components. Without it the playground renders
+	unstyled even though `lib/styles.css` exists — that file is for CONSUMERS,
+	and this app is not consuming the built package.
+*/
+@source '../lib/**/*.vue';

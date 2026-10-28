@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		// The base config sets "types": [], so this names what Vue needs.
+		"types": ["vite/client"],
+		// Vite and vue-tsc own emission; this config is a checker only.
+		"noEmit": true
+	},
+	// `.vue` must be listed explicitly — vue-tsc will not infer it from a
+	// `**/*.ts` glob, and silently checks nothing if you leave it out.
+	"include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+}

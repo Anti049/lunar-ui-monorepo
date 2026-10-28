@@ -3,27 +3,59 @@
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
+	"description": "Vue 3 components for the test design system.",
+	"keywords": [
+		"vue",
+		"tailwindcss",
+		"ui",
+		"components",
+		"design-system"
+	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/lunar-ui.git",
+		"url": "git+https://github.com/Anti049/test.git",
 		"directory": "packages/vue"
 	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build && vue-tsc -p tsconfig.build.json --emitDeclarationOnly && publint",
+		"check": "vue-tsc --noEmit"
+	},
 	"files": [
-		"dist",
-		"README.md"
+		"dist"
 	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
+			"import": "./dist/index.js"
 		},
+		"./styles.css": "./dist/styles.css",
 		"./package.json": "./package.json"
+	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"peerDependencies": {
+		"@anti049/lunar-ui": "^0.0.0",
+		"vue": "^3.5.0"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.7.0"
+	},
+	"devDependencies": {
+		"@anti049/lunar-ui": "workspace:*",
+		"@tailwindcss/vite": "^4.3.3",
+		"@vitejs/plugin-vue": "^6.0.9",
+		"publint": "^0.3.24",
+		"tailwindcss": "^4.3.3",
+		"typescript": "~6.0.3",
+		"vite": "^8.3.0",
+		"vue": "^3.5.43",
+		"vue-tsc": "^3.3.11"
 	},
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
-	},
-	"peerDependencies": {
-		"tailwindcss": "^4.3.3"
 	}
 }

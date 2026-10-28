@@ -1,0 +1,6 @@
+/*
+	Registers this package's components with the consumer's Tailwind scan.
+	Without this import their build never looks inside node_modules and the
+	components render unstyled.
+*/
+@source '../**/*.vue';
