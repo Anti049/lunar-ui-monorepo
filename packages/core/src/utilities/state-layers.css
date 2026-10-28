@@ -1,0 +1,53 @@
+/* 
+	State Layers
+
+	Implements Material 3's state layer system to elements marked as `interactive`,
+	which includes buttons, links, and other interactive elements. The state layer 
+	is a semi-transparent overlay that provides visual feedback for user interactions.
+*/
+
+/* State Layer Opacities */
+@theme inline {
+	--opacity-hover: 0.1;
+	--opacity-focus: 0.2;
+	--opacity-pressed: 0.2;
+	--opacity-dragged: 0.5;
+	--opacity-disabled: 0.38;
+}
+
+/* Interactive Marker */
+@property --interactive {
+	syntax: '*';
+	inherits: false;
+}
+
+/* Animated Utility Class */
+@utility animated {
+	@apply duration-200 ease-in-out;
+}
+
+/* Interactive Utility Class */
+@utility interactive {
+	/* Interactive Marker */
+	--interactive: 1;
+	/* Standard Properties */
+	@apply relative overflow-clip animated not-disabled:cursor-pointer disabled:cursor-not-allowed;
+	/* Overlay Properties */
+	@apply before:pointer-events-none before:absolute before:inset-0 before:bg-current before:opacity-0 before:transition-opacity;
+	/* State Interaction Properties */
+	@apply not-disabled:hover:before:opacity-hover not-disabled:focus-visible:before:opacity-focus not-disabled:active:before:opacity-pressed;
+}
+
+/* Ripple Opt-Out Utility Class */
+@utility no-ripple {
+	--lunar-ripple: none;
+}
+
+@utility ripple-none {
+	--lunar-ripple: none;
+}
+
+/* Dragged State Interaction */
+.interactive.dragged:not(.disabled)::before {
+	@apply opacity-dragged;
+}

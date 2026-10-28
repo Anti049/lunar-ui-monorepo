@@ -1,0 +1,51 @@
+/* 
+	Elevation System
+
+	Defines Material 3 elevation levels as Tailwind utility classes,
+	allowing for consistent application of shadows and depth across components.
+*/
+
+/* Level 0: No Elevation (0dp) */
+@utility elevation-0 {
+	box-shadow: none;
+}
+
+/* Level 1: 1dp Elevation */
+@utility elevation-1 {
+	box-shadow:
+		0px 1px 2px 0px color-mix(in srgb, var(--color-shadow) 30%, transparent),
+		0px 1px 3px 1px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+}
+
+/* Level 2: 3dp Elevation */
+@utility elevation-2 {
+	box-shadow:
+		0px 1px 2px 0px color-mix(in srgb, var(--color-shadow) 30%, transparent),
+		0px 2px 6px 2px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+}
+
+/* Level 3: 6dp Elevation */
+@utility elevation-3 {
+	box-shadow:
+		0px 1px 3px 0px color-mix(in srgb, var(--color-shadow) 30%, transparent),
+		0px 4px 8px 3px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+}
+
+/* Level 4: 8dp Elevation */
+@utility elevation-4 {
+	box-shadow:
+		0px 2px 3px 0px color-mix(in srgb, var(--color-shadow) 30%, transparent),
+		0px 6px 10px 4px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+}
+
+/* Level 5: 12dp Elevation */
+@utility elevation-5 {
+	box-shadow:
+		0px 4px 4px 0px color-mix(in srgb, var(--color-shadow) 30%, transparent),
+		0px 8px 12px 6px color-mix(in srgb, var(--color-shadow) 15%, transparent);
+}
+
+/* Scrim Overlay */
+@utility scrim {
+	background-color: color-mix(in srgb, var(--color-scrim) 32%, transparent);
+}

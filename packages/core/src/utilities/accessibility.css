@@ -1,0 +1,31 @@
+/*
+    Accessibility Styles
+
+    Implements accessibility-focused styles to ensure that the UI components are usable by all users, including those with disabilities. This includes focus outlines, high contrast modes, and other visual cues that enhance usability.
+*/
+
+@utility focusable {
+	@apply focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current;
+}
+
+/* Ring driven by a focused descendant — for composite widgets (menus, groups). */
+@utility focusable-within {
+	@apply focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-current;
+}
+
+/* Visually hidden until focused — the classic skip-link / bypass-block pattern. */
+@utility sr-only-focusable {
+	@apply sr-only;
+	&:focus,
+	&:focus-visible {
+		@apply not-sr-only;
+	}
+}
+
+/* WCAG 2.5.8 minimum interactive size (44px) without changing visual size. */
+@utility touch-target {
+	@apply relative;
+	&::after {
+		@apply absolute top-1/2 left-1/2 size-11 min-h-11 min-w-11 -translate-x-1/2 -translate-y-1/2 content-[''];
+	}
+}

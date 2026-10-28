@@ -1,0 +1,141 @@
+/* 
+	Color Utilities
+
+	Provides color utility classes for applying colors according to roles.
+*/
+
+/* Primary */
+@utility primary {
+	@apply bg-primary text-on-primary selection:bg-primary-container/75! selection:text-on-primary-container!;
+}
+@utility inverse-primary {
+	@apply bg-on-primary text-primary selection:bg-on-primary-container/75! selection:text-primary-container!;
+}
+@utility primary-container {
+	@apply bg-primary-container text-on-primary-container selection:bg-primary/75! selection:text-on-primary!;
+}
+@utility inverse-primary-container {
+	@apply bg-on-primary-container text-primary-container selection:bg-on-primary/75! selection:text-primary!;
+}
+/* Secondary */
+@utility secondary {
+	@apply bg-secondary text-on-secondary selection:bg-secondary-container/75! selection:text-on-secondary-container!;
+}
+@utility inverse-secondary {
+	@apply bg-on-secondary text-secondary selection:bg-on-secondary-container/75! selection:text-secondary-container!;
+}
+@utility secondary-container {
+	@apply bg-secondary-container text-on-secondary-container selection:bg-secondary/75! selection:text-on-secondary!;
+}
+@utility inverse-secondary-container {
+	@apply bg-on-secondary-container text-secondary-container selection:bg-on-secondary/75! selection:text-secondary!;
+}
+/* Tertiary */
+@utility tertiary {
+	@apply bg-tertiary text-on-tertiary selection:bg-tertiary-container/75! selection:text-on-tertiary-container!;
+}
+@utility inverse-tertiary {
+	@apply bg-on-tertiary text-tertiary selection:bg-on-tertiary-container/75! selection:text-tertiary-container!;
+}
+@utility tertiary-container {
+	@apply bg-tertiary-container text-on-tertiary-container selection:bg-tertiary/75! selection:text-on-tertiary!;
+}
+@utility inverse-tertiary-container {
+	@apply bg-on-tertiary-container text-tertiary-container selection:bg-on-tertiary/75! selection:text-tertiary!;
+}
+/* Error */
+@utility error {
+	@apply bg-error text-on-error selection:bg-error-container/75! selection:text-on-error-container!;
+}
+@utility inverse-error {
+	@apply bg-on-error text-error selection:bg-on-error-container/75! selection:text-error-container!;
+}
+@utility error-container {
+	@apply bg-error-container text-on-error-container selection:bg-error/75! selection:text-on-error!;
+}
+@utility inverse-error-container {
+	@apply bg-on-error-container text-error-container selection:bg-on-error/75! selection:text-error!;
+}
+/* Success */
+@utility success {
+	@apply bg-success text-on-success selection:bg-success-container/75! selection:text-on-success-container!;
+}
+@utility inverse-success {
+	@apply bg-on-success text-success selection:bg-on-success-container/75! selection:text-success-container!;
+}
+@utility success-container {
+	@apply bg-success-container text-on-success-container selection:bg-success/75! selection:text-on-success!;
+}
+@utility inverse-success-container {
+	@apply bg-on-success-container text-success-container selection:bg-on-success/75! selection:text-success!;
+}
+/* Warning */
+@utility warning {
+	@apply bg-warning text-on-warning selection:bg-warning-container/75! selection:text-on-warning-container!;
+}
+@utility inverse-warning {
+	@apply bg-on-warning text-warning selection:bg-on-warning-container/75! selection:text-warning-container!;
+}
+@utility warning-container {
+	@apply bg-warning-container text-on-warning-container selection:bg-warning/75! selection:text-on-warning!;
+}
+@utility inverse-warning-container {
+	@apply bg-on-warning-container text-warning-container selection:bg-on-warning/75! selection:text-warning!;
+}
+/* Info */
+@utility info {
+	@apply bg-info text-on-info selection:bg-info-container/75! selection:text-on-info-container!;
+}
+@utility inverse-info {
+	@apply bg-on-info text-info selection:bg-on-info-container/75! selection:text-info-container!;
+}
+@utility info-container {
+	@apply bg-info-container text-on-info-container selection:bg-info/75! selection:text-on-info!;
+}
+@utility inverse-info-container {
+	@apply bg-on-info-container text-info-container selection:bg-on-info/75! selection:text-info!;
+}
+/* Alert */
+@utility alert {
+	@apply bg-alert text-on-alert selection:bg-alert-container/75! selection:text-on-alert-container!;
+}
+@utility inverse-alert {
+	@apply bg-on-alert text-alert selection:bg-on-alert-container/75! selection:text-alert-container!;
+}
+@utility alert-container {
+	@apply bg-alert-container text-on-alert-container selection:bg-alert/75! selection:text-on-alert!;
+}
+@utility inverse-alert-container {
+	@apply bg-on-alert-container text-alert-container selection:bg-on-alert/75! selection:text-alert!;
+}
+/* Surface */
+@utility surface-dim {
+	@apply bg-surface-dim text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface {
+	@apply bg-surface text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface-bright {
+	@apply bg-surface-bright text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility inverse-surface {
+	@apply bg-on-surface text-surface selection:bg-surface/75! selection:text-on-surface!;
+}
+@utility inverse-surface-variant {
+	@apply bg-on-surface-variant text-surface selection:bg-surface/75! selection:text-on-surface!;
+}
+@utility surface-container-lowest {
+	@apply bg-surface-container-lowest text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface-container-low {
+	@apply bg-surface-container-low text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface-container {
+	@apply bg-surface-container text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface-container-high {
+	@apply bg-surface-container-high text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}
+@utility surface-container-highest {
+	@apply bg-surface-container-highest text-on-surface selection:bg-on-surface-variant/75 selection:text-surface;
+}

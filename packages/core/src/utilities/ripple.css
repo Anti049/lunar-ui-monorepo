@@ -1,0 +1,21 @@
+/* 
+	Ripple Effect
+
+	Implements the Material 3 ripple effect as a static style,
+	which will be applied to any element with the `ripple` class.
+*/
+
+/* Standard Ripple */
+.lunar-ripple {
+	position: absolute;
+	border-radius: 9999px;
+	background-color: currentColor;
+	pointer-events: none;
+	transform: scale(0);
+	will-change: transform, opacity;
+}
+
+/* Press-and-Hold Ripple */
+.interactive[data-ripple-held]::before {
+	opacity: 0 !important;
+}
