@@ -47,7 +47,7 @@ jobs:
           BASE_PATH: /${{ github.event.repository.name }}
 
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         # adapter-static writes here; `pages` in vite.config.ts must agree.
         with: { path: packages/docs/build }
       - id: deployment
