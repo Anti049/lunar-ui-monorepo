@@ -1,0 +1,24 @@
+/*
+	Shape tokens. The build reads their DEFAULTS from SHAPE_TOKENS in build.ts,
+	not from here — this file exists so the CSS-first path resolves during
+	development and so the parity harness has something to compare against.
+
+	Keep the two in sync. Guide 12 asserts that every token here has a :root
+	default in the compiled plugin.
+*/
+:root {
+	--radius-selector: 0.5rem;
+	--radius-field: 0.5rem;
+	--radius-box: 1rem;
+	--size-selector: 1.5rem;
+	--size-field: 2.5rem;
+	--border-width: 1px;
+	--animation-duration: 200ms;
+	--animation-easing: var(--ease-standard);
+
+	/*
+		--radius-button is deliberately ABSENT. Components read it as
+		`var(--radius-button, var(--radius-field))` so the fallback resolves at
+		the element; a default here would resolve it once, at the root.
+	*/
+}

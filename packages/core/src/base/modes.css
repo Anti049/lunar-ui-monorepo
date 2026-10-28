@@ -1,0 +1,175 @@
+/* 
+	Semantic mode tokens
+
+	Each semantic token resolves to a light/dark pair via CSS `light-dark()`,
+	which reads the element's used `color-scheme` value and returns the
+	approriate color mapping.
+*/
+
+:root,
+[data-theme] {
+	/* Primary */
+	--theme-color-primary: light-dark(var(--theme-color-primary-40), var(--theme-color-primary-80));
+	--theme-color-on-primary: light-dark(
+		var(--theme-color-primary-100),
+		var(--theme-color-primary-20)
+	);
+	--theme-color-primary-container: light-dark(
+		var(--theme-color-primary-90),
+		var(--theme-color-primary-30)
+	);
+	--theme-color-on-primary-container: light-dark(
+		var(--theme-color-primary-30),
+		var(--theme-color-primary-90)
+	);
+	/* Secondary */
+	--theme-color-secondary: light-dark(
+		var(--theme-color-secondary-40),
+		var(--theme-color-secondary-80)
+	);
+	--theme-color-on-secondary: light-dark(
+		var(--theme-color-secondary-100),
+		var(--theme-color-secondary-20)
+	);
+	--theme-color-secondary-container: light-dark(
+		var(--theme-color-secondary-90),
+		var(--theme-color-secondary-30)
+	);
+	--theme-color-on-secondary-container: light-dark(
+		var(--theme-color-secondary-30),
+		var(--theme-color-secondary-90)
+	);
+	/* Tertiary */
+	--theme-color-tertiary: light-dark(
+		var(--theme-color-tertiary-40),
+		var(--theme-color-tertiary-80)
+	);
+	--theme-color-on-tertiary: light-dark(
+		var(--theme-color-tertiary-100),
+		var(--theme-color-tertiary-20)
+	);
+	--theme-color-tertiary-container: light-dark(
+		var(--theme-color-tertiary-90),
+		var(--theme-color-tertiary-30)
+	);
+	--theme-color-on-tertiary-container: light-dark(
+		var(--theme-color-tertiary-30),
+		var(--theme-color-tertiary-90)
+	);
+	/* Error */
+	--theme-color-error: light-dark(var(--theme-color-error-40), var(--theme-color-error-80));
+	--theme-color-on-error: light-dark(var(--theme-color-error-100), var(--theme-color-error-20));
+	--theme-color-error-container: light-dark(
+		var(--theme-color-error-90),
+		var(--theme-color-error-30)
+	);
+	--theme-color-on-error-container: light-dark(
+		var(--theme-color-error-30),
+		var(--theme-color-error-90)
+	);
+	/* Success */
+	--theme-color-success: light-dark(var(--theme-color-success-40), var(--theme-color-success-80));
+	--theme-color-on-success: light-dark(
+		var(--theme-color-success-100),
+		var(--theme-color-success-20)
+	);
+	--theme-color-success-container: light-dark(
+		var(--theme-color-success-90),
+		var(--theme-color-success-30)
+	);
+	--theme-color-on-success-container: light-dark(
+		var(--theme-color-success-30),
+		var(--theme-color-success-90)
+	);
+	/* Warning */
+	--theme-color-warning: light-dark(var(--theme-color-warning-40), var(--theme-color-warning-80));
+	--theme-color-on-warning: light-dark(
+		var(--theme-color-warning-100),
+		var(--theme-color-warning-20)
+	);
+	--theme-color-warning-container: light-dark(
+		var(--theme-color-warning-90),
+		var(--theme-color-warning-30)
+	);
+	--theme-color-on-warning-container: light-dark(
+		var(--theme-color-warning-30),
+		var(--theme-color-warning-90)
+	);
+	/* Info */
+	--theme-color-info: light-dark(var(--theme-color-info-40), var(--theme-color-info-80));
+	--theme-color-on-info: light-dark(var(--theme-color-info-100), var(--theme-color-info-20));
+	--theme-color-info-container: light-dark(var(--theme-color-info-90), var(--theme-color-info-30));
+	--theme-color-on-info-container: light-dark(
+		var(--theme-color-info-30),
+		var(--theme-color-info-90)
+	);
+	/* Alert */
+	--theme-color-alert: light-dark(var(--theme-color-alert-40), var(--theme-color-alert-80));
+	--theme-color-on-alert: light-dark(var(--theme-color-alert-100), var(--theme-color-alert-20));
+	--theme-color-alert-container: light-dark(
+		var(--theme-color-alert-90),
+		var(--theme-color-alert-30)
+	);
+	--theme-color-on-alert-container: light-dark(
+		var(--theme-color-alert-30),
+		var(--theme-color-alert-90)
+	);
+	/* Surface */
+	--theme-color-surface-dim: light-dark(
+		var(--theme-color-neutral-87),
+		var(--theme-color-neutral-6)
+	);
+	--theme-color-surface: light-dark(var(--theme-color-neutral-98), var(--theme-color-neutral-6));
+	--theme-color-surface-bright: light-dark(
+		var(--theme-color-neutral-98),
+		var(--theme-color-neutral-24)
+	);
+	--theme-color-inverse-surface: light-dark(
+		var(--theme-color-neutral-20),
+		var(--theme-color-neutral-90)
+	);
+	--theme-color-surface-container-lowest: light-dark(
+		var(--theme-color-neutral-100),
+		var(--theme-color-neutral-2)
+	);
+	--theme-color-surface-container-low: light-dark(
+		var(--theme-color-neutral-96),
+		var(--theme-color-neutral-10)
+	);
+	--theme-color-surface-container: light-dark(
+		var(--theme-color-neutral-92),
+		var(--theme-color-neutral-17)
+	);
+	--theme-color-surface-container-high: light-dark(
+		var(--theme-color-neutral-87),
+		var(--theme-color-neutral-24)
+	);
+	--theme-color-surface-container-highest: light-dark(
+		var(--theme-color-neutral-84),
+		var(--theme-color-neutral-30)
+	);
+	--theme-color-on-inverse-surface: light-dark(
+		var(--theme-color-neutral-95),
+		var(--theme-color-neutral-20)
+	);
+	--theme-color-inverse-primary: light-dark(
+		var(--theme-color-primary-80),
+		var(--theme-color-primary-40)
+	);
+	--theme-color-on-surface: light-dark(
+		var(--theme-color-neutral-10),
+		var(--theme-color-neutral-90)
+	);
+	--theme-color-on-surface-variant: light-dark(
+		var(--theme-color-neutral-30),
+		var(--theme-color-neutral-80)
+	);
+	--theme-color-outline: light-dark(var(--theme-color-neutral-50), var(--theme-color-neutral-60));
+	--theme-color-outline-variant: light-dark(
+		var(--theme-color-neutral-variant-80),
+		var(--theme-color-neutral-variant-30)
+	);
+	/* scrim + shadow are mode-independent */
+	--theme-color-scrim: var(--theme-color-neutral-0);
+	--theme-color-shadow: var(--theme-color-neutral-0);
+}

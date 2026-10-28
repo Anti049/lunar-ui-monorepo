@@ -1,0 +1,7 @@
+/* 
+	Plugins
+
+	Tailwind v4 plugins bundled with `lunar-ui`.
+*/
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';

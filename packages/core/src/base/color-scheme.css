@@ -1,0 +1,14 @@
+/* 
+	Color Schemes
+
+	Applies the CSS `color-scheme` property based on mode class.
+*/
+:root {
+	color-scheme: light dark;
+}
+.light {
+	color-scheme: light;
+}
+.dark {
+	color-scheme: dark;
+}

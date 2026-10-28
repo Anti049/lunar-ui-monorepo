@@ -1,0 +1,21 @@
+/*
+	Design tokens that are NOT colours — fonts, breakpoints, animations.
+
+	Plain `theme`, not `theme inline`: these are constants, so Tailwind may
+	re-declare them as custom properties. Colours are the other case; see
+	palette.css.
+*/
+@theme {
+	/* Animations */
+	--animation-alert: alert 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+	/* Breakpoints */
+	--breakpoint-compact: 620px;
+	--breakpoint-medium: 960px;
+	--breakpoint-expanded: 1301px;
+	--breakpoint-large: 1600px;
+
+	/* Fonts. The consumer supplies the files; this only names them. */
+	--font-sans: 'Inter Variable', ui-sans-serif, system-ui;
+	--font-mono: 'Fira Code Variable', ui-monospace, monospace;
+}

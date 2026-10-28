@@ -36,12 +36,64 @@ export type BundleRegistrar = (context: {
 	prefix?: string;
 }) => void;
 
+/**
+ * A `theme.extend` entry. A plain value, or a `[value, modifiers]` tuple for
+ * namespaces that take them. Added by guide 14.
+ */
+export type ThemeEntry = string | [string, Record<string, string>];
+export type ThemeExtend = Record<string, Record<string, ThemeEntry>>;
+
+/** Shipped theme palettes, keyed by theme id then by selector. Guide 15. */
+export type ThemeRules = Record<string, Record<string, Record<string, string>>>;
+
+/** Re-exported so generated/swatches.ts can name its own shape. Guide 15. */
+export type { SwatchRole, ThemeSwatches } from './functions/extract-swatches.js';
+
+/**
+ * Names the design system owns, used to decide what a `prefix` may rename.
+ * Added by THIS guide.
+ */
+export interface Registry {
+	classes: string[];
+	/** Custom property names, WITHOUT the leading `--`. */
+	variables: string[];
+}
+
+/**
+ * A functional utility — `@utility tooltip-gap-*`, registered at runtime with
+ * matchUtilities because its class names cannot be enumerated at build time.
+ * Added by THIS guide.
+ */
+export interface FunctionalUtility {
+	/** Owning bundle, so include/exclude applies to these too. */
+	bundle: string;
+	/** Class stem without the trailing `-*`, e.g. `tooltip-gap`. */
+	name: string;
+	/** Properties the resolved value is written to. */
+	properties: string[];
+	/** Accepts a number off the spacing scale (`tooltip-gap-2`). */
+	spacing: boolean;
+	/** Accepts an arbitrary value (`tooltip-gap-[3px]`). */
+	arbitrary: boolean;
+}
+
 /** Options a consumer may pass in the `@plugin` body. */
 export interface PluginOptions {
-	/** Renames the plugin's own classes and locals, e.g. `px-`. */
+	/** Renames the design system's own classes and locals, e.g. `px-`. */
 	prefix?: string;
 	/** Bundles to register; omit for all. */
 	include?: string | string[];
 	/** Bundles to skip. Ignored when `include` is given. */
 	exclude?: string | string[];
+	/**
+	 * Shipped theme palettes to include. Omit for all. The `default` theme is
+	 * always added: other themes inherit from it for roles they do not set.
+	 */
+	themes?: string | string[];
+	/**
+	 * Shape tokens, set as CSS custom properties. Anything else beginning with
+	 * `--` is rejected — a typo would otherwise define a variable nothing reads
+	 * and silently change nothing.
+	 */
+	[token: `--${string}`]: string | number | undefined;
 }

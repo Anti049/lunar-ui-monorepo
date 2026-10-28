@@ -1,0 +1,13 @@
+/*
+	Order matters: color-scheme before modes (light-dark() is inert without it),
+	and modes before palette (the namespace layer references the roles the mode
+	layer defines).
+*/
+@import './color-scheme.css';
+@import './design-tokens.css';
+@import './typography.css';
+@import './motion.css';
+@import './keyframes.css';
+@import './modes.css';
+@import './palette.css';
+@import './semantics.css';

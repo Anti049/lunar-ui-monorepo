@@ -31,5 +31,5 @@
 		succeeds while `dist/theme.js` simply does not exist — the failure
 		surfaces as an unresolved `exports` entry in a consumer's app.
 	*/
-	"include": ["index.ts", "types.ts", "generated/**/*.ts"]
+	"include": ["index.ts", "theme.ts", "themes.ts", "types.ts", "generated/**/*.ts"]
 }

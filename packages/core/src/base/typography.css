@@ -1,0 +1,156 @@
+/* 
+	Typography Styles
+
+	Implements Material 3's typography standards for sizing and weight,
+	as well as the `typography` plugin from Tailwind v4, which provides
+	utility classes for rich text formatting.
+*/
+@theme inline {
+	/* Standard Typography Styles */
+	/* Display - Large */
+	--text-display-large: 57pt;
+	--text-display-large--line-height: 64pt;
+	--text-display-large--font-weight: 400;
+	/* Display - Medium */
+	--text-display-medium: 45pt;
+	--text-display-medium--line-height: 52pt;
+	--text-display-medium--font-weight: 400;
+	/* Display - Small */
+	--text-display-small: 36pt;
+	--text-display-small--line-height: 44pt;
+	--text-display-small--font-weight: 400;
+	/* Headline - Large */
+	--text-headline-large: 32pt;
+	--text-headline-large--line-height: 40pt;
+	--text-headline-large--font-weight: 400;
+	/* Headline - Medium */
+	--text-headline-medium: 28pt;
+	--text-headline-medium--line-height: 36pt;
+	--text-headline-medium--font-weight: 400;
+	/* Headline - Small */
+	--text-headline-small: 24pt;
+	--text-headline-small--line-height: 32pt;
+	--text-headline-small--font-weight: 400;
+	/* Title - Large */
+	--text-title-large: 22pt;
+	--text-title-large--line-height: 28pt;
+	--text-title-large--font-weight: 400;
+	/* Title - Medium */
+	--text-title-medium: 16pt;
+	--text-title-medium--line-height: 24pt;
+	--text-title-medium--font-weight: 400;
+	/* Title - Small */
+	--text-title-small: 14pt;
+	--text-title-small--line-height: 20pt;
+	--text-title-small--font-weight: 400;
+	/* Label - Large */
+	--text-label-large: 14pt;
+	--text-label-large--line-height: 20pt;
+	--text-label-large--font-weight: 500;
+	/* Label - Medium */
+	--text-label-medium: 12pt;
+	--text-label-medium--line-height: 16pt;
+	--text-label-medium--font-weight: 500;
+	/* Label - Small */
+	--text-label-small: 11pt;
+	--text-label-small--line-height: 16pt;
+	--text-label-small--font-weight: 500;
+	/* Body - Large */
+	--text-body-large: 16pt;
+	--text-body-large--line-height: 24pt;
+	--text-body-large--font-weight: 400;
+	/* Body - Medium */
+	--text-body-medium: 14pt;
+	--text-body-medium--line-height: 20pt;
+	--text-body-medium--font-weight: 400;
+	/* Body - Small */
+	--text-body-small: 12pt;
+	--text-body-small--line-height: 16pt;
+	--text-body-small--font-weight: 400;
+	/* Caption - Large */
+	--text-caption-large: 11pt;
+	--text-caption-large--line-height: 16pt;
+	--text-caption-large--font-weight: 400;
+	/* Caption - Medium */
+	--text-caption-medium: 10pt;
+	--text-caption-medium--line-height: 14pt;
+	--text-caption-medium--font-weight: 400;
+	/* Caption - Small */
+	--text-caption-small: 9pt;
+	--text-caption-small--line-height: 12pt;
+	--text-caption-small--font-weight: 400;
+
+	/* Emphasized Typography Styles */
+	/* Display - Large */
+	--text-display-large-emphasized: 57pt;
+	--text-display-large-emphasized--line-height: 64pt;
+	--text-display-large-emphasized--font-weight: 500;
+	/* Display - Medium */
+	--text-display-medium-emphasized: 45pt;
+	--text-display-medium-emphasized--line-height: 52pt;
+	--text-display-medium-emphasized--font-weight: 500;
+	/* Display - Small */
+	--text-display-small-emphasized: 36pt;
+	--text-display-small-emphasized--line-height: 44pt;
+	--text-display-small-emphasized--font-weight: 500;
+	/* Headline - Large */
+	--text-headline-large-emphasized: 32pt;
+	--text-headline-large-emphasized--line-height: 40pt;
+	--text-headline-large-emphasized--font-weight: 500;
+	/* Headline - Medium */
+	--text-headline-medium-emphasized: 28pt;
+	--text-headline-medium-emphasized--line-height: 36pt;
+	--text-headline-medium-emphasized--font-weight: 500;
+	/* Headline - Small */
+	--text-headline-small-emphasized: 24pt;
+	--text-headline-small-emphasized--line-height: 32pt;
+	--text-headline-small-emphasized--font-weight: 500;
+	/* Title - Large */
+	--text-title-large-emphasized: 22pt;
+	--text-title-large-emphasized--line-height: 28pt;
+	--text-title-large-emphasized--font-weight: 500;
+	/* Title - Medium */
+	--text-title-medium-emphasized: 16pt;
+	--text-title-medium-emphasized--line-height: 24pt;
+	--text-title-medium-emphasized--font-weight: 500;
+	/* Title - Small */
+	--text-title-small-emphasized: 14pt;
+	--text-title-small-emphasized--line-height: 20pt;
+	--text-title-small-emphasized--font-weight: 500;
+	/* Label - Large */
+	--text-label-large-emphasized: 14pt;
+	--text-label-large-emphasized--line-height: 20pt;
+	--text-label-large-emphasized--font-weight: 600;
+	/* Label - Medium */
+	--text-label-medium-emphasized: 12pt;
+	--text-label-medium-emphasized--line-height: 16pt;
+	--text-label-medium-emphasized--font-weight: 600;
+	/* Label - Small */
+	--text-label-small-emphasized: 11pt;
+	--text-label-small-emphasized--line-height: 16pt;
+	--text-label-small-emphasized--font-weight: 600;
+	/* Body - Large */
+	--text-body-large-emphasized: 16pt;
+	--text-body-large-emphasized--line-height: 24pt;
+	--text-body-large-emphasized--font-weight: 500;
+	/* Body - Medium */
+	--text-body-medium-emphasized: 14pt;
+	--text-body-medium-emphasized--line-height: 20pt;
+	--text-body-medium-emphasized--font-weight: 500;
+	/* Body - Small */
+	--text-body-small-emphasized: 12pt;
+	--text-body-small-emphasized--line-height: 16pt;
+	--text-body-small-emphasized--font-weight: 500;
+	/* Caption - Large */
+	--text-caption-large-emphasized: 11pt;
+	--text-caption-large-emphasized--line-height: 16pt;
+	--text-caption-large-emphasized--font-weight: 500;
+	/* Caption - Medium */
+	--text-caption-medium-emphasized: 10pt;
+	--text-caption-medium-emphasized--line-height: 14pt;
+	--text-caption-medium-emphasized--font-weight: 500;
+	/* Caption - Small */
+	--text-caption-small-emphasized: 9pt;
+	--text-caption-small-emphasized--line-height: 12pt;
+	--text-caption-small-emphasized--font-weight: 500;
+}

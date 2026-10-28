@@ -1,0 +1,12 @@
+/* 
+	Keyframes
+
+	Animation keyframes for use in `design-tokens.css` and component styles.
+*/
+@keyframes alert {
+	75%,
+	100% {
+		transform: scale(1.5);
+		opacity: 0;
+	}
+}

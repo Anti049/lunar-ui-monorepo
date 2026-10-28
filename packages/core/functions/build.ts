@@ -4,10 +4,8 @@
 	Reads src/**\/*.css, compiles it through the real Tailwind CLI, works out
 	which rules each component contributed, converts those to JavaScript objects
 	and writes them to generated/. Nothing here ships — tsconfig.build.json
-	deliberately excludes functions/.
-
-	Run it with `bun functions/build.ts`, or `bun run build`, which also cleans
-	dist/ and runs tsc afterwards.
+	deliberately excludes functions/, except for the runtime modules the entry
+	points import.
 */
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -15,9 +13,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { extractClasses } from './extract-classes.js';
 import { partition } from './partition.js';
+import {
+	collectDeclarations,
+	buildThemeExtend,
+	inlineThemeFallbacks,
+	resolveClosure
+} from './collect-tokens.js';
+import { buildSwatches, modeMapping } from './extract-swatches.js';
+import { extractCustomVariants } from './extract-variants.js';
+import { extractFunctional } from './extract-functional.js';
 import type { Bundle } from '../types.js';
 
-// import.meta.dirname is functions/, so the package root is one level up.
 const require = createRequire(import.meta.url);
 const pkgRoot = path.resolve(import.meta.dirname, '..');
 const coreSrc = path.join(pkgRoot, 'src');
@@ -28,8 +34,8 @@ const tmpDir = path.join(pkgRoot, '.tmp');
 /*
 	Resolve the Tailwind CLI out of THIS package's node_modules rather than
 	assuming a global install. A global copy on a different minor version
-	produces output that disagrees with the test harness, and the disagreement
-	is subtle enough to cost hours.
+	produces output that disagrees with the test harness, subtly enough to cost
+	hours.
 */
 const cliEntry = path.join(
 	path.dirname(require.resolve('@tailwindcss/cli/package.json')),
@@ -39,6 +45,10 @@ const cliEntry = path.join(
 /** Forward slashes, so generated @import paths are identical on every OS. */
 const toPosix = (p: string): string => p.split(path.sep).join('/');
 const relFromTmp = (target: string): string => toPosix(path.relative(tmpDir, target));
+
+/** Every `--name` a string references. */
+const referencedVariables = (text: string): string[] =>
+	[...text.matchAll(/var\(\s*(--[-\w]+)/g)].map((m) => m[1]);
 
 /**
  * Compiles one CSS string and returns the result.
@@ -108,9 +118,9 @@ for (const file of componentFiles) {
 // ---------------------------------------------------------------------------
 
 /*
-	Names like `collapse`, `table` and `select-text` are Tailwind's. Claiming
-	one pulls Tailwind's rule into your bundle, where it will fight the
-	consumer's own utilities.
+	Names like `collapse`, `table` and `select-text` are Tailwind's. Claiming one
+	pulls Tailwind's rule into your bundle, where it will fight the consumer's
+	own utilities.
 
 	Probe with BARE Tailwind and none of your CSS loaded: whatever answers is
 	Tailwind's. Running this against the full context instead reports every
@@ -135,6 +145,34 @@ if (builtins.size) {
 
 const safelist = [...classOwners.keys()].sort().map((c) => `@source inline("${c}");`);
 
+/*
+	The allowlist a `prefix` renames against. Classes come from what survived
+	built-in detection; variables are collected in section 6 once the
+	declarations have been read, and merged in before emission.
+
+	An ALLOWLIST rather than a denylist: a name is renamed only when this design
+	system actually defines it, so Tailwind's own theme variables and a
+	consumer's state hooks are left alone by construction.
+*/
+const registryClasses = [...classOwners.keys()].sort();
+
+/*
+	Functional utilities — `@utility name-*`. These have no finite set of class
+	names, so they cannot be safelisted and cannot survive the compile. Read
+	from source instead, and re-registered at runtime by index.ts through
+	matchUtilities.
+*/
+const FUNCTIONAL = componentFiles.flatMap((file) =>
+	extractFunctional(fs.readFileSync(file, 'utf8'), path.basename(file, '.css'))
+);
+
+/*
+	`@custom-variant` blocks. Hand-listing these once shipped one of three, and
+	the two that were missing went unnoticed for months — guide 12 now asserts
+	the count against the source.
+*/
+const CUSTOM_VARIANTS = extractCustomVariants(coreSrc);
+
 // ---------------------------------------------------------------------------
 // 4. Compile the context and the components together, once.
 // ---------------------------------------------------------------------------
@@ -145,8 +183,6 @@ const compiled = runTailwind(
 	[
 		`@import '${relFromTmp(contextPath)}';`,
 		...componentFiles.map((f) => `@import '${relFromTmp(f)}';`),
-		// @utility output is emitted on demand, so without the safelist the
-		// compile comes back with none of your components in it.
 		...safelist
 	].join('\n'),
 	'library'
@@ -192,15 +228,149 @@ if (unattributed.length) {
 }
 
 // ---------------------------------------------------------------------------
-// 6. Emit generated/.
+// 6. Collect the design tokens. (Guide 14.)
+// ---------------------------------------------------------------------------
+
+/*
+	Shape tokens: the knobs a consumer may turn.
+*/
+const SHAPE_TOKENS: Record<string, string> = {
+	'--radius-selector': '0.5rem',
+	'--radius-field': '0.5rem',
+	'--radius-box': '1rem',
+	'--size-selector': '1.5rem',
+	'--size-field': '2.5rem',
+	'--border-width': '1px',
+	'--animation-duration': '200ms',
+	'--animation-easing': 'var(--ease-standard)'
+};
+
+/*
+	Settable but deliberately NOT declared. `--radius-button` exists only as a
+	fallback written at the point of use:
+
+	    border-radius: var(--radius-button, var(--radius-field));
+
+	Give it a `:root` default instead and a var() resolves WHERE IT IS DECLARED,
+	so the root's --radius-field is substituted once and a [data-theme] override
+	never reaches buttons. The chain looks right and silently is not.
+*/
+const DERIVED_SHAPE_TOKENS: Record<string, string> = {
+	'--radius-button': '--radius-field' // token -> what it falls back to
+};
+
+/** Every shape token a consumer may set, declared or not. */
+const SETTABLE_SHAPE_TOKENS = [...Object.keys(SHAPE_TOKENS), ...Object.keys(DERIVED_SHAPE_TOKENS)];
+
+const declarations = collectDeclarations(coreSrc);
+const { extend: themeExtend, claimed } = buildThemeExtend(declarations);
+
+// The seeds: every variable the compiled CSS references, plus every variable
+// the shape tokens reference.
+const seeds = new Set(referencedVariables(compiled));
+for (const v of referencedVariables(Object.values(SHAPE_TOKENS).join(' '))) seeds.add(v);
+const needed = resolveClosure(seeds, declarations);
+
+/*
+	A theme is identified by its source DIRECTORY when it has flavours
+	(catppuccin/mocha.css and its three siblings are all `catppuccin`), otherwise
+	by file name. This is why `file` is carried on every collected declaration.
+*/
+const themeIdOf = (file: string): string | null => {
+	if (!file.startsWith('themes/')) return null;
+	const rest = file.slice('themes/'.length);
+	const slash = rest.indexOf('/');
+	return slash === -1 ? rest.replace(/\.css$/, '') : rest.slice(0, slash);
+};
+
+const baseRules: Record<string, Record<string, string>> = {};
+const themeRules: Record<string, Record<string, Record<string, string>>> = {};
+
+const addTo = (
+	target: Record<string, Record<string, string>>,
+	selector: string,
+	prop: string,
+	value: string
+): void => {
+	target[selector] ??= {};
+	target[selector][prop] = value;
+};
+
+const addDecl = (file: string, selector: string, prop: string, value: string): void => {
+	const themeId = themeIdOf(file);
+	if (themeId === null) {
+		addTo(baseRules, selector, prop, value);
+		return;
+	}
+	themeRules[themeId] ??= {};
+	addTo(themeRules[themeId], selector, prop, value);
+};
+
+for (const decl of declarations) {
+	if (decl.scope === 'color-scheme') {
+		addDecl(decl.file, decl.selector, decl.prop, decl.value);
+		continue;
+	}
+	if (decl.scope === 'theme') {
+		// Claimed by a theme namespace, so Tailwind emits it when used. Anything
+		// unclaimed still needs carrying, but only if the bundles depend on it.
+		if (claimed.has(decl.prop) || !needed.has(decl.prop)) continue;
+		addDecl(decl.file, ':root', decl.prop, decl.value);
+		continue;
+	}
+	if (!needed.has(decl.prop)) continue;
+	addDecl(decl.file, decl.selector, decl.prop, decl.value);
+}
+
+// Shape tokens sit alongside the rest of the base layer, at :root.
+for (const [prop, value] of Object.entries(SHAPE_TOKENS)) addTo(baseRules, ':root', prop, value);
+
+/*
+	Base declarations can themselves reach into namespaced tokens — e.g.
+	`--animation-easing: var(--ease-standard)` — so they need the same fallback
+	treatment as the bundle CSS.
+*/
+const themeValues = new Map(
+	declarations.filter((d) => d.scope === 'theme').map((d) => [d.prop, d.value])
+);
+const resolvedBaseRules = inlineThemeFallbacks(baseRules, themeValues);
+const resolvedThemeRules = inlineThemeFallbacks(themeRules, themeValues);
+
+// ---------------------------------------------------------------------------
+// 7. Build the theme catalogue. (This guide.)
+// ---------------------------------------------------------------------------
+
+/*
+	Read the role-to-tone-step mapping out of modes.css rather than hard-coding
+	it. That both avoids drift and gives you a build-time assertion that the mode
+	layer is intact: re-point a role and either the mapping follows or the build
+	fails with a message naming the role.
+*/
+const swatchModeMap = modeMapping(fs.readFileSync(path.join(coreSrc, 'base/modes.css'), 'utf8'));
+const swatches = buildSwatches(resolvedThemeRules, swatchModeMap);
+
+// ---------------------------------------------------------------------------
+// 8. Emit generated/.
 // ---------------------------------------------------------------------------
 
 /*
 	Written as .ts, not .js, so tsc typechecks the generated data against the
-	same `Bundle` type the hand-written runtime uses. A shape change in the
-	generator then fails the build instead of failing at a consumer's runtime.
+	same types the hand-written runtime uses. A shape change in the generator
+	then fails the build instead of failing at a consumer's runtime.
 */
 const BANNER = '/* Generated by functions/build.ts. Do not edit. */\n';
+
+/** Writes one generated module, optionally importing a type for its value. */
+function writeGenerated(file: string, value: unknown, type: string, importType?: string): void {
+	const imports = importType ? `import type { ${importType} } from '../types.js';\n\n` : '';
+	fs.writeFileSync(
+		path.join(generatedDir, file),
+		BANNER +
+			imports +
+			`const value: ${type} = ${JSON.stringify(value, null, '\t')};\n\n` +
+			`export default value;\n`
+	);
+}
 
 fs.rmSync(generatedDir, { recursive: true, force: true });
 fs.mkdirSync(path.join(generatedDir, 'components'), { recursive: true });
@@ -209,7 +379,6 @@ for (const [name, bundle] of Object.entries(components) as [string, Bundle][]) {
 	const dir = path.join(generatedDir, 'components', name);
 	fs.mkdirSync(dir, { recursive: true });
 
-	// The data.
 	fs.writeFileSync(
 		path.join(dir, 'object.ts'),
 		BANNER +
@@ -220,8 +389,8 @@ for (const [name, bundle] of Object.entries(components) as [string, Bundle][]) {
 	);
 
 	/*
-		The registrar. Generated rather than written once and reused, because
-		each bundle's data is a separate module — which is what lets a consumer's
+		The registrar. Generated rather than written once and reused, because each
+		bundle's data is a separate module — which is what lets a consumer's
 		bundler drop the ones `exclude` skipped.
 	*/
 	fs.writeFileSync(
@@ -238,6 +407,11 @@ for (const [name, bundle] of Object.entries(components) as [string, Bundle][]) {
 	);
 }
 
+/** A component name as a valid JS identifier: `code-block` -> `codeBlock`. */
+function ident(name: string): string {
+	return name.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
+}
+
 // The barrel index.ts imports: bundle name -> registrar.
 const names = Object.keys(components).sort();
 fs.writeFileSync(
@@ -250,18 +424,38 @@ fs.writeFileSync(
 		`\n};\n\nexport default bundles;\n`
 );
 
-// @property registrations, global and unconditional.
-fs.writeFileSync(
-	path.join(generatedDir, 'properties.ts'),
-	BANNER +
-		`import type { StyleObject } from '../types.js';\n\n` +
-		`const value: StyleObject = ${JSON.stringify(properties, null, '\t')};\n\n` +
-		`export default value;\n`
+/*
+	A component-local variable is one the component DECLARES, not merely one it
+	mentions. Going by references would sweep up typos — a var() naming a token
+	that does not exist anywhere — and then rename them under a prefix, which
+	quietly breaks the "theme variables are never prefixed" guarantee for
+	anything named `--color-*`.
+*/
+const registryVariables = [
+	...new Set(
+		declarations
+			.filter((d) => d.scope === 'rule' && themeIdOf(d.file) === null)
+			.map((d) => d.prop.slice(2))
+	)
+].sort();
+
+const registry = { classes: registryClasses, variables: registryVariables };
+
+writeGenerated('registry.ts', registry, 'Registry', 'Registry');
+writeGenerated('variants.ts', CUSTOM_VARIANTS, 'Record<string, string | string[]>');
+writeGenerated('functional.ts', FUNCTIONAL, 'FunctionalUtility[]', 'FunctionalUtility');
+writeGenerated('properties.ts', properties, 'StyleObject', 'StyleObject');
+writeGenerated('theme.ts', themeExtend, 'ThemeExtend', 'ThemeExtend');
+writeGenerated('base.ts', resolvedBaseRules, 'Record<string, Record<string, string>>');
+writeGenerated('themes.ts', resolvedThemeRules, 'ThemeRules', 'ThemeRules');
+writeGenerated('shape.ts', SETTABLE_SHAPE_TOKENS, 'string[]');
+writeGenerated('swatches.ts', swatches, 'Record<string, ThemeSwatches>', 'ThemeSwatches');
+writeGenerated('mode-map.ts', swatchModeMap, 'Record<SwatchRole, [string, string]>', 'SwatchRole');
+
+console.log(
+	`built ${names.length} bundles: ${names.join(', ')}\n` +
+		`${needed.size} tokens in closure, ${Object.keys(themeRules).length} themes ` +
+		`(${Object.keys(themeRules).join(', ')})\n` +
+		`theme catalogue: ${Object.keys(swatches).length} names, ` +
+		`${Object.keys(CUSTOM_VARIANTS).length} variants, ${FUNCTIONAL.length} functional utilities`
 );
-
-/** A component name as a valid JS identifier: `code-block` -> `codeBlock`. */
-function ident(name: string): string {
-	return name.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
-}
-
-console.log(`built ${names.length} bundles: ${names.join(', ')}`);
