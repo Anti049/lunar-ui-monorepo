@@ -34,8 +34,9 @@ import { extractClasses } from '../functions/extract-classes.js';
 	  ../functions/extract-variants.js guide 16
 	  ../generated/variants.js         guide 16  (imported in Part 9)
 */
-// import shapeTokenNames from '../generated/shape.js';
-// import { extractCustomVariants } from '../functions/extract-variants.js';
+import shapeTokenNames from '../generated/shape.js';
+import { extractCustomVariants } from '../functions/extract-variants.js';
+import { ThemeRules } from '../types.js';
 
 const require = createRequire(import.meta.url);
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -232,6 +233,19 @@ const utilityClasses = fs
 	.filter((f) => f.endsWith('.css') && f !== '_index.css')
 	.flatMap((f) => extractClasses(fs.readFileSync(path.join(utilitiesDir, f), 'utf8'), null));
 
+/*
+	Some checks need a fixture the library may not have yet — a ripple class, a
+	component-local var, a functional utility. Each one is gated on its fixture
+	appearing in the source: absent, the check reports `skip` (null) rather than
+	FAIL, and it starts running the moment the feature lands.
+*/
+const librarySource = (fs.readdirSync(coreSrc, { recursive: true }) as string[])
+	.filter((f) => f.endsWith('.css'))
+	.map((f) => fs.readFileSync(path.join(coreSrc, f), 'utf8'))
+	.join('\n');
+const sourceHas = (pattern: RegExp): boolean => pattern.test(librarySource);
+type Check = [label: string, ok: boolean | null];
+
 const ownedClasses = new Set([...componentClasses, ...utilityClasses]);
 const safelist = [...ownedClasses].sort();
 
@@ -269,13 +283,19 @@ const prefixed = compile(
 	'prefixed'
 );
 
-/* No CSS import at all — the plugin must carry its own tokens. Guide 14. */
-// const standalone = compile(
-// 	["@import 'tailwindcss' source(none);", "@plugin '" + pluginPath + "';", ...sourceLines].join(
-// 		'\n'
-// 	),
-// 	'standalone'
-// );
+/*
+	No CSS import at all — the plugin must carry its own tokens. Guide 14.
+	`bg-primary` is requested so the theme.extend colours have something to emit.
+*/
+const standalone = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		"@plugin '" + pluginPath + "';",
+		...sourceLines,
+		'@source inline("bg-primary");'
+	].join('\n'),
+	'standalone'
+);
 
 /*
 	Match on whole class TOKENS, not substrings: shared utilities own generic
@@ -493,417 +513,435 @@ for (const [selector, paths] of baseLayers) {
 */
 const prefixedSelectors = rulesBySelector(prefixed, ownsPrefixed);
 const strippedPrefixed = prefixed.replace(/\.px-/g, '.X-');
-const prefixChecks: [string, boolean][] = [
+const prefixChecks: Check[] = [
 	[
 		'renames library classes',
 		prefixedSelectors.size > 0 && [...prefixedSelectors.keys()].every((s) => s.includes('.px-'))
 	],
-	['renames component-local vars', prefixed.includes('--px-button-color')],
+	[
+		'renames component-local vars',
+		sourceHas(/--button-color\s*:/) ? prefixed.includes('--px-button-color') : null
+	],
 	['leaves Tailwind/theme vars alone', !prefixed.includes('--px-color-')],
 	[
 		'leaves consumer state hooks alone',
-		prefixed.includes('.disabled') && !prefixed.includes('.px-disabled')
+		sourceHas(/\.disabled\b/)
+			? prefixed.includes('.disabled') && !prefixed.includes('.px-disabled')
+			: null
 	],
 	// Replace every prefixed class with a marker; if a bare library class name
 	// still appears, something escaped the prefixer.
-	['no unprefixed library class survives', !/\.badge[\s.,:[{]/.test(strippedPrefixed)]
+	['no unprefixed library class survives', !/\.button[\s.,:[{]/.test(strippedPrefixed)]
 ];
 
-// const declaredVars = new Set([...standalone.matchAll(/(--[-\w]+)\s*:/g)].map((m) => m[1]));
-// const referencedVars = new Map<string, boolean>();
-// for (const m of standalone.matchAll(/var\(\s*(--[-\w]+)\s*([,)])/g)) {
-// 	const [, name, next] = m;
-// 	if (!referencedVars.has(name)) referencedVars.set(name, false);
-// 	// `,` means the reference carries a fallback, so it resolves either way.
-// 	if (next === ',') referencedVars.set(name, true);
-// }
+const declaredVars = new Set([...standalone.matchAll(/(--[-\w]+)\s*:/g)].map((m) => m[1]));
+const referencedVars = new Map<string, boolean>();
+for (const m of standalone.matchAll(/var\(\s*(--[-\w]+)\s*([,)])/g)) {
+	const [, name, next] = m;
+	if (!referencedVars.has(name)) referencedVars.set(name, false);
+	// `,` means the reference carries a fallback, so it resolves either way.
+	if (next === ',') referencedVars.set(name, true);
+}
 
-// /*
-// 	A HARD reference — no fallback — to a variable nothing declares is a real
-// 	break: the declaration is simply dropped by the browser and the component
-// 	renders wrong, with nothing in the console.
+/*
+	A HARD reference — no fallback — to a variable nothing declares is a real
+	break: the declaration is simply dropped by the browser and the component
+	renders wrong, with nothing in the console.
 
-// 	Nothing is exempt. If this list is ever non-empty, fix it at source rather
-// 	than adding an allowance here.
-// */
-// const danglingHard = [...referencedVars]
-// 	.filter(([name, hasFallback]) => !hasFallback && !declaredVars.has(name))
-// 	.map(([name]) => name);
+	Nothing is exempt. If this list is ever non-empty, fix it at source rather
+	than adding an allowance here.
+*/
+const danglingHard = [...referencedVars]
+	.filter(([name, hasFallback]) => !hasFallback && !declaredVars.has(name))
+	.map(([name]) => name);
 
-// /*
-// 	Theme switching: every semantic token the components read must resolve under
-// 	each shipped theme — either the theme sets it directly (hand-written themes
-// 	like dracula) or the mode layer derives it from tone steps the theme sets
-// 	(generated themes). The default theme sits at :where(:root), zero
-// 	specificity, so it always underlies whatever a [data-theme] does not set.
-// */
-// const base_ = (await import('../generated/base.js')).default;
-// /*
-// 	Typed explicitly rather than inferred. If generated/themes.ts fails to
-// 	compile for any reason, an inferred `unknown` here produces four further
-// 	errors in this file that all point away from the real cause.
-// */
-// const themeRules: ThemeRules = (await import('../generated/themes.js')).default;
-// const customVariants = (await import('../generated/variants.js')).default;
-// const sourceVariantNames = Object.keys(extractCustomVariants(coreSrc));
-// const themeExtendForTest = (await import('../generated/theme.js')).default;
+/*
+	Theme switching: every semantic token the components read must resolve under
+	each shipped theme — either the theme sets it directly (hand-written themes
+	like dracula) or the mode layer derives it from tone steps the theme sets
+	(generated themes). The default theme sits at :where(:root), zero
+	specificity, so it always underlies whatever a [data-theme] does not set.
+*/
+const base_ = (await import('../generated/base.js')).default;
+/*
+	Typed explicitly rather than inferred. If generated/themes.ts fails to
+	compile for any reason, an inferred `unknown` here produces four further
+	errors in this file that all point away from the real cause.
+*/
+const themeRules: ThemeRules = (await import('../generated/themes.js')).default;
+const customVariants = (await import('../generated/variants.js')).default;
+const sourceVariantNames = Object.keys(extractCustomVariants(coreSrc));
+const themeExtendForTest = (await import('../generated/theme.js')).default;
 
-// /*
-// 	Theme palettes live in generated/themes.ts keyed by theme id; the mode layer
-// 	that maps tone steps onto semantic roles stays in generated/base.ts. Flatten
-// 	both, so resolvability is checked against what a consumer actually receives.
-// */
-// const allThemeSelectors: Record<string, Record<string, string>> = { ...base_ };
-// for (const perTheme of Object.values(themeRules)) {
-// 	for (const [selector, decls] of Object.entries(perTheme)) {
-// 		allThemeSelectors[selector] = { ...(allThemeSelectors[selector] ?? {}), ...decls };
-// 	}
-// }
+/*
+	Theme palettes live in generated/themes.ts keyed by theme id; the mode layer
+	that maps tone steps onto semantic roles stays in generated/base.ts. Flatten
+	both, so resolvability is checked against what a consumer actually receives.
+*/
+const allThemeSelectors: Record<string, Record<string, string>> = { ...base_ };
+for (const perTheme of Object.values(themeRules)) {
+	for (const [selector, decls] of Object.entries(perTheme)) {
+		allThemeSelectors[selector] = { ...(allThemeSelectors[selector] ?? {}), ...decls };
+	}
+}
 
-// // Which semantic tokens the components actually read. Read from the generated
-// // objects rather than from source, so it reflects what shipped.
-// const componentObjects = COMPONENTS.map((c) =>
-// 	fs.readFileSync(path.join(pkgRoot, 'generated/components', c, 'object.ts'), 'utf8')
-// ).join('');
-// const semanticTokens = new Set(
-// 	[...componentObjects.matchAll(/var\(\s*(--theme-color-[-\w]+)/g)].map((m) => m[1])
-// );
+// Which semantic tokens the components actually read. Read from the generated
+// objects rather than from source, so it reflects what shipped.
+const componentObjects = COMPONENTS.map((c) =>
+	fs.readFileSync(path.join(pkgRoot, 'generated/components', c, 'object.ts'), 'utf8')
+).join('');
+const semanticTokens = new Set(
+	[...componentObjects.matchAll(/var\(\s*(--theme-color-[-\w]+)/g)].map((m) => m[1])
+);
 
-// const modeSelector = Object.keys(allThemeSelectors).find(
-// 	(s) => s.includes('[data-theme]') && s.includes(':root')
-// );
-// const modeLayer = modeSelector ? (allThemeSelectors[modeSelector] ?? {}) : {};
-// const defaultSelector = Object.keys(allThemeSelectors).find((s) => s.includes(':where(:root)'));
-// const defaultTokens = new Set(
-// 	Object.keys(defaultSelector ? (allThemeSelectors[defaultSelector] ?? {}) : {})
-// );
+const modeSelector = Object.keys(allThemeSelectors).find(
+	(s) => s.includes('[data-theme]') && s.includes(':root')
+);
+const modeLayer = modeSelector ? (allThemeSelectors[modeSelector] ?? {}) : {};
+const defaultSelector = Object.keys(allThemeSelectors).find((s) => s.includes(':where(:root)'));
+const defaultTokens = new Set(
+	Object.keys(defaultSelector ? (allThemeSelectors[defaultSelector] ?? {}) : {})
+);
 
-// const unresolvableThemes: string[] = [];
-// for (const [selector, decls] of Object.entries(allThemeSelectors)) {
-// 	if (selector === modeSelector || !selector.includes('data-theme')) continue;
-// 	// What this theme defines, plus what it inherits from the default.
-// 	const defines = new Set([...Object.keys(decls), ...defaultTokens]);
-// 	const unresolved = [...semanticTokens].filter((token) => {
-// 		if (defines.has(token)) return false;
-// 		// Not set directly — can the mode layer derive it from tone steps?
-// 		const derived = modeLayer[token];
-// 		if (!derived) return true;
-// 		return ![...derived.matchAll(/var\(\s*(--[-\w]+)/g)]
-// 			.map((m) => m[1])
-// 			.every((tone) => defines.has(tone));
-// 	});
-// 	if (unresolved.length) {
-// 		unresolvableThemes.push(selector.split(',')[0] + ' (' + unresolved.length + ')');
-// 	}
-// }
+const unresolvableThemes: string[] = [];
+for (const [selector, decls] of Object.entries(allThemeSelectors)) {
+	if (selector === modeSelector || !selector.includes('data-theme')) continue;
+	// What this theme defines, plus what it inherits from the default.
+	const defines = new Set([...Object.keys(decls), ...defaultTokens]);
+	const unresolved = [...semanticTokens].filter((token) => {
+		if (defines.has(token)) return false;
+		// Not set directly — can the mode layer derive it from tone steps?
+		const derived = modeLayer[token];
+		if (!derived) return true;
+		return ![...derived.matchAll(/var\(\s*(--[-\w]+)/g)]
+			.map((m) => m[1])
+			.every((tone) => defines.has(tone));
+	});
+	if (unresolved.length) {
+		unresolvableThemes.push(selector.split(',')[0] + ' (' + unresolved.length + ')');
+	}
+}
 
-// const themeSelectorCount = Object.keys(allThemeSelectors).filter((s) =>
-// 	s.includes('data-theme')
-// ).length;
+const themeSelectorCount = Object.keys(allThemeSelectors).filter((s) =>
+	s.includes('data-theme')
+).length;
 
-// const standaloneRules = rulesBySelector(standalone, owns);
-// const standaloneChecks: [string, boolean][] = [
-// 	[
-// 		'emits the same component rules as the plugin-with-context build',
-// 		/*
-// 			Compared only over rules the plugin itself owns, and only unqualified
-// 			ones. The with-context build also carries context-derived rules —
-// 			Tailwind variant classes that appear in no generated bundle — and those
-// 			are the CSS layer's output, not the plugin's, so a standalone build is
-// 			right not to have them.
-// 		*/
-// 		[...cand.keys()]
-// 			.filter((selector) => !/:/.test(selector))
-// 			.every((selector) => standaloneRules.has(selector))
-// 	],
-// 	['no var() reference left dangling', danglingHard.length === 0],
-// 	['carries the theme token chain', standalone.includes('--theme-color-primary-40:')],
-// 	['carries color-scheme for light-dark()', standalone.includes('color-scheme')],
-// 	['registers theme colors as utilities', /\.bg-primary\b|--color-primary\s*:/.test(standalone)],
-// 	[
-// 		'every shipped theme resolves (' + themeSelectorCount + ' selectors)',
-// 		unresolvableThemes.length === 0
-// 	],
-// 	[
-// 		'ships the shared utilities (' + utilityClasses.length + ' classes)',
-// 		/\.surface\s*\{/.test(standalone) && /\.elevation-3\s*\{/.test(standalone)
-// 	],
-// 	[
-// 		'composite utilities carry both halves (surface = bg + text)',
-// 		(() => {
-// 			const rule = /\.surface\s*\{([^}]*)\}/.exec(standalone)?.[1] ?? '';
-// 			return /background-color\s*:/.test(rule) && /(^|[^-])color\s*:/.test(rule);
-// 		})()
-// 	],
-// 	[
-// 		// The ripple class is written by JavaScript (guide 4), so a prefix must
-// 		// NOT rename it — the action would point at a class that no longer exists.
-// 		'JS-coupled class keeps its name under a prefix',
-// 		prefixed.includes('.project-ripple') && !prefixed.includes('.px-project-ripple')
-// 	],
-// 	[
-// 		'registers non-color namespaces too',
-// 		['fontSize', 'transitionDuration', 'transitionTimingFunction', 'screens'].every(
-// 			(key) => key in themeExtendForTest
-// 		)
-// 	]
-// ];
+const standaloneRules = rulesBySelector(standalone, owns);
+const standaloneChecks: Check[] = [
+	[
+		'emits the same component rules as the plugin-with-context build',
+		/*
+			Compared only over rules the plugin itself owns, and only unqualified
+			ones. The with-context build also carries context-derived rules —
+			Tailwind variant classes that appear in no generated bundle — and those
+			are the CSS layer's output, not the plugin's, so a standalone build is
+			right not to have them.
+		*/
+		[...cand.keys()]
+			.filter((selector) => !/:/.test(selector))
+			.every((selector) => standaloneRules.has(selector))
+	],
+	['no var() reference left dangling', danglingHard.length === 0],
+	['carries the theme token chain', standalone.includes('--theme-color-primary-40:')],
+	['carries color-scheme for light-dark()', standalone.includes('color-scheme')],
+	/*
+		The utility only. Matching `--color-primary:` as an alternative let this
+		pass while components' `var(--color-primary)` resolved to nothing; the
+		dangling check above is what covers the variables.
+	*/
+	['registers theme colors as utilities', /\.bg-primary\b/.test(standalone)],
+	[
+		'every shipped theme resolves (' + themeSelectorCount + ' selectors)',
+		unresolvableThemes.length === 0
+	],
+	[
+		'ships the shared utilities (' + utilityClasses.length + ' classes)',
+		utilityClasses.length
+			? utilityClasses.every((c) => new RegExp('\\.' + c + '\\s*\\{').test(standalone))
+			: null
+	],
+	[
+		'composite utilities carry both halves (surface = bg + text)',
+		utilityClasses.includes('surface')
+			? (() => {
+					const rule = /\.surface\s*\{([^}]*)\}/.exec(standalone)?.[1] ?? '';
+					return /background-color\s*:/.test(rule) && /(^|[^-])color\s*:/.test(rule);
+				})()
+			: null
+	],
+	[
+		// The ripple class is written by JavaScript (guide 4), so a prefix must
+		// NOT rename it — the action would point at a class that no longer exists.
+		'JS-coupled class keeps its name under a prefix',
+		sourceHas(/\.project-ripple\b/)
+			? prefixed.includes('.project-ripple') && !prefixed.includes('.px-project-ripple')
+			: null
+	],
+	[
+		'registers non-color namespaces too',
+		['fontSize', 'transitionDuration', 'transitionTimingFunction', 'screens'].every(
+			(key) => key in themeExtendForTest
+		)
+	]
+];
 
-// const themePluginPath = rel(path.join(pkgRoot, 'dist/theme.js'));
-// const themesOf = (css: string): Set<string> =>
-// 	new Set([...css.matchAll(/\[data-theme='([^']+)'\]/g)].map((m) => m[1]));
+const themePluginPath = rel(path.join(pkgRoot, 'dist/theme.js'));
+const themesOf = (css: string): Set<string> =>
+	new Set([...css.matchAll(/\[data-theme='([^']+)'\]/g)].map((m) => m[1]));
 
-// /** Compiles and returns the plugin's error message, or null if it succeeded. */
-// function compileExpectingError(input: string, label: string): string | null {
-// 	try {
-// 		compile(input, label);
-// 		return null;
-// 	} catch (error) {
-// 		return /test: [^\n│]*/.exec(String((error as Error).message))?.[0]?.trim() ?? 'unknown error';
-// 	}
-// }
+/** Compiles and returns the plugin's error message, or null if it succeeded. */
+function compileExpectingError(input: string, label: string): string | null {
+	try {
+		compile(input, label);
+		return null;
+	} catch (error) {
+		return /test: [^\n│]*/.exec(String((error as Error).message))?.[0]?.trim() ?? 'unknown error';
+	}
+}
 
-// const selected = compile(
-// 	["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}' { themes: dracula; }`].join(
-// 		'\n'
-// 	),
-// 	'themes-selected'
-// );
-// const selectedThemes = themesOf(selected);
+const selected = compile(
+	["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}' { themes: dracula; }`].join(
+		'\n'
+	),
+	'themes-selected'
+);
+const selectedThemes = themesOf(selected);
 
-// const generated = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${pluginPath}' { themes: dracula; }`,
-// 		`@plugin '${themePluginPath}' {`,
-// 		'\tname: brand;',
-// 		'\tseed-primary: #0956AA;',
-// 		'\tvariant: monochrome;',
-// 		'\tdefault: true;',
-// 		// A hand-declared role, to prove it beats the generated one.
-// 		'\t--theme-color-primary-40: #ff00ff;',
-// 		'}',
-// 		`@plugin '${themePluginPath}' {`,
-// 		'\tname: nightfall;',
-// 		'\t--theme-color-primary: #8be9fd;',
-// 		'\tcolor-scheme: dark;',
-// 		'}'
-// 	].join('\n'),
-// 	'themes-custom'
-// );
-// const brandRule = /\[data-theme='brand'\]\s*\{([^}]*)\}/.exec(generated)?.[1] ?? '';
+const generated = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${pluginPath}' { themes: dracula; }`,
+		`@plugin '${themePluginPath}' {`,
+		'\tname: brand;',
+		'\tseed-primary: #0956AA;',
+		'\tvariant: monochrome;',
+		'\tdefault: true;',
+		// A hand-declared role, to prove it beats the generated one.
+		'\t--theme-color-primary-40: #ff00ff;',
+		'}',
+		`@plugin '${themePluginPath}' {`,
+		'\tname: nightfall;',
+		'\t--theme-color-primary: #8be9fd;',
+		'\tcolor-scheme: dark;',
+		'}'
+	].join('\n'),
+	'themes-custom'
+);
+const brandRule = /\[data-theme='brand'\]\s*\{([^}]*)\}/.exec(generated)?.[1] ?? '';
 
-// /* Same themes, but the default is declared LAST — the order that used to break. */
-// const defaultDeclaredLast = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${themePluginPath}' { name: other; seed-primary: #b5179e; }`,
-// 		`@plugin '${themePluginPath}' { name: brand; seed-primary: #0956AA; default: true; }`
-// 	].join('\n'),
-// 	'themes-default-last'
-// );
+/* Same themes, but the default is declared LAST — the order that used to break. */
+const defaultDeclaredLast = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${themePluginPath}' { name: other; seed-primary: #b5179e; }`,
+		`@plugin '${themePluginPath}' { name: brand; seed-primary: #0956AA; default: true; }`
+	].join('\n'),
+	'themes-default-last'
+);
 
-// /* Status palettes should follow the seed, not sit at fixed hues. */
-// const statusOf = (css: string, palette: string): string | undefined =>
-// 	new RegExp(`--theme-color-${palette}-40:\\s*(#[0-9a-f]+)`).exec(css)?.[1];
+/* Status palettes should follow the seed, not sit at fixed hues. */
+const statusOf = (css: string, palette: string): string | undefined =>
+	new RegExp(`--theme-color-${palette}-40:\\s*(#[0-9a-f]+)`).exec(css)?.[1];
 
-// const harmonizedBlue = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${themePluginPath}' { name: t; seed-primary: #0956AA; }`
-// 	].join('\n'),
-// 	'themes-harmonized-blue'
-// );
-// const harmonizedGreen = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${themePluginPath}' { name: t; seed-primary: #006c4e; }`
-// 	].join('\n'),
-// 	'themes-harmonized-green'
-// );
-// const unharmonized = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${themePluginPath}' { name: t; seed-primary: #0956AA; harmonize: false; }`
-// 	].join('\n'),
-// 	'themes-unharmonized'
-// );
+const harmonizedBlue = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${themePluginPath}' { name: t; seed-primary: #0956AA; }`
+	].join('\n'),
+	'themes-harmonized-blue'
+);
+const harmonizedGreen = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${themePluginPath}' { name: t; seed-primary: #006c4e; }`
+	].join('\n'),
+	'themes-harmonized-green'
+);
+const unharmonized = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${themePluginPath}' { name: t; seed-primary: #0956AA; harmonize: false; }`
+	].join('\n'),
+	'themes-unharmonized'
+);
 
-// /* Shape tokens: defaults at :root, overridable globally or per theme. */
-// const shaped = compile(
-// 	[
-// 		"@import 'tailwindcss' source(none);",
-// 		`@plugin '${pluginPath}' { --radius-box: 1.5rem; --border-width: 2px; }`,
-// 		`@plugin '${themePluginPath}' { name: sharp; seed-primary: #0956AA; --radius-box: 0; }`
-// 	].join('\n'),
-// 	'shape-tokens'
-// );
-// const sharpRule = /\[data-theme='sharp'\]\s*\{([^}]*)\}/.exec(shaped)?.[1] ?? '';
-// const shapeDefaults = compile(
-// 	["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}';`].join('\n'),
-// 	'shape-defaults'
-// );
+/* Shape tokens: defaults at :root, overridable globally or per theme. */
+const shaped = compile(
+	[
+		"@import 'tailwindcss' source(none);",
+		`@plugin '${pluginPath}' { --radius-box: 1.5rem; --border-width: 2px; }`,
+		`@plugin '${themePluginPath}' { name: sharp; seed-primary: #0956AA; --radius-box: 0; }`
+	].join('\n'),
+	'shape-tokens'
+);
+const sharpRule = /\[data-theme='sharp'\]\s*\{([^}]*)\}/.exec(shaped)?.[1] ?? '';
+const shapeDefaults = compile(
+	["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}';`].join('\n'),
+	'shape-defaults'
+);
 
-// const themeChecks: [string, boolean][] = [
-// 	[
-// 		'shape tokens have defaults at :root',
-// 		[
-// 			'--radius-selector',
-// 			'--radius-field',
-// 			'--radius-box',
-// 			'--size-selector',
-// 			'--size-field',
-// 			'--border-width',
-// 			'--animation-duration',
-// 			'--animation-easing'
-// 		].every((token) => shapeDefaults.includes(token + ':'))
-// 	],
-// 	[
-// 		'shape defaults resolve standalone (fallbacks inlined)',
-// 		/--animation-easing:\s*var\(--ease-standard,\s*[^)]+\)/.test(shapeDefaults)
-// 	],
-// 	[
-// 		'shape tokens are overridable on the plugin',
-// 		/--radius-box:\s*1\.5rem/.test(shaped) && /--border-width:\s*2px/.test(shaped)
-// 	],
-// 	['shape tokens are overridable per theme', /--radius-box:\s*0/.test(sharpRule)],
-// 	/*
-// 		`--radius-button` is settable but deliberately has NO :root default, so
-// 		`var(--radius-button, var(--radius-field))` on `.button` resolves the
-// 		fallback at the element. Giving it a default here would substitute the
-// 		root's `--radius-field` once and stop a theme's override reaching buttons.
-// 	*/
-// 	['--radius-button is settable', shapeTokenNames.includes('--radius-button')],
-// 	[
-// 		'--radius-button has no :root default, so the fallback can fire',
-// 		!/--radius-button:/.test(shapeDefaults)
-// 	],
-// 	[
-// 		'.button resolves its radius through that chain',
-// 		/border-radius:\s*var\(--radius-button,\s*var\(--radius-field\)\)/.test(baseline)
-// 	],
-// 	/*
-// 		Every @custom-variant must be registered. Hand-listing these shipped 1 of 3
-// 		in a real project — two variants were simply missing, and one was used by
-// 		the docs layout. Derived from source now, so the count is checked.
-// 	*/
-// 	[
-// 		'every @custom-variant is registered (' + Object.keys(customVariants).length + ')',
-// 		Object.keys(customVariants).length === sourceVariantNames.length
-// 	],
-// 	[
-// 		'a multi-branch variant keeps every branch',
-// 		Array.isArray(customVariants.collapsed) && customVariants.collapsed.length === 2
-// 	],
-// 	[
-// 		'status palettes harmonize toward the seed',
-// 		statusOf(harmonizedBlue, 'success') !== statusOf(unharmonized, 'success')
-// 	],
-// 	[
-// 		'harmonized status differs between seeds',
-// 		statusOf(harmonizedBlue, 'info') !== statusOf(harmonizedGreen, 'info')
-// 	],
-// 	[
-// 		'harmonize: false leaves the status hues exact',
-// 		statusOf(unharmonized, 'success') === '#006c49'
-// 	],
-// 	[
-// 		'harmonizing keeps success recognisably green',
-// 		/^#0/.test(statusOf(harmonizedBlue, 'success') ?? '')
-// 	],
-// 	['`themes` keeps the requested theme', selectedThemes.has('dracula')],
-// 	[
-// 		'`themes` drops the rest',
-// 		!selectedThemes.has('catppuccin-mocha') && !selectedThemes.has('gaziter')
-// 	],
-// 	['`default` is always kept, since others inherit from it', selectedThemes.has('default')],
-// 	[
-// 		'seed generates a full tone scale',
-// 		(brandRule.match(/--theme-color-primary-\d+:/g) ?? []).length === 30
-// 	],
-// 	[
-// 		'variant changes the generated palette',
-// 		/--theme-color-secondary-40:\s*#5e5e5e/.test(brandRule)
-// 	],
-// 	[
-// 		'hand-declared roles beat the generated ones',
-// 		/--theme-color-primary-40:\s*#ff00ff/.test(brandRule)
-// 	],
-// 	['role-only themes need no seed', themesOf(generated).has('nightfall')],
-// 	[
-// 		'`default: true` applies where no theme is set',
-// 		/:root:not\(\[data-theme\]\)\s*\{[^}]*--theme-color-primary-40:\s*#ff00ff/.test(generated)
-// 	],
-// 	/*
-// 		Regression: the default used to emit at plain `:root`, specificity (0,1,0)
-// 		— the same as `[data-theme='x']` — so whichever came last won. A default
-// 		theme declared after another theme made that theme impossible to apply.
-// 		Shipped themes masked it, because `[data-theme='dracula'].dark` is (0,2,0).
-// 	*/
-// 	[
-// 		'a default declared last cannot outrank other themes',
-// 		!/(^|[^)])\s:root\s*\{/m.test(defaultDeclaredLast) &&
-// 			/:root:not\(\[data-theme\]\)/.test(defaultDeclaredLast)
-// 	]
-// ];
+const themeChecks: Check[] = [
+	[
+		'shape tokens have defaults at :root',
+		[
+			'--radius-selector',
+			'--radius-field',
+			'--radius-box',
+			'--size-selector',
+			'--size-field',
+			'--border-width',
+			'--animation-duration',
+			'--animation-easing'
+		].every((token) => shapeDefaults.includes(token + ':'))
+	],
+	[
+		'shape defaults resolve standalone (fallbacks inlined)',
+		/--animation-easing:\s*var\(--ease-standard,\s*[^)]+\)/.test(shapeDefaults)
+	],
+	[
+		'shape tokens are overridable on the plugin',
+		/--radius-box:\s*1\.5rem/.test(shaped) && /--border-width:\s*2px/.test(shaped)
+	],
+	['shape tokens are overridable per theme', /--radius-box:\s*0/.test(sharpRule)],
+	/*
+		`--radius-button` is settable but deliberately has NO :root default, so
+		`var(--radius-button, var(--radius-field))` on `.button` resolves the
+		fallback at the element. Giving it a default here would substitute the
+		root's `--radius-field` once and stop a theme's override reaching buttons.
+	*/
+	['--radius-button is settable', shapeTokenNames.includes('--radius-button')],
+	[
+		'--radius-button has no :root default, so the fallback can fire',
+		!/--radius-button:/.test(shapeDefaults)
+	],
+	[
+		'.button resolves its radius through that chain',
+		/border-radius:\s*var\(--radius-button,\s*var\(--radius-field\)\)/.test(baseline)
+	],
+	/*
+		Every @custom-variant must be registered. Hand-listing these shipped 1 of 3
+		in a real project — two variants were simply missing, and one was used by
+		the docs layout. Derived from source now, so the count is checked.
+	*/
+	[
+		'every @custom-variant is registered (' + Object.keys(customVariants).length + ')',
+		Object.keys(customVariants).length === sourceVariantNames.length
+	],
+	[
+		'a multi-branch variant keeps every branch',
+		sourceVariantNames.includes('collapsed')
+			? Array.isArray(customVariants.collapsed) && customVariants.collapsed.length === 2
+			: null
+	],
+	[
+		'status palettes harmonize toward the seed',
+		statusOf(harmonizedBlue, 'success') !== statusOf(unharmonized, 'success')
+	],
+	[
+		'harmonized status differs between seeds',
+		statusOf(harmonizedBlue, 'info') !== statusOf(harmonizedGreen, 'info')
+	],
+	[
+		'harmonize: false leaves the status hues exact',
+		statusOf(unharmonized, 'success') === '#006c49'
+	],
+	[
+		'harmonizing keeps success recognisably green',
+		/^#0/.test(statusOf(harmonizedBlue, 'success') ?? '')
+	],
+	['`themes` keeps the requested theme', selectedThemes.has('dracula')],
+	[
+		'`themes` drops the rest',
+		!selectedThemes.has('catppuccin-mocha') && !selectedThemes.has('gaziter')
+	],
+	['`default` is always kept, since others inherit from it', selectedThemes.has('default')],
+	[
+		'seed generates a full tone scale',
+		(brandRule.match(/--theme-color-primary-\d+:/g) ?? []).length === 30
+	],
+	[
+		'variant changes the generated palette',
+		/--theme-color-secondary-40:\s*#5e5e5e/.test(brandRule)
+	],
+	[
+		'hand-declared roles beat the generated ones',
+		/--theme-color-primary-40:\s*#ff00ff/.test(brandRule)
+	],
+	['role-only themes need no seed', themesOf(generated).has('nightfall')],
+	[
+		'`default: true` applies where no theme is set',
+		/:root:not\(\[data-theme\]\)\s*\{[^}]*--theme-color-primary-40:\s*#ff00ff/.test(generated)
+	],
+	/*
+		Regression: the default used to emit at plain `:root`, specificity (0,1,0)
+		— the same as `[data-theme='x']` — so whichever came last won. A default
+		theme declared after another theme made that theme impossible to apply.
+		Shipped themes masked it, because `[data-theme='dracula'].dark` is (0,2,0).
+	*/
+	[
+		'a default declared last cannot outrank other themes',
+		!/(^|[^)])\s:root\s*\{/m.test(defaultDeclaredLast) &&
+			/:root:not\(\[data-theme\]\)/.test(defaultDeclaredLast)
+	]
+];
 
-// /*
-// 	Every option must FAIL LOUDLY on bad input. Tailwind ignores an option a
-// 	plugin does not read, so an unrejected typo is indistinguishable from a
-// 	setting that quietly did nothing — which is the failure mode this whole
-// 	project tries hardest to avoid.
-// */
-// const themeErrors: [string, string | null][] = [
-// 	[
-// 		'unknown theme',
-// 		compileExpectingError(
-// 			["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}' { themes: nope; }`].join(
-// 				'\n'
-// 			),
-// 			'themes-err-unknown'
-// 		)
-// 	],
-// 	[
-// 		'unknown variant',
-// 		compileExpectingError(
-// 			[
-// 				"@import 'tailwindcss' source(none);",
-// 				`@plugin '${themePluginPath}' { name: x; seed-primary: #0956AA; variant: sparkly; }`
-// 			].join('\n'),
-// 			'themes-err-variant'
-// 		)
-// 	],
-// 	[
-// 		'a misspelled shape token',
-// 		compileExpectingError(
-// 			[
-// 				"@import 'tailwindcss' source(none);",
-// 				`@plugin '${pluginPath}' { --radius-feild: 0; }`
-// 			].join('\n'),
-// 			'shape-err-typo'
-// 		)
-// 	],
-// 	[
-// 		'a colour role set on the wrong plugin',
-// 		compileExpectingError(
-// 			[
-// 				"@import 'tailwindcss' source(none);",
-// 				`@plugin '${pluginPath}' { --theme-color-primary: red; }`
-// 			].join('\n'),
-// 			'shape-err-misplaced'
-// 		)
-// 	],
-// 	[
-// 		'theme with no name',
-// 		compileExpectingError(
-// 			[
-// 				"@import 'tailwindcss' source(none);",
-// 				`@plugin '${themePluginPath}' { seed-primary: #0956AA; }`
-// 			].join('\n'),
-// 			'themes-err-name'
-// 		)
-// 	]
-// ];
+/*
+	Every option must FAIL LOUDLY on bad input. Tailwind ignores an option a
+	plugin does not read, so an unrejected typo is indistinguishable from a
+	setting that quietly did nothing — which is the failure mode this whole
+	project tries hardest to avoid.
+*/
+const themeErrors: [string, string | null][] = [
+	[
+		'unknown theme',
+		compileExpectingError(
+			["@import 'tailwindcss' source(none);", `@plugin '${pluginPath}' { themes: nope; }`].join(
+				'\n'
+			),
+			'themes-err-unknown'
+		)
+	],
+	[
+		'unknown variant',
+		compileExpectingError(
+			[
+				"@import 'tailwindcss' source(none);",
+				`@plugin '${themePluginPath}' { name: x; seed-primary: #0956AA; variant: sparkly; }`
+			].join('\n'),
+			'themes-err-variant'
+		)
+	],
+	[
+		'a misspelled shape token',
+		compileExpectingError(
+			[
+				"@import 'tailwindcss' source(none);",
+				`@plugin '${pluginPath}' { --radius-feild: 0; }`
+			].join('\n'),
+			'shape-err-typo'
+		)
+	],
+	[
+		'a colour role set on the wrong plugin',
+		compileExpectingError(
+			[
+				"@import 'tailwindcss' source(none);",
+				`@plugin '${pluginPath}' { --theme-color-primary: red; }`
+			].join('\n'),
+			'shape-err-misplaced'
+		)
+	],
+	[
+		'theme with no name',
+		compileExpectingError(
+			[
+				"@import 'tailwindcss' source(none);",
+				`@plugin '${themePluginPath}' { seed-primary: #0956AA; }`
+			].join('\n'),
+			'themes-err-name'
+		)
+	]
+];
 
 /*
 	`@utility tooltip-gap-*` and friends never survive the compile the way named
@@ -914,98 +952,110 @@ const prefixChecks: [string, boolean][] = [
 	The candidate list deliberately covers all four shapes: an integer step, a
 	fractional step, a bracketed literal, and a bracketed var().
 */
-// const functionalCandidates = [
-// 	'tooltip-gap-2',
-// 	'tooltip-gap-1.5',
-// 	'tooltip-gap-[3px]',
-// 	'tooltip-gap-[var(--x)]',
-// 	'tooltip-tail-size-3',
-// 	'tooltip-tail-width-4'
-// ];
-// const functionalSource = functionalCandidates.map((c) => '@source inline("' + c + '");');
+const functionalCandidates = [
+	'tooltip-gap-2',
+	'tooltip-gap-1.5',
+	'tooltip-gap-[3px]',
+	'tooltip-gap-[var(--x)]',
+	'tooltip-tail-size-3',
+	'tooltip-tail-width-4'
+];
+const functionalSource = functionalCandidates.map((c) => '@source inline("' + c + '");');
 
-// const functionalBaseline = compile(
-// 	[
-// 		contextImport,
-// 		...COMPONENTS.map((c) => "@import '" + rel(path.join(componentsDir, c + '.css')) + "';"),
-// 		...functionalSource
-// 	].join('\n'),
-// 	'functional-baseline'
-// );
-// const functionalPlugin = compile(
-// 	[contextImport, "@plugin '" + pluginPath + "';", ...functionalSource].join('\n'),
-// 	'functional-plugin'
-// );
-// const functionalPrefixed = compile(
-// 	[
-// 		contextImport,
-// 		"@plugin '" + pluginPath + "' {",
-// 		'\tprefix: px-;',
-// 		'}',
-// 		...functionalCandidates.map((c) => '@source inline("px-' + c + '");')
-// 	].join('\n'),
-// 	'functional-prefixed'
-// );
+const functionalBaseline = compile(
+	[
+		contextImport,
+		...COMPONENTS.map((c) => "@import '" + rel(path.join(componentsDir, c + '.css')) + "';"),
+		...functionalSource
+	].join('\n'),
+	'functional-baseline'
+);
+const functionalPlugin = compile(
+	[contextImport, "@plugin '" + pluginPath + "';", ...functionalSource].join('\n'),
+	'functional-plugin'
+);
+const functionalPrefixed = compile(
+	[
+		contextImport,
+		"@plugin '" + pluginPath + "' {",
+		'\tprefix: px-;',
+		'}',
+		...functionalCandidates.map((c) => '@source inline("px-' + c + '");')
+	].join('\n'),
+	'functional-prefixed'
+);
 
-// /** The declarations a candidate's own rule emits, or null when it is missing. */
-// function functionalRule(css: string, candidate: string): string[] | null {
-// 	const rules = rulesBySelector(css, () => true);
-// 	for (const [selector, declarations] of rules) {
-// 		// Selectors arrive escaped (`.tooltip-gap-\[3px\]`); compare on the
-// 		// unescaped text so the candidate can be written the way an author would.
-// 		if (selector.replace(/\\/g, '') === '.' + candidate) return declarations;
-// 	}
-// 	return null;
-// }
+/** The declarations a candidate's own rule emits, or null when it is missing. */
+function functionalRule(css: string, candidate: string): string[] | null {
+	const rules = rulesBySelector(css, () => true);
+	for (const [selector, declarations] of rules) {
+		// Selectors arrive escaped (`.tooltip-gap-\[3px\]`); compare on the
+		// unescaped text so the candidate can be written the way an author would.
+		if (selector.replace(/\\/g, '') === '.' + candidate) return declarations;
+	}
+	return null;
+}
 
-// const functionalChecks: [string, boolean][] = [
-// 	[
-// 		'every candidate resolves in the CSS-first build',
-// 		functionalCandidates.every((c) => functionalRule(functionalBaseline, c) !== null)
-// 	],
-// 	[
-// 		'every candidate resolves through the plugin',
-// 		functionalCandidates.every((c) => functionalRule(functionalPlugin, c) !== null)
-// 	],
-// 	[
-// 		'declarations are identical in both paths',
-// 		functionalCandidates.every((c) => {
-// 			const a = functionalRule(functionalBaseline, c);
-// 			const b = functionalRule(functionalPlugin, c);
-// 			return a !== null && b !== null && a.join(';') === b.join(';');
-// 		})
-// 	],
-// 	[
-// 		// Mapping back to calc(var(--spacing) * n) rather than the resolved rem is
-// 		// what keeps the two paths byte-identical AND keeps working if a consumer
-// 		// redefines --spacing.
-// 		'a spacing step keeps the var(--spacing) link',
-// 		(functionalRule(functionalPlugin, 'tooltip-gap-2') ?? []).some((d) =>
-// 			d.includes('calc(var(--spacing) * 2)')
-// 		)
-// 	],
-// 	[
-// 		'an arbitrary value passes through verbatim',
-// 		(functionalRule(functionalPlugin, 'tooltip-gap-[3px]') ?? []).some((d) => d.includes('3px'))
-// 	],
-// 	[
-// 		// `type: ['any']`, not `['length']` — the latter rejects var().
-// 		'an arbitrary var() is accepted, which [length] would reject',
-// 		(functionalRule(functionalPlugin, 'tooltip-gap-[var(--x)]') ?? []).some((d) =>
-// 			d.includes('var(--x)')
-// 		)
-// 	],
-// 	[
-// 		'a prefix renames both the class and the property it sets',
-// 		(functionalRule(functionalPrefixed, 'px-tooltip-gap-2') ?? []).some((d) =>
-// 			d.startsWith('--px-tooltip-gap:')
-// 		)
-// 	],
-// 	[
-// 		'an unprefixed candidate is dead under a prefix',
-// 		functionalRule(functionalPrefixed, 'tooltip-gap-2') === null
-// 	]
-// ];
+// The candidates are tooltip-shaped; until those utilities exist, every check skips.
+const hasFunctionalFixtures = sourceHas(/@utility\s+tooltip-gap-\*/);
+const functionalChecks: Check[] = (
+	[
+		[
+			'every candidate resolves in the CSS-first build',
+			functionalCandidates.every((c) => functionalRule(functionalBaseline, c) !== null)
+		],
+		[
+			'every candidate resolves through the plugin',
+			functionalCandidates.every((c) => functionalRule(functionalPlugin, c) !== null)
+		],
+		[
+			'declarations are identical in both paths',
+			functionalCandidates.every((c) => {
+				const a = functionalRule(functionalBaseline, c);
+				const b = functionalRule(functionalPlugin, c);
+				return a !== null && b !== null && a.join(';') === b.join(';');
+			})
+		],
+		[
+			// Mapping back to calc(var(--spacing) * n) rather than the resolved rem is
+			// what keeps the two paths byte-identical AND keeps working if a consumer
+			// redefines --spacing.
+			'a spacing step keeps the var(--spacing) link',
+			(functionalRule(functionalPlugin, 'tooltip-gap-2') ?? []).some((d) =>
+				d.includes('calc(var(--spacing) * 2)')
+			)
+		],
+		[
+			'an arbitrary value passes through verbatim',
+			(functionalRule(functionalPlugin, 'tooltip-gap-[3px]') ?? []).some((d) => d.includes('3px'))
+		],
+		[
+			// `type: ['any']`, not `['length']` — the latter rejects var().
+			'an arbitrary var() is accepted, which [length] would reject',
+			(functionalRule(functionalPlugin, 'tooltip-gap-[var(--x)]') ?? []).some((d) =>
+				d.includes('var(--x)')
+			)
+		],
+		[
+			'a prefix renames both the class and the property it sets',
+			(functionalRule(functionalPrefixed, 'px-tooltip-gap-2') ?? []).some((d) =>
+				d.startsWith('--px-tooltip-gap:')
+			)
+		],
+		[
+			'an unprefixed candidate is dead under a prefix',
+			functionalRule(functionalPrefixed, 'tooltip-gap-2') === null
+		]
+	] as Check[]
+).map(([label, ok]) => [label, hasFunctionalFixtures ? ok : null]);
+
+/** Prints a section's checks; `null` means the fixture is absent, so skip. */
+function report(section: string, checks: Check[]): void {
+	for (const [label, ok] of checks) {
+		console.log('  ' + (ok === null ? 'skip' : ok ? 'ok  ' : 'FAIL') + ' ' + label);
+		if (ok === false) failures.push(section + ': ' + label);
+	}
+}
 
 console.log('selectors compared: ' + base.size + ' (CSS-first) vs ' + cand.size + ' (plugin)\n');
 
@@ -1044,41 +1094,29 @@ else {
 	if (layerMoves.length > 4) console.log('  ... and ' + (layerMoves.length - 4) + ' more');
 }
 
-// console.log('\nstandalone (@plugin only, no @import of the design system)');
-// console.log('  selectors: ' + standaloneRules.size + ' | variables declared: ' + declaredVars.size);
-// for (const [label, ok] of standaloneChecks) {
-// 	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' ' + label);
-// 	if (!ok) failures.push('standalone: ' + label);
-// }
-// if (danglingHard.length) {
-// 	for (const v of danglingHard.slice(0, 10)) console.log('    dangling: ' + v);
-// }
-// if (unresolvableThemes.length) {
-// 	for (const t of unresolvableThemes) console.log('    unresolved: ' + t);
-// }
-
-console.log('\nprefix');
-for (const [label, ok] of prefixChecks) {
-	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' ' + label);
-	if (!ok) failures.push('prefix: ' + label);
+console.log('\nstandalone (@plugin only, no @import of the design system)');
+console.log('  selectors: ' + standaloneRules.size + ' | variables declared: ' + declaredVars.size);
+report('standalone', standaloneChecks);
+if (danglingHard.length) {
+	for (const v of danglingHard.slice(0, 10)) console.log('    dangling: ' + v);
+}
+if (unresolvableThemes.length) {
+	for (const t of unresolvableThemes) console.log('    unresolved: ' + t);
 }
 
-// console.log('\nthemes');
-// for (const [label, ok] of themeChecks) {
-// 	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' ' + label);
-// 	if (!ok) failures.push('themes: ' + label);
-// }
-// for (const [label, message] of themeErrors) {
-// 	const ok = message !== null;
-// 	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' rejects ' + label);
-// 	if (!ok) failures.push('themes: ' + label + ' was not rejected');
-// }
+console.log('\nprefix');
+report('prefix', prefixChecks);
 
-// console.log('\nfunctional utilities');
-// for (const [label, ok] of functionalChecks) {
-// 	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' ' + label);
-// 	if (!ok) failures.push('functional: ' + label);
-// }
+console.log('\nthemes');
+report('themes', themeChecks);
+for (const [label, message] of themeErrors) {
+	const ok = message !== null;
+	console.log('  ' + (ok ? 'ok  ' : 'FAIL') + ' rejects ' + label);
+	if (!ok) failures.push('themes: ' + label + ' was not rejected');
+}
+
+console.log('\nfunctional utilities');
+report('functional', functionalChecks);
 
 // KEEP_TMP=1 leaves the compiles behind for inspection (guide 11, step 7).
 if (!process.env.KEEP_TMP) fs.rmSync(tmpDir, { recursive: true, force: true });

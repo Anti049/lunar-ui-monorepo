@@ -13,6 +13,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
 const scratch = path.join(os.tmpdir(), 'lunar-ui-rehearsal');
@@ -75,7 +76,11 @@ for (const pkg of PACKAGES) {
 		from. `npm pack` does not reliably rewrite it, so check here.
 	*/
 	const manifest = JSON.parse(
-		execFileSync('tar', ['-xzOf', tarballs[pkg], 'package/package.json'], { encoding: 'utf8' })
+		// A bare filename from packDir: GNU tar (Git Bash) reads `C:\…` as host:path.
+		execFileSync('tar', ['-xzOf', file, 'package/package.json'], {
+			cwd: packDir,
+			encoding: 'utf8'
+		})
 	) as Record<string, Record<string, string> | undefined>;
 	for (const field of ['dependencies', 'peerDependencies']) {
 		const entries = Object.entries(manifest[field] ?? {});
@@ -127,6 +132,20 @@ function compile(name: string, css: string): string {
 	return fs.readFileSync(outFile, 'utf8');
 }
 
+/*
+	Probe with the names the PACKED build says it owns, not a hardcoded list:
+	a hardcoded name goes stale the moment a component is added or renamed,
+	and then fails in a way that looks like a packaging bug.
+*/
+const generated = path.join(app, 'node_modules/@anti049/lunar-ui/dist/generated');
+const load = async <T>(file: string): Promise<T> =>
+	((await import(pathToFileURL(path.join(generated, file)).href)) as { default: T }).default;
+const registry = await load<{ classes: string[] }>('registry.js');
+const functionalUtilities =
+	await load<{ name: string; spacing: boolean; arbitrary: boolean }[]>('functional.js');
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const emits = (css: string, cls: string) => new RegExp(`\\.${escapeRe(cls)}(?![-\\w])`).test(css);
+
 // ---------------------------------------------------------------------------
 // 3. Standalone: the plugin must carry its own tokens.
 // ---------------------------------------------------------------------------
@@ -136,12 +155,14 @@ const solo = compile(
 	[
 		"@import 'tailwindcss' source(none);",
 		"@plugin '@anti049/lunar-ui';",
-		"@source inline('badge');",
-		"@source inline('surface');"
+		...registry.classes.map((c) => `@source inline('${c}');`)
 	].join('\n')
 );
-check('components emit with no CSS import', /\.badge\b/.test(solo));
-check('shared utilities emit', /\.surface\b/.test(solo));
+const missing = registry.classes.filter((c) => !emits(solo, c));
+check(
+	`every registered class emits with no CSS import (${missing.slice(0, 5).join(', ') || `${registry.classes.length} classes`})`,
+	registry.classes.length > 0 && missing.length === 0
+);
 
 const declared = new Set([...solo.matchAll(/(--[-\w]+)\s*:/g)].map((m) => m[1]));
 const dangling = [
@@ -162,10 +183,10 @@ const prefixed = compile(
 	[
 		"@import 'tailwindcss' source(none);",
 		"@plugin '@anti049/lunar-ui' { prefix: px-; --radius-field: 0.75rem; }",
-		"@source inline('px-badge');"
+		`@source inline('px-${registry.classes[0]}');`
 	].join('\n')
 );
-check('prefix renames owned classes', /\.px-badge\b/.test(prefixed));
+check('prefix renames owned classes', emits(prefixed, `px-${registry.classes[0]}`));
 check('prefix leaves Tailwind namespaces alone', !prefixed.includes('--px-color-'));
 check('shape override reaches :root', /--radius-field:\s*0\.75rem/.test(prefixed));
 
@@ -197,9 +218,11 @@ const themed = compile(
 		'}'
 	].join('\n')
 );
+// Distinct names: the scale is emitted once per selector the theme lands on
+// (`[data-theme='brand']` and, as the default, `:root:not([data-theme])`).
 check(
 	'a seed generates a full tone scale',
-	(themed.match(/--theme-color-primary-\d+:/g) ?? []).length === 30
+	new Set(themed.match(/--theme-color-primary-\d+(?=:)/g)).size === 30
 );
 check(
 	'hand-declared roles beat generated ones',
@@ -211,20 +234,33 @@ check('the default never emits at bare :root', /:root:not\(\[data-theme\]\)/.tes
 // 6. Functional utilities.
 // ---------------------------------------------------------------------------
 console.log('\nfunctional utilities');
-const functional = compile(
-	'functional',
-	[
-		"@import 'tailwindcss' source(none);",
-		"@plugin '@anti049/lunar-ui';",
-		"@source inline('tooltip-gap-2');",
-		"@source inline('tooltip-gap-[var(--x)]');"
-	].join('\n')
-);
-check(
-	'a spacing step keeps the var(--spacing) link',
-	functional.includes('calc(var(--spacing) * 2)')
-);
-check('an arbitrary var() is accepted', functional.includes('var(--x)'));
+const spacingUtility = functionalUtilities.find((u) => u.spacing);
+const arbitraryUtility = functionalUtilities.find((u) => u.arbitrary);
+if (!spacingUtility && !arbitraryUtility) {
+	console.log('  skip no functional utilities in this build');
+} else {
+	const functional = compile(
+		'functional',
+		[
+			"@import 'tailwindcss' source(none);",
+			"@plugin '@anti049/lunar-ui';",
+			spacingUtility && `@source inline('${spacingUtility.name}-2');`,
+			arbitraryUtility && `@source inline('${arbitraryUtility.name}-[var(--x)]');`
+		]
+			.filter(Boolean)
+			.join('\n')
+	);
+	if (spacingUtility)
+		check(
+			`a spacing step keeps the var(--spacing) link (${spacingUtility.name}-2)`,
+			functional.includes('calc(var(--spacing) * 2)')
+		);
+	if (arbitraryUtility)
+		check(
+			`an arbitrary var() is accepted (${arbitraryUtility.name}-[var(--x)])`,
+			functional.includes('var(--x)')
+		);
+}
 
 // ---------------------------------------------------------------------------
 // 7. The JavaScript surface, under plain node.
@@ -241,10 +277,11 @@ const esm = (specifier: string): string =>
 		app
 	).trim();
 
+// `LunarUI` is the Vue binding's `app.use()` plugin object, not a component.
 const names = (keys: string) =>
 	keys
 		.split(',')
-		.filter((k) => /^[A-Z]/.test(k))
+		.filter((k) => /^[A-Z]/.test(k) && k !== 'LunarUI')
 		.sort()
 		.join(',');
 
@@ -254,7 +291,8 @@ const svelteBarrel = fs.readFileSync(
 	path.join(app, 'node_modules/@anti049/lunar-ui-svelte/dist/index.js'),
 	'utf8'
 );
-const svelte = [...svelteBarrel.matchAll(/default as (\w+)/g)]
+// Anchored to the export statement: the barrel's comments mention `default as X`.
+const svelte = [...svelteBarrel.matchAll(/^export\s*\{\s*default as (\w+)\s*\}/gm)]
 	.map((m) => m[1])
 	.sort()
 	.join(',');

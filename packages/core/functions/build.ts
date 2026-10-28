@@ -375,7 +375,13 @@ function writeGenerated(file: string, value: unknown, type: string, importType?:
 fs.rmSync(generatedDir, { recursive: true, force: true });
 fs.mkdirSync(path.join(generatedDir, 'components'), { recursive: true });
 
-for (const [name, bundle] of Object.entries(components) as [string, Bundle][]) {
+for (const [name, raw] of Object.entries(components) as [string, Bundle][]) {
+	/*
+		Theme-namespace tokens (`--color-primary`) are left to Tailwind to emit,
+		and a plugin-only build never emits them: theme.extend registers the
+		utilities, not the variables. The inlined fallback is what resolves them.
+	*/
+	const bundle = inlineThemeFallbacks(raw, themeValues);
 	const dir = path.join(generatedDir, 'components', name);
 	fs.mkdirSync(dir, { recursive: true });
 

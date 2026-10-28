@@ -138,12 +138,16 @@ const projectName: PluginWithOptions<PluginOptions> = plugin.withOptions(
 				api.addVariant(`${prefix}${name}`, selector as string | string[] | CssInJs);
 			}
 
+			// Bundles hand over raw styles; the prefix is applied here, once, so
+			// no generated registrar can forget it.
 			const addUtilities = (utilities: Record<string, StyleObject>): void => {
-				api.addUtilities(utilities as unknown as Record<string, CssInJs>);
+				api.addUtilities(
+					addPrefix(utilities, prefix, registry) as unknown as Record<string, CssInJs>
+				);
 			};
 
 			const addBundleBase = (styles: StyleObject): void => {
-				if (Object.keys(styles).length) api.addBase(asCssInJs(styles));
+				if (Object.keys(styles).length) api.addBase(asCssInJs(addPrefix(styles, prefix, registry)));
 			};
 
 			for (const [name, register] of Object.entries(bundles)) {
