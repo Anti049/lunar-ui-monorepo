@@ -1,0 +1,3 @@
+@import 'tailwindcss';
+@plugin '@anti049/lunar-ui';
+@source '../lib/**/*.{ts,tsx}';

@@ -3,16 +3,67 @@
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
+	"description": "React components for the test design system.",
+	"keywords": [
+		"react",
+		"tailwindcss",
+		"ui",
+		"components",
+		"design-system"
+	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/lunar-ui.git",
+		"url": "git+https://github.com/Anti049/test.git",
 		"directory": "packages/react"
 	},
-	"files": ["dist", "README.md"],
+	"scripts": {
+		"dev": "vite",
+		"build": "tsup && node -e \"require('node:fs').copyFileSync('src/lib/styles.css','dist/styles.css')\" && publint",
+		"check": "tsc --noEmit"
+	},
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
-		".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		},
+		"./styles.css": "./dist/styles.css",
 		"./package.json": "./package.json"
 	},
-	"publishConfig": { "access": "public", "provenance": true },
-	"peerDependencies": { "tailwindcss": "^4.3.3" }
+	"sideEffects": [
+		"**/*.css"
+	],
+	"peerDependencies": {
+		"@anti049/lunar-ui": "^0.0.0",
+		"react": "^18 || ^19",
+		"react-dom": "^18 || ^19"
+	},
+	"dependencies": {
+		"clsx": "^2.1.1",
+		"tailwind-merge": "^3.7.0"
+	},
+	"devDependencies": {
+		"@anti049/lunar-ui": "workspace:*",
+		"@tailwindcss/vite": "^4.3.3",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.1.1",
+		"publint": "^0.3.24",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
+		"tailwindcss": "^4.3.3",
+		"tsup": "^8.5.1",
+		"typescript": "~6.0.3",
+		"vite": "^8.3.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
 }

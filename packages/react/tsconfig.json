@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		// React 17+ JSX transform: no `import React` needed in every file.
+		"jsx": "react-jsx",
+		// The base config sets "types": [], so DOM-adjacent types are named here.
+		"types": ["vite/client"],
+		// `tsup` owns emission; this config is a checker only.
+		"noEmit": true
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "tsup.config.ts"]
+}
