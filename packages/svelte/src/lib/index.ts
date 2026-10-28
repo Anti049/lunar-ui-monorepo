@@ -9,7 +9,8 @@ import './styles.css';
 export { default as Button } from './components/Button.svelte';
 
 // Behaviour.
-export { ripple } from './actions/ripple.js';
+export { ripple, rippleRoot, initRipple } from './actions/ripple.js';
+export type { RippleOptions, RippleDelegateOptions } from './actions/ripple.js';
 
 // The class-merge helper, exported so consumers composing on top of a component
 // resolve conflicts the same way the component does.

@@ -3,6 +3,7 @@
 */
 @layer button.l1.l2.l3 {
 	.button {
+		@apply interactive;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;

@@ -91,6 +91,20 @@ const componentFiles = fs
 
 const componentNames = componentFiles.map((f) => path.basename(f, '.css'));
 
+/*
+	The shared utilities (`surface`, `elevation-3`, the ripple) ship as ONE
+	bundle, `foundations`: they share no naming prefix, so there is nothing to
+	split them by. context.css already imports them, so they are in the compile
+	for components to @apply — but nothing is emitted until their classes are
+	safelisted and owned, below.
+*/
+const FOUNDATIONS = 'foundations';
+const utilityFiles = fs
+	.readdirSync(path.join(coreSrc, 'utilities'))
+	.filter((f) => f.endsWith('.css') && f !== '_index.css')
+	.sort()
+	.map((f) => path.join(coreSrc, 'utilities', f));
+
 // ---------------------------------------------------------------------------
 // 2. Build the safelist, and record which bundle owns each class.
 // ---------------------------------------------------------------------------
@@ -109,6 +123,15 @@ for (const file of componentFiles) {
 	const css = fs.readFileSync(file, 'utf8');
 	for (const className of extractClasses(css, name)) {
 		classOwners.set(className, name);
+		allClasses.push(className);
+	}
+}
+
+// Not namespaced, hence `null`. A component that defines the same class wins.
+for (const file of utilityFiles) {
+	for (const className of extractClasses(fs.readFileSync(file, 'utf8'), null)) {
+		if (classOwners.has(className)) continue;
+		classOwners.set(className, FOUNDATIONS);
 		allClasses.push(className);
 	}
 }
@@ -162,9 +185,12 @@ const registryClasses = [...classOwners.keys()].sort();
 	from source instead, and re-registered at runtime by index.ts through
 	matchUtilities.
 */
-const FUNCTIONAL = componentFiles.flatMap((file) =>
-	extractFunctional(fs.readFileSync(file, 'utf8'), path.basename(file, '.css'))
-);
+const FUNCTIONAL = [
+	...componentFiles.flatMap((file) =>
+		extractFunctional(fs.readFileSync(file, 'utf8'), path.basename(file, '.css'))
+	),
+	...utilityFiles.flatMap((file) => extractFunctional(fs.readFileSync(file, 'utf8'), FOUNDATIONS))
+];
 
 /*
 	`@custom-variant` blocks. Hand-listing these once shipped one of three, and
