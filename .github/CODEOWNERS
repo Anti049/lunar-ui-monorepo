@@ -1,0 +1,5 @@
+/packages/core/    @Anti049/design-system
+/packages/svelte/  @Anti049/svelte
+/packages/react/   @Anti049/react
+/packages/vue/     @Anti049/vue
+/.github/          @Anti049/maintainers

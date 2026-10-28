@@ -11,3 +11,6 @@ dist/
 
 # Static assets served verbatim.
 packages/docs/static/
+
+# Obsidian's own config and plugins. Obsidian rewrites these on every launch.
+.obsidian/

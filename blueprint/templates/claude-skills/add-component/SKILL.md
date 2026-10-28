@@ -37,7 +37,7 @@ Add the import to `src/components/_index.css`.
 ## 3. Build and confirm
 
 ```sh
-bun run --filter '@anti049/test' build
+bun run --filter '@anti049/lunar-ui' build
 ```
 
 The component must appear in the bundle list. If it does not, it produced no

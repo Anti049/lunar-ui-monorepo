@@ -64,9 +64,9 @@ shorter than `packages/test` and the tree stays readable.
 	"type": "module",
 	"workspaces": ["packages/*"],
 	"scripts": {
-		"dev": "bun run --filter '@anti049/test-docs' dev",
+		"dev": "bun run --filter '@anti049/lunar-ui-docs' dev",
 		"build": "bun run --filter '*' build",
-		"build:packages": "bun run --filter '@anti049/test' --filter '@anti049/test-svelte' --filter '@anti049/test-react' --filter '@anti049/test-vue' build",
+		"build:packages": "bun run --filter '@anti049/lunar-ui' --filter '@anti049/lunar-ui-svelte' --filter '@anti049/lunar-ui-react' --filter '@anti049/lunar-ui-vue' build",
 		"check": "bun run --filter '*' check",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
@@ -271,7 +271,7 @@ so the annotation is below it rather than inside:
 
 	WHY IT LOADS THE PLUGIN FROM SOURCE
 	`@plugin './packages/core/index.ts'` — a relative path to the TypeScript
-	entry, NOT the package specifier '@anti049/test'. Tailwind loads
+	entry, NOT the package specifier '@anti049/lunar-ui'. Tailwind loads
 	plugins through jiti, which reads TypeScript directly, so formatting never
 	depends on the package having been compiled. Point this at the built
 	`dist/` and every `prettier --check` fails on a clean checkout.
@@ -474,13 +474,13 @@ other four follow:
 
 ```json
 {
-	"name": "@anti049/test",
+	"name": "@anti049/lunar-ui",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/core"
 	},
 	"files": ["dist", "README.md"],
@@ -587,9 +587,9 @@ until [guide 2](02-plugin.md) step 11 creates it.
 	"type": "module",
 	"workspaces": ["packages/*"],
 	"scripts": {
-		"dev": "bun run --filter '@anti049/test-docs' dev",
+		"dev": "bun run --filter '@anti049/lunar-ui-docs' dev",
 		"build": "bun run --filter '*' build",
-		"build:packages": "bun run --filter '@anti049/test' --filter '@anti049/test-svelte' --filter '@anti049/test-react' --filter '@anti049/test-vue' build",
+		"build:packages": "bun run --filter '@anti049/lunar-ui' --filter '@anti049/lunar-ui-svelte' --filter '@anti049/lunar-ui-react' --filter '@anti049/lunar-ui-vue' build",
 		"check": "bun run --filter '*' check",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
@@ -847,7 +847,7 @@ export default defineConfig(
 
 ```json
 {
-	"name": "@anti049/test",
+	"name": "@anti049/lunar-ui",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -855,7 +855,7 @@ export default defineConfig(
 	"keywords": ["tailwindcss", "tailwind-plugin", "design-system", "css"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/core"
 	},
 	"files": ["dist", "README.md"],
@@ -949,7 +949,7 @@ is not a function or its return value is not iterable`.** The framework parser
 
 > **You add a dev alias so the docs site resolves the plugin from source** → you
 > expect only the bare specifier to be rewritten → Vite's `resolve.alias` matches
-> by **prefix**, so `@anti049/test/theme` becomes `…/index.ts/theme` and
+> by **prefix**, so `@anti049/lunar-ui/theme` becomes `…/index.ts/theme` and
 > every subpath export silently breaks.
 >
 > **How to tell:** `Cannot find module …/index.ts/theme`.

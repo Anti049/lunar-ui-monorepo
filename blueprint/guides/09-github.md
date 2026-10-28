@@ -181,9 +181,9 @@ jobs:
       - run: bun install --frozen-lockfile
 
       # The plugin must be built before the site, which imports its registry.
-      - run: bun run --filter '@anti049/test' build
+      - run: bun run --filter '@anti049/lunar-ui' build
 
-      - run: bun run --filter '@anti049/test-docs' build
+      - run: bun run --filter '@anti049/lunar-ui-docs' build
         env:
           # Pages serves from /<repo>/, and SvelteKit needs to know at BUILD
           # time. Read in vite.config.ts - see guide 7.
@@ -399,10 +399,10 @@ body:
       # so because nobody can tell whether the problem is in the plugin or in a
       # binding.
       options:
-        - '@anti049/test (the plugin)'
-        - '@anti049/test-svelte'
-        - '@anti049/test-react'
-        - '@anti049/test-vue'
+        - '@anti049/lunar-ui (the plugin)'
+        - '@anti049/lunar-ui-svelte'
+        - '@anti049/lunar-ui-react'
+        - '@anti049/lunar-ui-vue'
         - 'Not sure'
     validations: { required: true }
 
@@ -572,7 +572,7 @@ things that live in the web UI get written down.
 ## Setup
 
     bun install
-    bun run --filter '@anti049/test' build   # generated/ must exist first
+    bun run --filter '@anti049/lunar-ui' build   # generated/ must exist first
     bun run check
 
     git config commit.template .gitmessage
@@ -711,7 +711,7 @@ npx --yes linkinator@6 $url --recurse --skip "^(?!$([regex]::Escape($url)))"   #
 ```powershell
 @'
 ---
-'@anti049/test': patch
+'@anti049/lunar-ui': patch
 ---
 
 Sandbox release.
@@ -727,7 +727,7 @@ publish step** with an npm authentication error — proof that nothing publishes
 without the real token, and that the job does try.
 
 ```powershell
-npm view '@anti049/test' 2>&1 | Select-String E404   # still unpublished
+npm view '@anti049/lunar-ui' 2>&1 | Select-String E404   # still unpublished
 ```
 
 **4. Clean up.** Deleting a repository needs an extra token scope:

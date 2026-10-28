@@ -9,7 +9,7 @@ This file is a summary.
   bindings are `packages/{svelte,react,vue}`; the site is `packages/docs`.
 - `packages/core/generated/` and every `dist/` are build output. Never edit them.
 - The published artifact is a compiled plugin, not CSS. Consumers write
-  `@plugin '@anti049/test'`, never `@import`.
+  `@plugin '@anti049/lunar-ui'`, never `@import`.
 
 ## Authoring components
 

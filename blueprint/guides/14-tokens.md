@@ -5,7 +5,7 @@ useless on its own unless it also carries the **tokens** the components
 reference — and carrying them correctly is subtler than copying a block of
 custom properties into `addBase`.
 
-This guide builds the layer that makes `@plugin '@anti049/test'` work with
+This guide builds the layer that makes `@plugin '@anti049/lunar-ui'` work with
 no CSS import at all, and that turns your design tokens into real Tailwind
 utilities (`text-body-medium`, `duration-medium-2`, `bg-primary`) rather than
 bare custom properties.
@@ -20,7 +20,7 @@ A consumer writes this and nothing else — **their** stylesheet, not yours:
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 ```
 
 For that to render, every `var()` in every compiled component must resolve. Your
@@ -1456,7 +1456,7 @@ var(--radius-field)` at the root resolves once, against the root's value, so
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 git add -A
 git commit -m "feat(core): ship design tokens so the plugin works standalone"
 ```
@@ -1479,7 +1479,7 @@ Rebuild the plugin skeleton from
 ```powershell
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source inline('badge');
 @source inline('button');
 @source inline('text-body-medium');
@@ -1504,7 +1504,7 @@ node $cli -i src/solo.css -o out/solo.css
 # the theme config rather than addBase (step 6).
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @theme { --duration-medium-2: 999ms; }
 @source inline('duration-medium-2');
 '@ | Set-Content src/override.css

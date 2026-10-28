@@ -1,0 +1,19 @@
+name: Changeset
+on:
+  pull_request:
+    # labeled/unlabeled so adding `skip-changeset` re-runs the check.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # Dependabot never writes changesets, and the version PR consumes them.
+    if: >-
+      !contains(github.event.pull_request.labels.*.name, 'skip-changeset') &&
+      github.actor != 'dependabot[bot]' &&
+      !startsWith(github.head_ref, 'changeset-release/')
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bunx changeset status --since=origin/${{ github.base_ref }}

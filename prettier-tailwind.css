@@ -9,7 +9,7 @@
 
 	WHY IT LOADS THE PLUGIN FROM SOURCE
 	`@plugin './packages/core/index.ts'` — a relative path to the TypeScript
-	entry, NOT the package specifier '@anti049/test'. Tailwind loads
+	entry, NOT the package specifier '@anti049/lunar-ui'. Tailwind loads
 	plugins through jiti, which reads TypeScript directly, so formatting never
 	depends on the package having been compiled. Point this at the built
 	`dist/` and every `prettier --check` fails on a clean checkout.

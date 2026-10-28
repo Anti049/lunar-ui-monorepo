@@ -328,7 +328,7 @@ body cannot express one — Tailwind rejects `seeds: { primary: … }` with
 **consumer** writes, not a file of yours:
 
 ```css
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: brand;
 	seed-primary: #0956aa;
 	seed-secondary: #52e2ac;
@@ -574,12 +574,12 @@ so several themes cannot be nested under one call. Two themes is two calls, in
 the **consumer’s** stylesheet:
 
 ```css
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: brand;
 	seed-primary: #0956aa;
 	default: true;
 }
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: brand-dark;
 	seed-primary: #0956aa;
 	color-scheme: dark;
@@ -805,7 +805,7 @@ exists, with `.js` missing from the end.
 **`packages/docs/src/app.css`** — the theme block guide 7 left as a comment:
 
 ```css
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: brand;
 	seed-primary: #0956aa;
 }
@@ -2212,7 +2212,7 @@ A **dependency**, not a devDependency: `theme.ts` imports it and it ships.
 **Verify it, do not assume it.** The build succeeds either way:
 
 ```powershell
-bun run --filter '@anti049/test' build
+bun run --filter '@anti049/lunar-ui' build
 Get-ChildItem packages/core/dist -Recurse -Filter *.js |
 	Select-Object -ExpandProperty FullName
 ```
@@ -2221,7 +2221,7 @@ You should see `dist/theme.js`, `dist/themes.js`,
 `dist/functions/buildTheme.js`, `dist/functions/generateTheme.js` and
 `dist/functions/addPrefix.js`. A missing one means an entry point is not in
 `include`, and the symptom a consumer gets is
-`Cannot find module '@anti049/test/theme'`.
+`Cannot find module '@anti049/lunar-ui/theme'`.
 
 Forget this and `bun run build` succeeds, `dist/theme.js` does not exist, and
 the failure surfaces as an unresolved `exports` entry in a consumer's app.
@@ -2288,7 +2288,7 @@ the failure surfaces as an unresolved `exports` entry in a consumer's app.
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 git add -A
 git commit -m "feat(core): generate themes from seed colours"
 ```
@@ -2312,10 +2312,10 @@ Rebuild the plugin skeleton from
 ```powershell
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /* Generated, with one tone pinned by hand. */
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: brand;
 	seed-primary: #0956aa;
 	seed-secondary: #52e2ac;
@@ -2324,7 +2324,7 @@ Rebuild the plugin skeleton from
 }
 
 /* Roles declared outright, no seed. */
-@plugin '@anti049/test/theme' {
+@plugin '@anti049/lunar-ui/theme' {
 	name: nightfall;
 	--theme-color-primary: #8be9fd;
 	color-scheme: dark;
@@ -2343,7 +2343,7 @@ The errors must reach the consumer's build, named:
 ```powershell
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test/theme' { name: t; seed-primary: #000; success: #0f0; }
+@plugin '@anti049/lunar-ui/theme' { name: t; seed-primary: #000; success: #0f0; }
 '@ | Set-Content src/bad.css
 node $cli -i src/bad.css -o out/bad.css; $LASTEXITCODE   # non-zero; suggests `seed-success`
 ```
@@ -2353,7 +2353,7 @@ gone** — the data-only entry may not depend on it:
 
 ```powershell
 Remove-Item -Recurse -Force node_modules/@material
-node --input-type=module -e "import('@anti049/test/themes').then(m => console.log(m.THEME_NAMES.join(', ')))"
+node --input-type=module -e "import('@anti049/lunar-ui/themes').then(m => console.log(m.THEME_NAMES.join(', ')))"
 # → every shipped theme name
 
 Pop-Location

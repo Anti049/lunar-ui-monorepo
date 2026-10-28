@@ -10,19 +10,19 @@ To put this into a GitHub repository, see [IMPORT.md](IMPORT.md).
 
 ## At a glance
 
-| Milestone | Issues | Theme |
-| --- | --- | --- |
-| [v0.1.0 — Repository foundation](#v010-repository-foundation) | 6 | Monorepo skeleton, shared tooling, CI that can fail. Nothing is published yet. |
-| [v0.2.0 — Plugin core](#v020-plugin-core) | 12 | CSS compiles to a working Tailwind plugin with prefix, include/exclude and the differential test harness proving the two paths agree. |
-| [v0.3.0 — First component set](#v030-first-component-set) | 6 | Button, badge, input, checkbox, select, tooltip. Enough surface to prove the authoring conventions hold. |
-| [v0.4.0 — Svelte bindings](#v040-svelte-bindings) | 3 | First framework package, published alongside the plugin. Establishes the binding contract the other two follow. |
-| [v0.5.0 — React bindings](#v050-react-bindings) | 2 | React package with ESM and CJS output, matching Svelte's component inventory exactly. |
-| [v0.6.0 — Vue bindings](#v060-vue-bindings) | 3 | Vue package completing the three-framework set, with an export-parity test across all three. |
-| [v0.7.0 — Documentation site](#v070-documentation-site) | 4 | Public site with per-component pages, live previews for all three frameworks, and install instructions. |
-| [v0.8.0 — Theming](#v080-theming) | 4 | Custom themes from a seed colour, per-role seeds, shape tokens, and a theme generator in the docs. |
-| [v0.9.0 — Accessibility and hardening](#v090-accessibility-and-hardening) | 4 | Keyboard and screen-reader audit, contrast enforcement, visual regression coverage, migration guides. |
-| [v1.0.0 — Stable API](#v100-stable-api) | 3 | Plugin option surface and class names frozen. Semantic versioning applies in earnest from here. |
-| [Backlog](#backlog) | 3 | Accepted but unscheduled. Pull into a version milestone when it becomes next. |
+| Milestone                                                                 | Issues | Theme                                                                                                                                 |
+| ------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| [v0.1.0 — Repository foundation](#v010-repository-foundation)             | 6      | Monorepo skeleton, shared tooling, CI that can fail. Nothing is published yet.                                                        |
+| [v0.2.0 — Plugin core](#v020-plugin-core)                                 | 12     | CSS compiles to a working Tailwind plugin with prefix, include/exclude and the differential test harness proving the two paths agree. |
+| [v0.3.0 — First component set](#v030-first-component-set)                 | 6      | Button, badge, input, checkbox, select, tooltip. Enough surface to prove the authoring conventions hold.                              |
+| [v0.4.0 — Svelte bindings](#v040-svelte-bindings)                         | 3      | First framework package, published alongside the plugin. Establishes the binding contract the other two follow.                       |
+| [v0.5.0 — React bindings](#v050-react-bindings)                           | 2      | React package with ESM and CJS output, matching Svelte's component inventory exactly.                                                 |
+| [v0.6.0 — Vue bindings](#v060-vue-bindings)                               | 3      | Vue package completing the three-framework set, with an export-parity test across all three.                                          |
+| [v0.7.0 — Documentation site](#v070-documentation-site)                   | 4      | Public site with per-component pages, live previews for all three frameworks, and install instructions.                               |
+| [v0.8.0 — Theming](#v080-theming)                                         | 4      | Custom themes from a seed colour, per-role seeds, shape tokens, and a theme generator in the docs.                                    |
+| [v0.9.0 — Accessibility and hardening](#v090-accessibility-and-hardening) | 4      | Keyboard and screen-reader audit, contrast enforcement, visual regression coverage, migration guides.                                 |
+| [v1.0.0 — Stable API](#v100-stable-api)                                   | 3      | Plugin option surface and class names frozen. Semantic versioning applies in earnest from here.                                       |
+| [Backlog](#backlog)                                                       | 3      | Accepted but unscheduled. Pull into a version milestone when it becomes next.                                                         |
 
 ---
 
@@ -30,14 +30,14 @@ To put this into a GitHub repository, see [IMPORT.md](IMPORT.md).
 
 > Monorepo skeleton, shared tooling, CI that can fail. Nothing is published yet.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Scaffold the monorepo workspaces** | area:repo, type:chore |
-| 2 | **Shared TypeScript, ESLint and Prettier config** | area:repo, type:chore |
-| 3 | **Add LICENSE and license fields** | area:repo, type:chore, good first issue |
-| 4 | **CI workflow: lint, typecheck, test, build** | area:ci, type:chore |
-| 5 | **Conventional Commits enforcement** | area:repo, type:chore |
-| 6 | **Changesets setup with fixed version group** | area:repo, type:chore |
+| #   | Issue                                             | Labels                                  |
+| --- | ------------------------------------------------- | --------------------------------------- |
+| 1   | **Scaffold the monorepo workspaces**              | area:repo, type:chore                   |
+| 2   | **Shared TypeScript, ESLint and Prettier config** | area:repo, type:chore                   |
+| 3   | **Add LICENSE and license fields**                | area:repo, type:chore, good first issue |
+| 4   | **CI workflow: lint, typecheck, test, build**     | area:ci, type:chore                     |
+| 5   | **Conventional Commits enforcement**              | area:repo, type:chore                   |
+| 6   | **Changesets setup with fixed version group**     | area:repo, type:chore                   |
 
 ### Scaffold the monorepo workspaces
 
@@ -46,6 +46,7 @@ To put this into a GitHub repository, see [IMPORT.md](IMPORT.md).
 Create `packages/{core,svelte,react,vue,docs}` with workspace manifests.
 
 **Done when**
+
 - `bun install` resolves every workspace
 - each package has `name`, `version`, `license`, `repository.directory`
 - `packages/core` takes the bare package name; bindings are suffixed
@@ -59,6 +60,7 @@ See `blueprint/guides/01-monorepo.md`.
 One `tsconfig.base.json`, one flat `eslint.config.js`, one `.prettierrc`.
 
 **Done when**
+
 - `"types": []` is set in the base tsconfig so packages opt in explicitly
 - `eslint-config-prettier` is last in the chain
 - `bun run lint` passes on the empty tree
@@ -72,6 +74,7 @@ One `tsconfig.base.json`, one flat `eslint.config.js`, one `.prettierrc`.
 A package published without a license shows as UNLICENSED and cannot legally be used. `publint` does not check this.
 
 **Done when**
+
 - `LICENSE` exists at the repository root
 - every publishable `package.json` has a matching `license` field
 
@@ -80,6 +83,7 @@ A package published without a license shows as UNLICENSED and cannot legally be 
 `area:ci` `type:chore`
 
 **Done when**
+
 - runs on `pull_request` and push to `main`
 - `fetch-depth: 0` so commitlint can compare against the base branch
 - `bun install --frozen-lockfile`
@@ -94,6 +98,7 @@ A package published without a license shows as UNLICENSED and cannot legally be 
 commitlint + husky locally, commitlint in CI, VS Code settings and recommended extensions for authoring.
 
 **Done when**
+
 - `commitlint.config.js` pins the scope list to the package names
 - `.husky/commit-msg` runs commitlint
 - `.vscode/extensions.json` recommends the Conventional Commits extension
@@ -104,6 +109,7 @@ commitlint + husky locally, commitlint in CI, VS Code settings and recommended e
 `area:repo` `type:chore`
 
 **Done when**
+
 - the four publishable packages are in one `fixed` group
 - the docs site is in `ignore`
 - `changelog-github` is configured with the repo slug
@@ -117,20 +123,20 @@ commitlint + husky locally, commitlint in CI, VS Code settings and recommended e
 
 > CSS compiles to a working Tailwind plugin with prefix, include/exclude and the differential test harness proving the two paths agree.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Decide and document the component authoring convention** | area:core, type:docs, priority:high |
-| 2 | **Source layout: base, utilities, components, themes** | area:core, type:chore |
-| 3 | **Build: compile CSS and partition into per-component bundles** | area:core, type:feat, priority:high |
-| 4 | **Pin the compile to source(none)** | area:core, type:fix, priority:high |
-| 5 | **Extractors for classes, variants and theme namespaces** | area:core, type:feat |
-| 6 | **Detect and yield Tailwind built-in collisions** | area:core, type:fix |
-| 7 | **Prefix option with an allowlist prefixer** | area:core, type:feat |
-| 8 | **include / exclude options** | area:core, type:feat |
-| 9 | **Unconditional channel for runtime-written classes** | area:core, type:fix, priority:high |
-| 10 | **Differential test harness** | area:core, type:test, priority:high |
-| 11 | **Unit tests for the pure build functions** | area:core, type:test |
-| 12 | **publint and are-the-types-wrong in check** | area:core, type:test |
+| #   | Issue                                                           | Labels                              |
+| --- | --------------------------------------------------------------- | ----------------------------------- |
+| 1   | **Decide and document the component authoring convention**      | area:core, type:docs, priority:high |
+| 2   | **Source layout: base, utilities, components, themes**          | area:core, type:chore               |
+| 3   | **Build: compile CSS and partition into per-component bundles** | area:core, type:feat, priority:high |
+| 4   | **Pin the compile to source(none)**                             | area:core, type:fix, priority:high  |
+| 5   | **Extractors for classes, variants and theme namespaces**       | area:core, type:feat                |
+| 6   | **Detect and yield Tailwind built-in collisions**               | area:core, type:fix                 |
+| 7   | **Prefix option with an allowlist prefixer**                    | area:core, type:feat                |
+| 8   | **include / exclude options**                                   | area:core, type:feat                |
+| 9   | **Unconditional channel for runtime-written classes**           | area:core, type:fix, priority:high  |
+| 10  | **Differential test harness**                                   | area:core, type:test, priority:high |
+| 11  | **Unit tests for the pure build functions**                     | area:core, type:test                |
+| 12  | **publint and are-the-types-wrong in check**                    | area:core, type:test                |
 
 ### Decide and document the component authoring convention
 
@@ -139,6 +145,7 @@ commitlint + husky locally, commitlint in CI, VS Code settings and recommended e
 Plain class selectors or `@utility` blocks, and the cascade layer shape. Both decisions are near-irreversible once components exist.
 
 **Done when**
+
 - the choice and its reasoning are in `docs/decisions/`
 - `AGENTS.md` states the rule in the imperative
 - one worked example exists in `src/components/`
@@ -152,6 +159,7 @@ See `blueprint/guides/00-prerequisites.md` for the trade-offs.
 Split `src/` by what a file emits, not by topic.
 
 **Done when**
+
 - `base/` declares tokens and no classes
 - `utilities/` holds non-namespaced utilities
 - each directory has an `_index.css` barrel
@@ -164,6 +172,7 @@ Split `src/` by what a file emits, not by topic.
 Differential compile — context alone, then context plus components — keeping the difference and attributing each rule to a bundle.
 
 **Done when**
+
 - attribution works by layer name, then class name, then classes inside an unknown at-rule
 - unattributed rules are reported, not silently dropped
 - output is written as `.ts` so `tsc` checks the runtime against the real shape
@@ -177,6 +186,7 @@ Differential compile — context alone, then context plus components — keeping
 Without `source(none)`, Tailwind scans the repository for class candidates, so a class name written in a comment becomes a real utility baked into the shipped bundle.
 
 **Done when**
+
 - `context.css` uses `@import 'tailwindcss' source(none);`
 - candidates come only from the extracted class list via `@source inline()`
 - a test asserts the bundle contains no selector the source did not define
@@ -188,6 +198,7 @@ Without `source(none)`, Tailwind scans the repository for class candidates, so a
 Derive every registry from the CSS. Hand-maintained lists have shipped incomplete more than once — in one case 1 of 3 custom variants, while the docs site used one of the missing two.
 
 **Done when**
+
 - class names, custom variants and theme namespaces are all extracted
 - no hand-written list of names remains in the build
 
@@ -198,6 +209,7 @@ Derive every registry from the CSS. Hand-maintained lists have shipped incomplet
 Names like `collapse`, `table` and `select-text` are Tailwind's own. Claiming them pulls Tailwind's rules into your bundle.
 
 **Done when**
+
 - a bare-Tailwind probe compile identifies collisions
 - colliding names are left unclaimed and reported at build time
 - the probe uses bare Tailwind, not the full context, or it reports dozens of false positives
@@ -209,6 +221,7 @@ Names like `collapse`, `table` and `select-text` are Tailwind's own. Claiming th
 Rename only what the build extracted, rather than renaming everything and maintaining a denylist of exceptions.
 
 **Done when**
+
 - `@plugin '…' { prefix: x- }` renames every owned class and component-local custom property
 - Tailwind theme variables, consumer state hooks and third-party classes are untouched
 - the selector scanner survives quoted strings, comments, attribute selectors and escapes
@@ -218,6 +231,7 @@ Rename only what the build extracted, rather than renaming everything and mainta
 `area:core` `type:feat`
 
 **Done when**
+
 - `include` ships only the named bundles; `exclude` ships all but
 - an unknown bundle name throws and lists the valid ones
 - a compile with `include` of one component emits only that component's rules
@@ -229,6 +243,7 @@ Rename only what the build extracted, rather than renaming everything and mainta
 A class created by JavaScript at runtime — a ripple element, a portal root — has no candidate in any scanned file, so `addUtilities` never emits its rule and the feature is silently dead for plugin consumers.
 
 **Done when**
+
 - such classes are routed through `addBase`
 - the list lives in one named constant
 - a test asserts the rule appears with no candidate present
@@ -240,6 +255,7 @@ A class created by JavaScript at runtime — a ripple element, a portal root —
 Compile every component twice from the same source — via `@import` and via `@plugin` — and compare selector by selector.
 
 **Done when**
+
 - benign differences are reported separately from real ones
 - mutating a value in the generated output makes it fail, naming the selector and property
 - standalone resolution, prefixing and themes are asserted in the same pass
@@ -251,6 +267,7 @@ Compile every component twice from the same source — via `@import` and via `@p
 The differential harness reports symptoms; these name the cause.
 
 **Done when**
+
 - `partition`, `addPrefix`, `nestCssLayers` and the extractors each have tests
 - kebab conversion covers vendor prefixes and array values
 - seeded mutations are each caught by name
@@ -260,6 +277,7 @@ The differential harness reports symptoms; these name the cause.
 `area:core` `type:test`
 
 **Done when**
+
 - `check` runs build, typecheck, tests and `publint` in that order
 - `attw` passes for both module systems
 
@@ -269,14 +287,14 @@ The differential harness reports symptoms; these name the cause.
 
 > Button, badge, input, checkbox, select, tooltip. Enough surface to prove the authoring conventions hold.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Button component** | area:core, type:feat, component |
-| 2 | **Badge component** | area:core, type:feat, component |
-| 3 | **Input and select components** | area:core, type:feat, component |
-| 4 | **Checkbox component** | area:core, type:feat, component |
-| 5 | **Tooltip component** | area:core, type:feat, component |
-| 6 | **Shape tokens wired into components** | area:core, type:feat |
+| #   | Issue                                  | Labels                          |
+| --- | -------------------------------------- | ------------------------------- |
+| 1   | **Button component**                   | area:core, type:feat, component |
+| 2   | **Badge component**                    | area:core, type:feat, component |
+| 3   | **Input and select components**        | area:core, type:feat, component |
+| 4   | **Checkbox component**                 | area:core, type:feat, component |
+| 5   | **Tooltip component**                  | area:core, type:feat, component |
+| 6   | **Shape tokens wired into components** | area:core, type:feat            |
 
 ### Button component
 
@@ -285,6 +303,7 @@ The differential harness reports symptoms; these name the cause.
 Variants (filled, tonal, outlined, text), sizes, colours, icon and shape modifiers, disabled and selected states.
 
 **Done when**
+
 - authored in the agreed layer scheme
 - corner radius reads a token chain, not a hardcoded utility
 - a Tailwind utility on the element still overrides the component
@@ -302,6 +321,7 @@ Variants, colours, sizes, and a dot form when empty.
 Field-shaped controls sharing a radius and size token with the button.
 
 **Done when**
+
 - both read `--radius-field` rather than a hardcoded value
 - disabled, invalid and focus states are covered
 
@@ -318,6 +338,7 @@ Checked, unchecked and indeterminate, with a visible focus ring that survives a 
 CSS-only, four placements, three alignments, with a tail.
 
 **Done when**
+
 - gap, tail size and tail width are settable per element
 - the tail and bubble share colour and transform so they move as one shape
 
@@ -328,6 +349,7 @@ CSS-only, four placements, three alignments, with a tail.
 `--radius-selector`, `--radius-field`, `--radius-box`, `--size-selector`, `--size-field`, `--border-width`, `--animation-duration`, `--animation-easing`.
 
 **Done when**
+
 - tokens are settable on the plugin and per theme
 - at least one component reads each
 - a derived token (`--radius-button`) falls back at the point of use, not via a `:root` default — a `:root` default bakes in the root's value and a theme override never reaches it
@@ -338,11 +360,11 @@ CSS-only, four placements, three alignments, with a tail.
 
 > First framework package, published alongside the plugin. Establishes the binding contract the other two follow.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Svelte package scaffold and build** | area:svelte, type:chore |
-| 2 | **Svelte components for the v0.3.0 set** | area:svelte, type:feat |
-| 3 | **cn() helper and class-merge semantics** | area:svelte, type:feat |
+| #   | Issue                                     | Labels                  |
+| --- | ----------------------------------------- | ----------------------- |
+| 1   | **Svelte package scaffold and build**     | area:svelte, type:chore |
+| 2   | **Svelte components for the v0.3.0 set**  | area:svelte, type:feat  |
+| 3   | **cn() helper and class-merge semantics** | area:svelte, type:feat  |
 
 ### Svelte package scaffold and build
 
@@ -351,6 +373,7 @@ CSS-only, four placements, three alignments, with a tail.
 `svelte-package`, exports map with the `svelte` condition, `publint` in the build.
 
 **Done when**
+
 - `styles.css` is exported and registers the package's `.svelte` files as a Tailwind `@source`
 - the plugin is a peer dependency, not a dependency
 
@@ -363,6 +386,7 @@ Step-by-step setup: `blueprint/guides/04-svelte.md`.
 Thin wrappers: markup, keyboard behaviour, ARIA. No visual logic.
 
 **Done when**
+
 - every component forwards rest props and merges an incoming `class`
 - no component sets an inline style for anything a class could do
 
@@ -382,16 +406,17 @@ Step-by-step setup: `blueprint/guides/03-bindings.md`.
 
 > React package with ESM and CJS output, matching Svelte's component inventory exactly.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **React package scaffold and dual ESM/CJS build** | area:react, type:chore |
-| 2 | **React components matching the Svelte inventory** | area:react, type:feat |
+| #   | Issue                                              | Labels                 |
+| --- | -------------------------------------------------- | ---------------------- |
+| 1   | **React package scaffold and dual ESM/CJS build**  | area:react, type:chore |
+| 2   | **React components matching the Svelte inventory** | area:react, type:feat  |
 
 ### React package scaffold and dual ESM/CJS build
 
 `area:react` `type:chore`
 
 **Done when**
+
 - `tsup` emits ESM, CJS and types
 - `sideEffects` lists CSS files rather than blanket-false
 - peer range covers React 18 and 19
@@ -413,11 +438,11 @@ Step-by-step setup: `blueprint/guides/05-react.md`.
 
 > Vue package completing the three-framework set, with an export-parity test across all three.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Vue package scaffold and build** | area:vue, type:chore |
-| 2 | **Vue components matching the inventory** | area:vue, type:feat |
-| 3 | **Export-parity test across the three bindings** | area:repo, type:test |
+| #   | Issue                                            | Labels               |
+| --- | ------------------------------------------------ | -------------------- |
+| 1   | **Vue package scaffold and build**               | area:vue, type:chore |
+| 2   | **Vue components matching the inventory**        | area:vue, type:feat  |
+| 3   | **Export-parity test across the three bindings** | area:repo, type:test |
 
 ### Vue package scaffold and build
 
@@ -449,18 +474,19 @@ Step-by-step setup: `blueprint/guides/03-bindings.md`.
 
 > Public site with per-component pages, live previews for all three frameworks, and install instructions.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Docs site scaffold with live plugin reload** | area:docs, type:chore, priority:high |
-| 2 | **Component pages with live previews for all three frameworks** | area:docs, type:feat |
-| 3 | **Installation and setup pages per framework** | area:docs, type:docs |
-| 4 | **Deploy the docs site** | area:ci, area:docs, type:chore |
+| #   | Issue                                                           | Labels                               |
+| --- | --------------------------------------------------------------- | ------------------------------------ |
+| 1   | **Docs site scaffold with live plugin reload**                  | area:docs, type:chore, priority:high |
+| 2   | **Component pages with live previews for all three frameworks** | area:docs, type:feat                 |
+| 3   | **Installation and setup pages per framework**                  | area:docs, type:docs                 |
+| 4   | **Deploy the docs site**                                        | area:ci, area:docs, type:chore       |
 
 ### Docs site scaffold with live plugin reload
 
 `area:docs` `type:chore` `priority:high`
 
 **Done when**
+
 - editing `packages/core/src/**` updates the browser without a restart
 - the watcher runs as a child of the dev server, because `bun run --filter` serialises on workspace dependencies
 - dev aliases use anchored patterns, one per exported subpath
@@ -473,6 +499,7 @@ Step-by-step setup: `blueprint/guides/07-docs.md`.
 `area:docs` `type:feat`
 
 **Done when**
+
 - each page shows a rendered preview and copyable markup per framework
 - the class table is generated from the plugin's registry, not hand-written
 
@@ -481,6 +508,7 @@ Step-by-step setup: `blueprint/guides/07-docs.md`.
 `area:docs` `type:docs`
 
 **Done when**
+
 - each names the required `styles.css` import and says it is not optional
 - the Tailwind version requirement is stated
 - a copy-paste block gets someone to a styled button
@@ -492,6 +520,7 @@ Step-by-step setup: `blueprint/guides/07-docs.md`.
 GitHub Pages or Cloudflare Workers.
 
 **Done when**
+
 - deploys on push to `main`
 - if Pages, the base path is configured and every internal link uses `resolve()`
 - the deploy is gated on the release job so the site never documents an unpublished version
@@ -502,12 +531,12 @@ GitHub Pages or Cloudflare Workers.
 
 > Custom themes from a seed colour, per-role seeds, shape tokens, and a theme generator in the docs.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Custom themes from a seed colour** | area:core, type:feat, priority:high |
-| 2 | **Per-role seeds** | area:core, type:feat |
-| 3 | **Theme catalogue export for JavaScript** | area:core, type:feat |
-| 4 | **Theme generator page in the docs** | area:docs, type:feat |
+| #   | Issue                                     | Labels                              |
+| --- | ----------------------------------------- | ----------------------------------- |
+| 1   | **Custom themes from a seed colour**      | area:core, type:feat, priority:high |
+| 2   | **Per-role seeds**                        | area:core, type:feat                |
+| 3   | **Theme catalogue export for JavaScript** | area:core, type:feat                |
+| 4   | **Theme generator page in the docs**      | area:docs, type:feat                |
 
 ### Custom themes from a seed colour
 
@@ -516,6 +545,7 @@ GitHub Pages or Cloudflare Workers.
 A second plugin entry that generates a full tonal palette from one colour.
 
 **Done when**
+
 - scheme variants are supported and validated
 - hand-declared roles override generated ones
 - a default theme applies at `:root:not([data-theme])`, never plain `:root` — they have equal specificity, so a default declared last would otherwise beat every other theme
@@ -527,6 +557,7 @@ A second plugin entry that generates a full tonal palette from one colour.
 Pin any palette to an exact colour while the rest stay derived.
 
 **Done when**
+
 - the primary seed still seeds the scheme, so the variant reshapes it — reading it back as an override makes every variant produce an identical primary palette
 - core seeds are exact; status seeds stay harmonized
 - unknown option names are rejected with a suggestion
@@ -538,6 +569,7 @@ Pin any palette to an exact colour while the rest stay derived.
 Ship theme names and a few representative colours per theme so consumers can build a picker.
 
 **Done when**
+
 - both light and dark values are resolved for every theme
 - the data entry point has no runtime dependencies, so a name list does not drag in the colour library
 - a helper resolves swatches for a consumer's own generated theme
@@ -549,6 +581,7 @@ Ship theme names and a few representative colours per theme so consumers can bui
 Pick a seed, preview live, copy the plugin call or the expanded CSS.
 
 **Done when**
+
 - the page calls the plugin's own builder, so what it shows is what the plugin emits
 - the preview container carries `data-theme` so the mode mapping re-resolves at that scope
 - an invalid seed shows an inline message and leaves the previous palette on screen
@@ -559,12 +592,12 @@ Pick a seed, preview live, copy the plugin call or the expanded CSS.
 
 > Keyboard and screen-reader audit, contrast enforcement, visual regression coverage, migration guides.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Keyboard and screen-reader audit** | area:repo, type:a11y, priority:high |
-| 2 | **Contrast checking on generated themes** | area:core, type:a11y |
-| 3 | **Visual regression coverage** | area:repo, type:test |
-| 4 | **Migration guide infrastructure** | area:docs, type:docs |
+| #   | Issue                                     | Labels                              |
+| --- | ----------------------------------------- | ----------------------------------- |
+| 1   | **Keyboard and screen-reader audit**      | area:repo, type:a11y, priority:high |
+| 2   | **Contrast checking on generated themes** | area:core, type:a11y                |
+| 3   | **Visual regression coverage**            | area:repo, type:test                |
+| 4   | **Migration guide infrastructure**        | area:docs, type:docs                |
 
 ### Keyboard and screen-reader audit
 
@@ -573,6 +606,7 @@ Pick a seed, preview live, copy the plugin call or the expanded CSS.
 Every interactive component, in all three bindings.
 
 **Done when**
+
 - focus is visible on every control against every shipped theme
 - tab order is sensible and nothing is a keyboard trap
 - findings are filed as individual issues
@@ -601,17 +635,18 @@ A page per breaking release with before/after for each change, linked from the c
 
 > Plugin option surface and class names frozen. Semantic versioning applies in earnest from here.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Freeze the plugin option surface** | area:core, type:docs, priority:high |
-| 2 | **Version support matrix** | area:docs, type:docs |
-| 3 | **Architecture decision records** | area:repo, type:docs |
+| #   | Issue                                | Labels                              |
+| --- | ------------------------------------ | ----------------------------------- |
+| 1   | **Freeze the plugin option surface** | area:core, type:docs, priority:high |
+| 2   | **Version support matrix**           | area:docs, type:docs                |
+| 3   | **Architecture decision records**    | area:repo, type:docs                |
 
 ### Freeze the plugin option surface
 
 `area:core` `type:docs` `priority:high`
 
 **Done when**
+
 - every `@plugin` option is documented with its type, default and validation
 - every emitted class and token is listed as public API
 - what counts as a breaking change is written down
@@ -634,11 +669,11 @@ One short record per significant choice: plugin over stylesheet, layer shape, au
 
 > Accepted but unscheduled. Pull into a version milestone when it becomes next.
 
-| # | Issue | Labels |
-| --- | --- | --- |
-| 1 | **Ship a stylesheet alongside the plugin** | area:core, type:feat |
-| 2 | **Drop the runtime dependency on tailwindcss/plugin** | area:core, type:chore |
-| 3 | **Escape-aware selector scanning in the prefixer** | area:core, type:chore |
+| #   | Issue                                                 | Labels                |
+| --- | ----------------------------------------------------- | --------------------- |
+| 1   | **Ship a stylesheet alongside the plugin**            | area:core, type:feat  |
+| 2   | **Drop the runtime dependency on tailwindcss/plugin** | area:core, type:chore |
+| 3   | **Escape-aware selector scanning in the prefixer**    | area:core, type:chore |
 
 ### Ship a stylesheet alongside the plugin
 
@@ -662,21 +697,21 @@ Handle full CSS hex escapes (`\31 23`) rather than backslash-plus-one-character.
 
 ## Labels used
 
-| Label | Issues |
-| --- | --- |
-| `area:ci` | 2 |
-| `area:core` | 26 |
-| `area:docs` | 7 |
-| `area:react` | 2 |
-| `area:repo` | 9 |
-| `area:svelte` | 3 |
-| `area:vue` | 2 |
-| `component` | 5 |
-| `good first issue` | 1 |
-| `priority:high` | 9 |
-| `type:a11y` | 2 |
-| `type:chore` | 14 |
-| `type:docs` | 6 |
-| `type:feat` | 20 |
-| `type:fix` | 3 |
-| `type:test` | 5 |
+| Label              | Issues |
+| ------------------ | ------ |
+| `area:ci`          | 2      |
+| `area:core`        | 26     |
+| `area:docs`        | 7      |
+| `area:react`       | 2      |
+| `area:repo`        | 9      |
+| `area:svelte`      | 3      |
+| `area:vue`         | 2      |
+| `component`        | 5      |
+| `good first issue` | 1      |
+| `priority:high`    | 9      |
+| `type:a11y`        | 2      |
+| `type:chore`       | 14     |
+| `type:docs`        | 6      |
+| `type:feat`        | 20     |
+| `type:fix`         | 3      |
+| `type:test`        | 5      |

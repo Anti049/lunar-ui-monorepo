@@ -3,7 +3,7 @@
 ## Setup
 
 ```sh
-git clone https://github.com/Anti049/test.git
+git clone https://github.com/Anti049/lunar-ui-monorepo.git
 cd test
 bun install
 bun run build:packages   # a fresh clone cannot typecheck until it has built once

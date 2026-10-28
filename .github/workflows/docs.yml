@@ -1,0 +1,54 @@
+name: Docs
+on:
+  push:
+    branches: [main]
+    # Gate on paths, so a plugin-only commit does not redeploy the site.
+    # packages/core/** IS included: the site renders the plugin's own registry,
+    # so a plugin change does change the site. packages/svelte/** too: the
+    # docs alias the Svelte bindings to source, so a component change shows.
+    paths:
+      [
+        'packages/docs/**',
+        'packages/core/**',
+        'packages/svelte/**',
+        'bun.lock',
+        '.github/workflows/docs.yml'
+      ]
+  # So you can redeploy without an empty commit.
+  workflow_dispatch:
+
+# Required by deploy-pages. `contents: read` alone is not enough.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one midway.
+concurrency: { group: pages, cancel-in-progress: false }
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+
+      # The plugin must be built before the site, which imports its registry.
+      - run: bun run --filter '@anti049/lunar-ui' build
+
+      - run: bun run --filter '@anti049/lunar-ui-docs' build
+        env:
+          # Pages serves from /<repo>/, and SvelteKit needs to know at BUILD
+          # time. Read in vite.config.ts - see guide 7.
+          BASE_PATH: /${{ github.event.repository.name }}
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        # adapter-static writes here; `pages` in vite.config.ts must agree.
+        with: { path: packages/docs/build }
+      - id: deployment
+        uses: actions/deploy-pages@v4

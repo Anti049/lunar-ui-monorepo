@@ -1,12 +1,15 @@
 {
-	"extends": "../../tsconfig.base.json",
+	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		// The base config sets "types": [], so this names what Vue needs.
-		"types": ["vite/client"],
-		// Vite and vue-tsc own emission; this config is a checker only.
-		"noEmit": true
+		// Declarations only — Vite already emitted the JS. The checker config
+		// this extends sets noEmit, which would otherwise silently emit nothing.
+		"noEmit": false,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "dist",
+		// So `src/lib/index.ts` lands at `dist/index.d.ts`, where exports points.
+		"rootDir": "src/lib"
 	},
-	// `.vue` must be listed explicitly — vue-tsc will not infer it from a
-	// `**/*.ts` glob, and silently checks nothing if you leave it out.
-	"include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts"]
+	// The library only: the demo app and vite.config.ts are not published.
+	"include": ["src/lib/**/*.ts", "src/lib/**/*.vue"]
 }

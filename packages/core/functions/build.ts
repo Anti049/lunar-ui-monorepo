@@ -58,7 +58,9 @@ function runTailwind(input: string, label: string): string {
 		const detail = (error as { stderr?: Buffer }).stderr?.toString() ?? '';
 		// Strip ANSI colour codes, or the message is unreadable in a log file.
 		// eslint-disable-next-line no-control-regex
-		throw new Error(`tailwind failed on ${label}:\n${detail.replace(/\x1b\[[0-9;]*m/g, '')}`);
+		throw new Error(`tailwind failed on ${label}:\n${detail.replace(/\x1b\[[0-9;]*m/g, '')}`, {
+			cause: error
+		});
 	}
 	return fs.readFileSync(outFile, 'utf8');
 }

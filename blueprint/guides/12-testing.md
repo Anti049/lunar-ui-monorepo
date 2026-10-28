@@ -196,7 +196,7 @@ npm install --no-audit --no-fund "$env:TEMP/$tarball"
 ```
 
 Then add `tailwindcss()` to the app's `vite.config.ts`, write an `app.css` with
-`@plugin '@anti049/test';`, import it from `+layout.svelte`, build, and grep
+`@plugin '@anti049/lunar-ui';`, import it from `+layout.svelte`, build, and grep
 the output for a class you know the plugin owns. Guide 4's checkpoint has the
 same setup written out in full.
 
@@ -1503,7 +1503,7 @@ if (failures.length) {
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 git add -A
 git commit -m "test(core): add the differential harness and unit tests"
 ```
@@ -1540,13 +1540,13 @@ bun run check                                     # green before anything is pla
 Plant each fault, run the check named beside it, then undo it with
 `git checkout -- .` and `bun run build` before the next one:
 
-| Layer      | Fault to plant                                                                            | Run                     | Must report                                          |
-| ---------- | ----------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------- |
-| Parity     | change one value in `generated/components/badge/object.ts` (no rebuild)                   | `bun test/e2e.test.ts`  | the selector **and** the property                    |
-| Standalone | delete a token declaration that a component references and nothing else declares, rebuild | `bun test/e2e.test.ts`  | that token as an unresolved reference                |
-| Unit       | make `addPrefix` return its input unchanged                                               | `bun test test/unit`    | a failure in `addPrefix.test.ts`                     |
-| Artifact   | point `exports["."].types` at `./dist/nope.d.ts` in `package.json`, rebuild               | `bunx publint`          | the missing types file                               |
-| Packaging  | set `"files": ["README.md"]` in `package.json`                                            | the smoke test (step 7) | `Can't resolve '@anti049/test'` from the scratch app |
+| Layer      | Fault to plant                                                                            | Run                     | Must report                                              |
+| ---------- | ----------------------------------------------------------------------------------------- | ----------------------- | -------------------------------------------------------- |
+| Parity     | change one value in `generated/components/badge/object.ts` (no rebuild)                   | `bun test/e2e.test.ts`  | the selector **and** the property                        |
+| Standalone | delete a token declaration that a component references and nothing else declares, rebuild | `bun test/e2e.test.ts`  | that token as an unresolved reference                    |
+| Unit       | make `addPrefix` return its input unchanged                                               | `bun test test/unit`    | a failure in `addPrefix.test.ts`                         |
+| Artifact   | point `exports["."].types` at `./dist/nope.d.ts` in `package.json`, rebuild               | `bunx publint`          | the missing types file                                   |
+| Packaging  | set `"files": ["README.md"]` in `package.json`                                            | the smoke test (step 7) | `Can't resolve '@anti049/lunar-ui'` from the scratch app |
 
 ```powershell
 Set-Location $env:TEMP

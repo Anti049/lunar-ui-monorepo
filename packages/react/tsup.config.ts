@@ -3,7 +3,9 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
 	entry: ['src/lib/index.ts'],
 	format: ['esm', 'cjs'],
-	dts: true,
+	// tsup's dts build sets `baseUrl` itself, which TypeScript 6 rejects as
+	// deprecated. Remove once tsup stops setting it.
+	dts: { compilerOptions: { ignoreDeprecations: '6.0' } },
 	sourcemap: true,
 	clean: true,
 	treeshake: true,

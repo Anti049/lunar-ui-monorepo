@@ -286,7 +286,7 @@ different fixes.
 		{
 			"label": "build plugin",
 			"type": "shell",
-			"command": "bun run --filter '@anti049/test' build",
+			"command": "bun run --filter '@anti049/lunar-ui' build",
 			"problemMatcher": ["$tsc"]
 		},
 		{
@@ -437,7 +437,7 @@ assembled from four separate blocks, so here it is in one piece.
 		{
 			"label": "build plugin",
 			"type": "shell",
-			"command": "bun run --filter '@anti049/test' build",
+			"command": "bun run --filter '@anti049/lunar-ui' build",
 			"problemMatcher": ["$tsc"]
 		},
 		{
@@ -529,10 +529,10 @@ stylesheet:
 ```powershell
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source inline('badge');
 '@ | Set-Content src/consumer.css
-code node_modules/@anti049/test/dist/index.js
+code node_modules/@anti049/lunar-ui/dist/index.js
 ```
 
 Set a breakpoint on the first line of the function returned to Tailwind — the
@@ -557,7 +557,7 @@ and the consumer-side breakpoint binds in `node_modules`.
 side — step 1's first question. A client breakpoint that binds in the wrong
 file is `webRoot` or the `/@fs/*` override. A consumer-side breakpoint that
 never binds in `dist/index.js` usually means the CLI resolved a different copy
-of the plugin — check `npm ls '@anti049/test'` in the skeleton.
+of the plugin — check `npm ls '@anti049/lunar-ui'` in the skeleton.
 
 ---
 

@@ -1,5 +1,5 @@
 import plugin from 'tailwindcss/plugin';
-import type { PluginAPI, PluginWithConfig, } from 'tailwindcss/plugin';
+import type { PluginAPI, PluginWithConfig } from 'tailwindcss/plugin';
 
 import bundles from './generated/imports.js';
 import properties from './generated/properties.js';
@@ -9,7 +9,7 @@ import type { PluginOptions, StyleObject } from './types.js';
 	The design system as a standalone Tailwind plugin.
 
 	    @import 'tailwindcss';
-	    @plugin '@anti049/test' {
+	    @plugin '@anti049/lunar-ui' {
 	      prefix: px-;
 	      exclude: badge;
 	    }

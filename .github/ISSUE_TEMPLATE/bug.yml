@@ -1,0 +1,46 @@
+name: Bug report
+description: Something renders or behaves incorrectly.
+labels: ['bug', 'triage']
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package
+      # The single most useful field on this form. Most reports that stall do
+      # so because nobody can tell whether the problem is in the plugin or in a
+      # binding.
+      options:
+        - '@anti049/lunar-ui (the plugin)'
+        - '@anti049/lunar-ui-svelte'
+        - '@anti049/lunar-ui-react'
+        - '@anti049/lunar-ui-vue'
+        - 'Not sure'
+    validations: { required: true }
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: '2.1.0'
+    validations: { required: true }
+
+  - type: input
+    id: tailwind
+    attributes:
+      label: Tailwind version
+      description: '`npm ls tailwindcss`'
+      placeholder: '4.3.3'
+    validations: { required: false }
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: A link to a minimal repository, or the CSS and markup needed.
+    validations: { required: true }
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations: { required: false }

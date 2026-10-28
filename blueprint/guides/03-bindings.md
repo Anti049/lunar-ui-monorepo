@@ -39,12 +39,12 @@ sets of tokens, and a support burden nobody enjoys.
 ```jsonc
 // The range CONSUMERS resolve against. A real semver range, always.
 "peerDependencies": {
-  "@anti049/test": "^0.0.0",
+  "@anti049/lunar-ui": "^0.0.0",
   "svelte": "^5.0.0"
 },
 // What makes it resolve locally, inside the workspace.
 "devDependencies": {
-  "@anti049/test": "workspace:*"
+  "@anti049/lunar-ui": "workspace:*"
 }
 ```
 
@@ -83,8 +83,8 @@ document it as non-optional.
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
-@import '@anti049/test-svelte/styles.css'; /* required */
+@plugin '@anti049/lunar-ui';
+@import '@anti049/lunar-ui-svelte/styles.css'; /* required */
 ```
 
 **3. The component inventory is identical across all three.** A component lands

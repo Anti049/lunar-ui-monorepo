@@ -42,13 +42,13 @@ Move-Item src/main.ts src/demo/main.ts -ErrorAction SilentlyContinue
 
 ```jsonc
 {
-	"name": "@anti049/test-vue",
+	"name": "@anti049/lunar-ui-vue",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/vue"
 	},
 	"scripts": {
@@ -67,7 +67,7 @@ Move-Item src/main.ts src/demo/main.ts -ErrorAction SilentlyContinue
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"vue": "^3.5.0"
 	},
 	"dependencies": {
@@ -75,7 +75,7 @@ Move-Item src/main.ts src/demo/main.ts -ErrorAction SilentlyContinue
 		"tailwind-merge": "^3.7.0"
 	},
 	"devDependencies": {
-		"@anti049/test": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
 		"@vitejs/plugin-vue": "^6.0.9",
 		"vue": "^3.5.43",
 		"vue-tsc": "^3.3.11",
@@ -123,7 +123,7 @@ export default defineConfig(({ command }) => ({
 		rollupOptions: {
 			// Never bundle the consumer's Vue, or you ship a second runtime and
 			// component instances stop sharing reactivity.
-			external: ['vue', '@anti049/test'],
+			external: ['vue', '@anti049/lunar-ui'],
 			output: {
 				// Keep styles.css at a predictable name for the exports map.
 				assetFileNames: 'styles.css'
@@ -443,12 +443,12 @@ import { Button, Badge } from '../lib';
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source '../lib/**/*.vue';
 ```
 
 ```powershell
-bun run --filter '@anti049/test-vue' dev
+bun run --filter '@anti049/lunar-ui-vue' dev
 ```
 
 ---
@@ -463,7 +463,7 @@ ls dist            # index.js, index.d.ts, styles.css
 ```
 
 ```powershell
-node --input-type=module -e "import('@anti049/test-vue').then(m => console.log(Object.keys(m)))"
+node --input-type=module -e "import('@anti049/lunar-ui-vue').then(m => console.log(Object.keys(m)))"
 ```
 
 Then confirm the export-parity test from [guide 3](03-bindings.md) passes now
@@ -505,7 +505,7 @@ Build output, gitignored: `packages/vue/dist/`.
 
 ```json
 {
-	"name": "@anti049/test-vue",
+	"name": "@anti049/lunar-ui-vue",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -513,7 +513,7 @@ Build output, gitignored: `packages/vue/dist/`.
 	"keywords": ["vue", "tailwindcss", "ui", "components", "design-system"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/vue"
 	},
 	"scripts": {
@@ -532,7 +532,7 @@ Build output, gitignored: `packages/vue/dist/`.
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"vue": "^3.5.0"
 	},
 	"dependencies": {
@@ -540,7 +540,7 @@ Build output, gitignored: `packages/vue/dist/`.
 		"tailwind-merge": "^3.7.0"
 	},
 	"devDependencies": {
-		"@anti049/test": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
 		"@tailwindcss/vite": "^4.3.3",
 		"@vitejs/plugin-vue": "^6.0.9",
 		"publint": "^0.3.24",
@@ -596,7 +596,7 @@ export default defineConfig(({ command }) => ({
 				component instances stop sharing reactivity — a component from your
 				package cannot then inject anything the app provided.
 			*/
-			external: ['vue', '@anti049/test'],
+			external: ['vue', '@anti049/lunar-ui'],
 			output: {
 				/*
 					Vite names library assets after the entry, so without this you get
@@ -952,7 +952,7 @@ import { Button, Badge } from '../lib';
 	something a consumer could not write, that is a bug in the plugin.
 */
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /*
 	Scan this package's own components. Without it the playground renders
@@ -997,7 +997,7 @@ import { Button, Badge } from '../lib';
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test-vue' check
+bun run --filter '@anti049/lunar-ui-vue' check
 git add -A
 git commit -m "feat(vue): add Vue bindings"
 ```
@@ -1068,15 +1068,15 @@ export default defineConfig({ plugins: [vue(), tailwindcss()] });
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
-@import '@anti049/test-vue/styles.css';
+@plugin '@anti049/lunar-ui';
+@import '@anti049/lunar-ui-vue/styles.css';
 ```
 
 **`src/App.vue`** — replace it:
 
 ```vue
 <script setup lang="ts">
-import { Badge, Button } from '@anti049/test-vue';
+import { Badge, Button } from '@anti049/lunar-ui-vue';
 </script>
 
 <template>

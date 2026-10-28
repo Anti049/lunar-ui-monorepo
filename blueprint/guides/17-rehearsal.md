@@ -21,13 +21,13 @@ The obvious approach is `bun link` or `npm link`, and it is worse than useless
 here: a link resolves to your **working tree**. That means it silently satisfies
 imports that a published package could not.
 
-| What a link hides                           | What a consumer gets                             |
-| ------------------------------------------- | ------------------------------------------------ |
-| An empty or wrong `files` array             | A package with no `dist/`                        |
+| What a link hides                           | What a consumer gets                           |
+| ------------------------------------------- | ---------------------------------------------- |
+| An empty or wrong `files` array             | A package with no `dist/`                      |
 | A missing `exports` subpath                 | `Cannot find module '@anti049/lunar-ui/theme'` |
-| `dist/` in `.gitignore`, honoured by `pack` | A tarball containing nothing                     |
-| A `workspace:` range left in the manifest   | `Unsupported URL Type "workspace:"` on install   |
-| A file `tsc` never emitted                  | A 404 at runtime                                 |
+| `dist/` in `.gitignore`, honoured by `pack` | A tarball containing nothing                   |
+| A `workspace:` range left in the manifest   | `Unsupported URL Type "workspace:"` on install |
+| A file `tsc` never emitted                  | A 404 at runtime                               |
 
 Each of those has shipped in a real project. A packed tarball reproduces the
 consumer's situation exactly, and costs about a minute.
@@ -421,7 +421,7 @@ to its script block.
 	import { Button, Badge } from '@anti049/lunar-ui-svelte';
 </script>
 
-<div data-theme="brand" class="flex flex-wrap items-center gap-2 surface p-8">
+<div data-theme="brand" class="surface flex flex-wrap items-center gap-2 p-8">
 	<Button variant="filled">Filled</Button>
 	<Button variant="tonal">Tonal</Button>
 	<Button variant="outlined" disabled>Disabled</Button>
@@ -951,11 +951,11 @@ bun run rehearse                                  # passes before anything is pl
 Plant each of these, run `bun run rehearse`, then `git checkout -- .` before
 the next:
 
-| Plant                                                                       | `rehearse` must fail on                          |
-| --------------------------------------------------------------------------- | ------------------------------------------------ |
-| `"@anti049/test": "workspace:^"` in the Svelte package's `peerDependencies` | the install: `Unsupported URL Type "workspace:"` |
-| remove `"./themes"` from the plugin's `exports`                             | the catalogue import                             |
-| `"files": ["README.md"]` in the React package                               | the binding import                               |
+| Plant                                                                           | `rehearse` must fail on                          |
+| ------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `"@anti049/lunar-ui": "workspace:^"` in the Svelte package's `peerDependencies` | the install: `Unsupported URL Type "workspace:"` |
+| remove `"./themes"` from the plugin's `exports`                                 | the catalogue import                             |
+| `"files": ["README.md"]` in the React package                                   | the binding import                               |
 
 A rehearsal only covers what it asserts. When you add a feature, add both its
 input to `scripts/rehearse.ts` and an assertion on the output — an input with

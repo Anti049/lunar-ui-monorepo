@@ -40,7 +40,7 @@ Check the scope is free before committing to it:
 
 ```powershell
 # Quote the name: PowerShell treats a bare leading @ as a splat expression.
-npm view '@anti049/test'          # E404 means available
+npm view '@anti049/lunar-ui'          # E404 means available
 ```
 
 ### Substituting them
@@ -210,23 +210,23 @@ that Bun's hoisting hides. npm workspaces work but are slow at this size.
 ## Decision 2 — the scope and the package names
 
 ```text
-@anti049/test           the plugin        ← the short name goes to the plugin
-@anti049/test-svelte    Svelte bindings
-@anti049/test-react     React bindings
-@anti049/test-vue       Vue bindings
+@anti049/lunar-ui           the plugin        ← the short name goes to the plugin
+@anti049/lunar-ui-svelte    Svelte bindings
+@anti049/lunar-ui-react     React bindings
+@anti049/lunar-ui-vue       Vue bindings
 ```
 
 The plugin takes the bare name because it is the thing people install first and
 the thing they name in `@plugin`. Framework packages are suffixed, not scoped
-into subpaths — `@anti049/test/svelte` would force one package to contain
+into subpaths — `@anti049/lunar-ui/svelte` would force one package to contain
 every framework's dependencies.
 
 Check availability before writing a line of code:
 
 ```powershell
 # Quote the name: PowerShell treats a bare leading @ as a splat expression.
-npm view '@anti049/test'          # E404 means available
-npm view '@anti049/test-svelte'
+npm view '@anti049/lunar-ui'          # E404 means available
+npm view '@anti049/lunar-ui-svelte'
 ```
 
 **The directory names do not have to match the package names.** Using
@@ -493,7 +493,7 @@ git config --global --get core.longpaths          # true
 $PSVersionTable.PSVersion.Major                   # 7 or greater
 node --version                                    # v22.17 or later
 gh auth status                                    # Logged in
-npm view '@anti049/test' 2>&1 | Select-String E404   # a match means the name is free
+npm view '@anti049/lunar-ui' 2>&1 | Select-String E404   # a match means the name is free
 
 Pop-Location
 Remove-Item -Recurse -Force $cp

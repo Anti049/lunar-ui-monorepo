@@ -67,13 +67,13 @@ errors — see the trap at the end.
 
 ```jsonc
 {
-	"name": "@anti049/test-svelte",
+	"name": "@anti049/lunar-ui-svelte",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/svelte"
 	},
 	"scripts": {
@@ -101,7 +101,7 @@ errors — see the trap at the end.
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
@@ -109,7 +109,7 @@ errors — see the trap at the end.
 		"tailwind-merge": "^3.7.0"
 	},
 	"devDependencies": {
-		"@anti049/test": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
 		"@sveltejs/kit": "^3.1.0",
 		"@sveltejs/package": "^3.0.1",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
@@ -328,12 +328,12 @@ layout. Never published — `files` lists only `dist`.
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source './lib/**/*.svelte';
 ```
 
 ```powershell
-bun run --filter '@anti049/test-svelte' dev
+bun run --filter '@anti049/lunar-ui-svelte' dev
 ```
 
 ---
@@ -352,8 +352,8 @@ Confirm the package resolves the way a consumer would:
 ```powershell
 # Resolve both entry points through the exports map. A typo in `exports` shows
 # up here, not at build time.
-node --input-type=module -e "console.log(import.meta.resolve('@anti049/test-svelte'))"
-node --input-type=module -e "console.log(import.meta.resolve('@anti049/test-svelte/styles.css'))"
+node --input-type=module -e "console.log(import.meta.resolve('@anti049/lunar-ui-svelte'))"
+node --input-type=module -e "console.log(import.meta.resolve('@anti049/lunar-ui-svelte/styles.css'))"
 ```
 
 Resolve, do not `import()`. Plain Node cannot **load** this package: the barrel
@@ -395,7 +395,7 @@ Build output, gitignored: `packages/svelte/dist/` and `.svelte-kit/`.
 
 ```json
 {
-	"name": "@anti049/test-svelte",
+	"name": "@anti049/lunar-ui-svelte",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -403,7 +403,7 @@ Build output, gitignored: `packages/svelte/dist/` and `.svelte-kit/`.
 	"keywords": ["svelte", "tailwindcss", "ui", "components", "design-system"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/svelte"
 	},
 	"scripts": {
@@ -428,7 +428,7 @@ Build output, gitignored: `packages/svelte/dist/` and `.svelte-kit/`.
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
@@ -436,7 +436,7 @@ Build output, gitignored: `packages/svelte/dist/` and `.svelte-kit/`.
 		"tailwind-merge": "^3.7.0"
 	},
 	"devDependencies": {
-		"@anti049/test": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
 		"@sveltejs/kit": "^3.1.0",
 		"@sveltejs/package": "^3.0.1",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
@@ -513,7 +513,7 @@ run.** That is what the `prepare` script is for: it runs on `bun install`, so a
 fresh clone gets it automatically. Run it by hand the first time:
 
 ```powershell
-bun run --filter '@anti049/test-svelte' prepare
+bun run --filter '@anti049/lunar-ui-svelte' prepare
 ```
 
 Skip it and `bun run check` fails because `$app/tsconfig` cannot be found, which
@@ -873,7 +873,7 @@ keep their real extension — it is part of the specifier.
 	plugin.
 */
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /*
 	Scan this package's own components. Without it the playground renders
@@ -938,7 +938,7 @@ keep their real extension — it is part of the specifier.
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test-svelte' check
+bun run --filter '@anti049/lunar-ui-svelte' check
 git add -A
 git commit -m "feat(svelte): add Svelte bindings"
 ```
@@ -962,7 +962,7 @@ $app  = "$cp\04-svelte"
 Remove-Item -Recurse -Force $pkgs, $app -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $pkgs | Out-Null
 
-bun run --filter '@anti049/test' --filter '@anti049/test-svelte' build
+bun run --filter '@anti049/lunar-ui' --filter '@anti049/lunar-ui-svelte' build
 'core', 'svelte' | ForEach-Object {
 	Push-Location "packages/$_"
 	npm pack --pack-destination $pkgs | Out-Null
@@ -1004,8 +1004,8 @@ export default defineConfig({
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
-@import '@anti049/test-svelte/styles.css';
+@plugin '@anti049/lunar-ui';
+@import '@anti049/lunar-ui-svelte/styles.css';
 ```
 
 **`src/routes/+layout.svelte`** — add `import '../app.css';` to its script
@@ -1015,7 +1015,7 @@ block.
 
 ```svelte
 <script lang="ts">
-	import { Button, Badge } from '@anti049/test-svelte';
+	import { Button, Badge } from '@anti049/lunar-ui-svelte';
 </script>
 
 <Button variant="filled">Filled</Button>

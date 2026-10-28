@@ -58,13 +58,13 @@ never packaged.
 
 ```jsonc
 {
-	"name": "@anti049/test-react",
+	"name": "@anti049/lunar-ui-react",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/react"
 	},
 	"scripts": {
@@ -87,7 +87,7 @@ never packaged.
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"react": "^18 || ^19",
 		"react-dom": "^18 || ^19"
 	},
@@ -135,7 +135,7 @@ export default defineConfig({
 	treeshake: true,
 	// Never bundle these — the consumer brings their own, and two copies of
 	// React in one app is the classic "invalid hook call" crash.
-	external: ['react', 'react-dom', '@anti049/test'],
+	external: ['react', 'react-dom', '@anti049/lunar-ui'],
 	outExtension: ({ format }) => ({ js: format === 'cjs' ? '.cjs' : '.js' })
 });
 ```
@@ -363,7 +363,7 @@ published.
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source '../lib/**/*.{ts,tsx}';
 ```
 
@@ -384,7 +384,7 @@ export default defineConfig({
 ```
 
 ```powershell
-bun run --filter '@anti049/test-react' dev
+bun run --filter '@anti049/lunar-ui-react' dev
 ```
 
 ---
@@ -401,8 +401,8 @@ ls dist            # index.js, index.cjs, index.d.ts, styles.css
 Check **both** module systems resolve, which is the whole reason for dual output:
 
 ```powershell
-node --input-type=module -e "import('@anti049/test-react').then(m => console.log('esm', Object.keys(m)))"
-node -e "console.log('cjs', Object.keys(require('@anti049/test-react')))"
+node --input-type=module -e "import('@anti049/lunar-ui-react').then(m => console.log('esm', Object.keys(m)))"
+node -e "console.log('cjs', Object.keys(require('@anti049/lunar-ui-react')))"
 ```
 
 Then run `attw` — it catches types that resolve for one system and not the other,
@@ -446,7 +446,7 @@ Build output, gitignored: `packages/react/dist/`.
 
 ```json
 {
-	"name": "@anti049/test-react",
+	"name": "@anti049/lunar-ui-react",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -454,7 +454,7 @@ Build output, gitignored: `packages/react/dist/`.
 	"keywords": ["react", "tailwindcss", "ui", "components", "design-system"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/react"
 	},
 	"scripts": {
@@ -477,7 +477,7 @@ Build output, gitignored: `packages/react/dist/`.
 	},
 	"sideEffects": ["**/*.css"],
 	"peerDependencies": {
-		"@anti049/test": "^0.0.0",
+		"@anti049/lunar-ui": "^0.0.0",
 		"react": "^18 || ^19",
 		"react-dom": "^18 || ^19"
 	},
@@ -486,7 +486,7 @@ Build output, gitignored: `packages/react/dist/`.
 		"tailwind-merge": "^3.7.0"
 	},
 	"devDependencies": {
-		"@anti049/test": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
 		"@tailwindcss/vite": "^4.3.3",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
@@ -524,7 +524,7 @@ would bundle it into `dist/index.css` and the exports map would disagree with
 itself. So a React consumer must import the stylesheet themselves:
 
 ```ts
-import '@anti049/test-react/styles.css';
+import '@anti049/lunar-ui-react/styles.css';
 ```
 
 Put that line in the package README and in the docs site's install page. It is
@@ -562,7 +562,7 @@ export default defineConfig({
 		one app is the classic "Invalid hook call" crash — which reads like a bug
 		in your components and is not.
 	*/
-	external: ['react', 'react-dom', '@anti049/test'],
+	external: ['react', 'react-dom', '@anti049/lunar-ui'],
 
 	// `.cjs` rather than `.js` for the CommonJS build, so `"type": "module"` in
 	// package.json does not cause Node to parse it as ESM.
@@ -657,7 +657,7 @@ export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 	Unlike Svelte and Vue, this file is NOT imported by index.ts (see the
 	package.json notes). A React consumer imports it explicitly:
 
-	    import '@anti049/test-react/styles.css';
+	    import '@anti049/lunar-ui-react/styles.css';
 */
 @source '../**/*.{ts,tsx}';
 ```
@@ -871,7 +871,7 @@ the playground reflects your edits without a build.
 	something a consumer could not write, that is a bug in the plugin.
 */
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /*
 	Scan this package's own components. Without it the playground renders
@@ -915,7 +915,7 @@ the playground reflects your edits without a build.
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test-react' check
+bun run --filter '@anti049/lunar-ui-react' check
 git add -A
 git commit -m "feat(react): add React bindings"
 ```
@@ -938,7 +938,7 @@ $app  = "$cp\05-react"
 Remove-Item -Recurse -Force $pkgs, $app -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $pkgs | Out-Null
 
-bun run --filter '@anti049/test' --filter '@anti049/test-react' build
+bun run --filter '@anti049/lunar-ui' --filter '@anti049/lunar-ui-react' build
 'core', 'react' | ForEach-Object {
 	Push-Location "packages/$_"
 	npm pack --pack-destination $pkgs | Out-Null
@@ -958,8 +958,8 @@ npm install --no-audit --no-fund -D tailwindcss '@tailwindcss/vite'
 npm install --no-audit --no-fund $tgz
 
 # Both module systems, from a real consumer's node_modules.
-node --input-type=module -e "import('@anti049/test-react').then(m => console.log('esm', Object.keys(m).join(', ')))"
-node -e "console.log('cjs', Object.keys(require('@anti049/test-react')).join(', '))"
+node --input-type=module -e "import('@anti049/lunar-ui-react').then(m => console.log('esm', Object.keys(m).join(', ')))"
+node -e "console.log('cjs', Object.keys(require('@anti049/lunar-ui-react')).join(', '))"
 ```
 
 **`vite.config.ts`** — replace it:
@@ -976,14 +976,14 @@ export default defineConfig({ plugins: [react(), tailwindcss()] });
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test';
-@import '@anti049/test-react/styles.css';
+@plugin '@anti049/lunar-ui';
+@import '@anti049/lunar-ui-react/styles.css';
 ```
 
 **`src/App.tsx`** — replace it:
 
 ```tsx
-import { Badge, Button } from '@anti049/test-react';
+import { Badge, Button } from '@anti049/lunar-ui-react';
 
 export default function App() {
 	return (

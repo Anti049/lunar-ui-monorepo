@@ -1,0 +1,7 @@
+# Forces every issue through a template. Without this, "Open a blank issue"
+# stays available and most reports arrive that way.
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/Anti049/test/discussions
+    about: Anything that is not a bug report or a concrete proposal.

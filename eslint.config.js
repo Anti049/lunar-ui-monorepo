@@ -15,7 +15,7 @@ import vue from 'eslint-plugin-vue';
 import react from 'eslint-plugin-react';
 import globals from 'globals';
 import prettier from 'eslint-config-prettier';
-import { defineConfig, includeIgnoreFile } from 'eslint/config';
+import { defineConfig, globalIgnores, includeIgnoreFile } from 'eslint/config';
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
@@ -26,6 +26,8 @@ export default defineConfig(
 		already in there, and the two cannot drift apart.
 	*/
 	includeIgnoreFile(gitignorePath),
+	// Committed but not ours: Obsidian's config and its bundled plugins.
+	globalIgnores(['**/.obsidian/']),
 
 	js.configs.recommended,
 	ts.configs.recommended,
@@ -52,6 +54,8 @@ export default defineConfig(
 		*/
 		settings: { react: { version: '19.0' } }
 	},
+	// The automatic JSX runtime (`"jsx": "react-jsx"`), so no `import React`.
+	{ ...react.configs.flat['jsx-runtime'], files: ['**/*.{jsx,tsx}'] },
 
 	/*
 		MUST come after every framework config: it disables the stylistic rules
@@ -109,6 +113,14 @@ export default defineConfig(
 				extraFileExtensions: ['.vue'],
 				parser: ts.parser
 			}
+		},
+		rules: {
+			/*
+				A component library names components after what they are: Button,
+				matching Svelte and React. The collision this rule guards against
+				is handled at registration instead — the plugin installs `PButton`.
+			*/
+			'vue/multi-word-component-names': 'off'
 		}
 	}
 );

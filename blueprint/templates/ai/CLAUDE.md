@@ -8,7 +8,7 @@ Claude Code.
 
 ```sh
 bun run check                                  # every workspace
-bun run --filter '@anti049/test' check   # plugin only: build, typecheck, test, publint
+bun run --filter '@anti049/lunar-ui' check   # plugin only: build, typecheck, test, publint
 bun run dev                                    # docs site + plugin CSS watcher
 bun changeset                                  # describe a release
 ```

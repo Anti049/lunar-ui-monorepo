@@ -1,0 +1,25 @@
+name: Component request
+description: Propose a new component.
+labels: ['component', 'triage']
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Component name
+    validations: { required: true }
+
+  - type: checkboxes
+    id: frameworks
+    attributes:
+      label: Which bindings need it
+      options:
+        - label: Svelte
+        - label: React
+        - label: Vue
+
+  - type: textarea
+    id: prior-art
+    attributes:
+      label: Prior art
+      description: Links to the same component elsewhere, and what they get right or wrong.
+    validations: { required: false }

@@ -782,7 +782,7 @@ Replaces the stub from [guide 1](01-monorepo.md) step 9. The additions are
 
 ```json
 {
-	"name": "@anti049/test",
+	"name": "@anti049/lunar-ui",
 	"version": "0.0.0",
 	"type": "module",
 	"license": "MIT",
@@ -790,7 +790,7 @@ Replaces the stub from [guide 1](01-monorepo.md) step 9. The additions are
 	"keywords": ["tailwindcss", "tailwind-plugin", "design-system", "css"],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Anti049/test.git",
+		"url": "git+https://github.com/Anti049/lunar-ui-monorepo.git",
 		"directory": "packages/core"
 	},
 	"files": ["dist", "README.md"],
@@ -1684,7 +1684,7 @@ import type { PluginOptions, StyleObject } from './types.js';
 	The design system as a standalone Tailwind plugin.
 
 	    @import 'tailwindcss';
-	    @plugin '@anti049/test' {
+	    @plugin '@anti049/lunar-ui' {
 	      prefix: px-;
 	      exclude: badge;
 	    }
@@ -1776,7 +1776,7 @@ export default projectName;
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 git add -A
 git commit -m "feat(core): compile CSS components into a Tailwind plugin"
 ```
@@ -1812,7 +1812,7 @@ $app  = "$cp\plugin"
 Remove-Item -Recurse -Force $pkgs, $app -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $pkgs, "$app\src", "$app\out" | Out-Null
 
-bun run --filter '@anti049/test' build
+bun run --filter '@anti049/lunar-ui' build
 Push-Location packages/core
 # npm pack prints the filename it wrote as its last line.
 $core = npm pack --pack-destination $pkgs | Select-Object -Last 1
@@ -1836,11 +1836,11 @@ tar -tzf "$pkgs\$core" | Select-String '^package/(src|test|functions|generated)/
 tar -tzf "$pkgs\$core" | Select-String '^package/dist/index\.js$'                    # one match
 
 # The entry loads under plain Node, not just under Bun.
-node --input-type=module -e "import('@anti049/test').then(m => console.log(typeof m.default))"   # function
+node --input-type=module -e "import('@anti049/lunar-ui').then(m => console.log(typeof m.default))"   # function
 
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 @source inline('badge');
 @source inline('badge-primary');
 '@ | Set-Content src/consumer.css
@@ -1851,7 +1851,7 @@ node $cli -i src/consumer.css -o out/consumer.css
 # A misspelt option must fail the consumer's build, naming the option.
 @'
 @import 'tailwindcss' source(none);
-@plugin '@anti049/test' { prefx: x-; }
+@plugin '@anti049/lunar-ui' { prefx: x-; }
 '@ | Set-Content src/typo.css
 node $cli -i src/typo.css -o out/typo.css; $LASTEXITCODE   # non-zero; the message names `prefx`
 

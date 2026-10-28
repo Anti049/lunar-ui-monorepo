@@ -14,19 +14,24 @@ import { expect, test } from 'bun:test';
 */
 test('every binding exports the same component set', async () => {
 	const [svelte, react, vue] = await Promise.all([
-		import('../../svelte/dist/index.js'),
-		import('../../react/dist/index.js'),
-		import('../../vue/dist/index.js')
+		import('../../../svelte/dist/index.js'),
+		import('../../../react/dist/index.js'),
+		import('../../../vue/dist/index.js')
 	]);
 
 	/*
 		Components only. An initial capital is the convention in all three
 		frameworks, which conveniently excludes `cn`, `ripple` and the hooks —
 		those are allowed to differ, because each framework has its own idiom.
+
+		NOT_COMPONENTS is the same allowance for idioms that ARE capitalised:
+		`LunarUI` is Vue's `app.use()` plugin. Name each one rather than loosen
+		the regex, so a genuinely missing component still fails.
 	*/
+	const NOT_COMPONENTS = new Set(['LunarUI']);
 	const names = (module: object): string[] =>
 		Object.keys(module)
-			.filter((key) => /^[A-Z]/.test(key))
+			.filter((key) => /^[A-Z]/.test(key) && !NOT_COMPONENTS.has(key))
 			.sort();
 
 	// Svelte is the reference simply because it was written first. The

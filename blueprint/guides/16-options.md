@@ -20,7 +20,7 @@ repository. It is the contract the rest of this guide implements.
 
 ```css
 @import 'tailwindcss';
-@plugin '@anti049/test' {
+@plugin '@anti049/lunar-ui' {
 	prefix: px-;
 	exclude: badge, tooltip;
 	themes: default, dracula;
@@ -231,7 +231,7 @@ if (unknown.length) {
 	throw new Error(
 		`test: unknown theme${unknown.length > 1 ? 's' : ''} ${unknown.join(', ')}. ` +
 			`Shipped themes: ${Object.keys(themes).join(', ')}. ` +
-			`Define your own with @plugin '@anti049/test/theme'.`
+			`Define your own with @plugin '@anti049/lunar-ui/theme'.`
 	);
 }
 const selectedThemes =
@@ -272,7 +272,7 @@ if (unknownTokens.length) {
 	throw new Error(
 		`test: unknown token${unknownTokens.length > 1 ? 's' : ''} ` +
 			`${unknownTokens.join(', ')}. Settable here: ${shapeTokens.join(', ')}. ` +
-			`Colour roles belong on a theme, via @plugin '@anti049/test/theme'.`
+			`Colour roles belong on a theme, via @plugin '@anti049/lunar-ui/theme'.`
 	);
 }
 ```
@@ -1782,7 +1782,7 @@ test('an empty prefix returns the input unchanged', () => {
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 git add -A
 git commit -m "feat(core): add prefix, include/exclude and theme options"
 ```
@@ -1811,36 +1811,36 @@ function Compile($name, $body) {
 function Count($css, $pattern) { ([regex]::Matches($css, $pattern)).Count }
 
 # prefix: owned classes renamed, unprefixed ones gone, Tailwind's namespace untouched.
-$css = Compile prefix "@plugin '@anti049/test' { prefix: px-; }`n@source inline('px-badge');`n@source inline('badge');"
+$css = Compile prefix "@plugin '@anti049/lunar-ui' { prefix: px-; }`n@source inline('px-badge');`n@source inline('badge');"
 Count $css '\.px-badge\b'        # > 0
 Count $css '\.badge\b'           # 0
 Count $css '--px-color-'         # 0
 
 # include / exclude: the named bundles, and only those.
-$css = Compile include "@plugin '@anti049/test' { include: badge; }`n@source inline('badge');`n@source inline('button');"
+$css = Compile include "@plugin '@anti049/lunar-ui' { include: badge; }`n@source inline('badge');`n@source inline('button');"
 Count $css '\.badge\b'           # > 0
 Count $css '\.button\b'          # 0
-$css = Compile exclude "@plugin '@anti049/test' { exclude: badge; }`n@source inline('badge');`n@source inline('button');"
+$css = Compile exclude "@plugin '@anti049/lunar-ui' { exclude: badge; }`n@source inline('badge');`n@source inline('button');"
 Count $css '\.badge\b'           # 0
 Count $css '\.button\b'          # > 0
 
 # themes: `default` is kept even when not listed.
-$css = Compile themes "@plugin '@anti049/test' { themes: dracula; }"
+$css = Compile themes "@plugin '@anti049/lunar-ui' { themes: dracula; }"
 Count $css "data-theme='dracula'"                                  # > 0
 Count $css "data-theme='default'|:root:not\(\[data-theme\]\)"     # > 0 — default still there
 
 # --token: the override reaches :root.
-$css = Compile token "@plugin '@anti049/test' { --radius-field: 0.75rem; }"
+$css = Compile token "@plugin '@anti049/lunar-ui' { --radius-field: 0.75rem; }"
 Count $css '--radius-field:\s*0\.75rem'   # > 0
 
 # Functional utilities keep the var(--spacing) link and accept arbitrary values.
-$css = Compile functional "@plugin '@anti049/test';`n@source inline('tooltip-gap-2');`n@source inline('tooltip-gap-[var(--x)]');"
+$css = Compile functional "@plugin '@anti049/lunar-ui';`n@source inline('tooltip-gap-2');`n@source inline('tooltip-gap-[var(--x)]');"
 Count $css 'calc\(var\(--spacing\) \* 2\)'   # > 0
 Count $css 'var\(--x\)'                      # > 0
 
 # Every mistake fails the build, and the message names it.
 'prefx: x-;', 'themes: nope;', '--radius-feild: 0;' | ForEach-Object {
-	Compile bad "@plugin '@anti049/test' { $_ }" | Out-Null
+	Compile bad "@plugin '@anti049/lunar-ui' { $_ }" | Out-Null
 	"$_ -> exit $code"                         # non-zero, every one
 }
 

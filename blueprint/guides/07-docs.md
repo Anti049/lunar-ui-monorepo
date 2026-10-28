@@ -46,10 +46,10 @@ bun add -d '@tailwindcss/vite' tailwindcss
 bun add -d '@sveltejs/adapter-static'
 
 # `@workspace:*` is REQUIRED. Neither package is published, so a bare
-# `bun add '@anti049/test'` resolves against the registry and fails — or,
+# `bun add '@anti049/lunar-ui'` resolves against the registry and fails — or,
 # worse, installs somebody else's package of the same name.
-bun add '@anti049/test@workspace:*'
-bun add '@anti049/test-svelte@workspace:*'
+bun add '@anti049/lunar-ui@workspace:*'
+bun add '@anti049/lunar-ui-svelte@workspace:*'
 ```
 
 `workspace:*` means "whatever is in this repository right now", which is what a
@@ -193,12 +193,12 @@ never `#lib/components/Example`.
 @import '@fontsource-variable/inter/wght.css';
 
 /* Components, tokens and themes all arrive through the plugin. */
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /*
 	A custom theme goes here too, once the plugin can generate one:
 
-	    @plugin '@anti049/test/theme' { name: brand; seed-primary: #0956aa; }
+	    @plugin '@anti049/lunar-ui/theme' { name: brand; seed-primary: #0956aa; }
 
 	That entry point does not exist yet — guide 15 builds it, and adds this
 	block back along with the alias and the SSR entry it needs.
@@ -236,7 +236,7 @@ the site. Write the workaround down as an issue instead of shipping it here.
 Check the site serves:
 
 ```powershell
-bun run --filter '@anti049/test-docs' dev
+bun run --filter '@anti049/lunar-ui-docs' dev
 ```
 
 ---
@@ -392,7 +392,7 @@ export default defineConfig(({ command }) => ({
 	resolve: {
 		/*
 			Array form with ANCHORED patterns. The object form matches by prefix,
-			so a bare '@anti049/test' would also catch '@anti049/test/theme'
+			so a bare '@anti049/lunar-ui' would also catch '@anti049/lunar-ui/theme'
 			and rewrite it to `index.ts/theme`, breaking every subpath export.
 
 			One entry per exported subpath. Guide 15 adds `./theme` and `./themes`
@@ -454,7 +454,7 @@ inside `onMount` or behind `if (browser)`, so SSR never touches it.
 ## 10. Verify the loop end to end
 
 ```powershell
-bun run --filter '@anti049/test-docs' dev
+bun run --filter '@anti049/lunar-ui-docs' dev
 ```
 
 With the site open on a page that uses a component:
@@ -526,7 +526,7 @@ lives.
 
 ```svelte
 <script lang="ts">
-	import { Button } from '@anti049/test-svelte';
+	import { Button } from '@anti049/lunar-ui-svelte';
 	import DocPage from '#lib/components/DocPage.svelte';
 	import Example from '#lib/components/Example.svelte';
 </script>
@@ -596,8 +596,8 @@ themselves.
 ## 13. Build for production, then check the built site
 
 ```powershell
-bun run --filter '@anti049/test-docs' build
-bun run --filter '@anti049/test-docs' preview
+bun run --filter '@anti049/lunar-ui-docs' build
+bun run --filter '@anti049/lunar-ui-docs' preview
 ```
 
 The preview server runs the **aliased-to-`dist`** path, which is the one your
@@ -642,7 +642,7 @@ confusing thing to find later.
 
 ```json
 {
-	"name": "@anti049/test-docs",
+	"name": "@anti049/lunar-ui-docs",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -658,8 +658,8 @@ confusing thing to find later.
 		"#lib/*": "./src/lib/*"
 	},
 	"dependencies": {
-		"@anti049/test": "workspace:*",
-		"@anti049/test-svelte": "workspace:*",
+		"@anti049/lunar-ui": "workspace:*",
+		"@anti049/lunar-ui-svelte": "workspace:*",
 		"@fontsource-variable/inter": "^5.2.8"
 	},
 	"devDependencies": {
@@ -844,7 +844,7 @@ export default defineConfig(({ command }) => ({
 	resolve: {
 		/*
 			Array form with ANCHORED patterns. The object form matches by prefix,
-			so a bare '@anti049/test' would also catch '@anti049/test/theme' and
+			so a bare '@anti049/lunar-ui' would also catch '@anti049/lunar-ui/theme' and
 			rewrite it to `index.ts/theme`, breaking every subpath export.
 
 			One entry per exported subpath. Guide 15 adds `./theme` and `./themes`
@@ -886,12 +886,12 @@ export default defineConfig(({ command }) => ({
 @import '@fontsource-variable/inter/wght.css';
 
 /* Components, tokens and themes all arrive through the plugin. */
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 
 /*
 	A custom theme goes here too, once the plugin can generate one:
 
-	    @plugin '@anti049/test/theme' { name: brand; seed-primary: #0956aa; }
+	    @plugin '@anti049/lunar-ui/theme' { name: brand; seed-primary: #0956aa; }
 
 	That entry point does not exist yet — guide 15 builds it, and adds this
 	block back along with the alias and the SSR entry it needs.
@@ -1097,7 +1097,7 @@ One of these per component.
 
 ```svelte
 <script lang="ts">
-	import { Button } from '@anti049/test-svelte';
+	import { Button } from '@anti049/lunar-ui-svelte';
 	import DocPage from '#lib/components/DocPage.svelte';
 	import Example from '#lib/components/Example.svelte';
 </script>
@@ -1202,16 +1202,16 @@ for (const dir of [path.join(pkgRoot, 'src'), import.meta.dirname]) {
 > delete the file. On an existing site, `npx sv migrate sveltekit-3` does this
 > and the `$lib` → `#lib` rename together.
 
-> **`bun add '@anti049/test'` goes to the registry.** Workspace packages are not
+> **`bun add '@anti049/lunar-ui'` goes to the registry.** Workspace packages are not
 > special to `bun add` — it resolves a bare name against npm like any other, and
 > your package is not published. Best case it fails with a 404. Worst case
 > somebody else owns that name and you silently install their code.
 >
 > **How to tell:** `bun.lock` gains a `resolution` with a registry URL rather
-> than a `link:` entry, and `node_modules/@anti049/test` is a real directory
+> than a `link:` entry, and `node_modules/@anti049/lunar-ui` is a real directory
 > instead of a symlink.
 >
-> **Fix:** name the protocol — `bun add '@anti049/test@workspace:*'` — or write
+> **Fix:** name the protocol — `bun add '@anti049/lunar-ui@workspace:*'` — or write
 > the dependency into `package.json` as `"workspace:*"` and run `bun install`.
 > The same applies to pnpm and to npm's `file:` protocol.
 
@@ -1271,7 +1271,7 @@ for (const dir of [path.join(pkgRoot, 'src'), import.meta.dirname]) {
 Verify, then commit:
 
 ```powershell
-bun run --filter '@anti049/test-docs' build
+bun run --filter '@anti049/lunar-ui-docs' build
 git add -A
 git commit -m "feat(docs): add documentation site with plugin live-reload"
 ```
@@ -1299,9 +1299,9 @@ $cp = "$env:TEMP\test-checkpoint\07"
 Remove-Item -Recurse -Force $cp -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $cp | Out-Null
 
-bun run --filter '@anti049/test' build
+bun run --filter '@anti049/lunar-ui' build
 $env:BASE_PATH = '/test'
-bun run --filter '@anti049/test-docs' build
+bun run --filter '@anti049/lunar-ui-docs' build
 Remove-Item Env:BASE_PATH
 
 Copy-Item -Recurse packages/docs/build "$cp\test"

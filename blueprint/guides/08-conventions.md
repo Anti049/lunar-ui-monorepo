@@ -321,12 +321,19 @@ This is the whole file:
 	"$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
 	"changelog": ["@changesets/changelog-github", { "repo": "Anti049/test" }],
 	"commit": false,
-	"fixed": [["@anti049/test", "@anti049/test-svelte", "@anti049/test-react", "@anti049/test-vue"]],
+	"fixed": [
+		[
+			"@anti049/lunar-ui",
+			"@anti049/lunar-ui-svelte",
+			"@anti049/lunar-ui-react",
+			"@anti049/lunar-ui-vue"
+		]
+	],
 	"linked": [],
 	"access": "public",
 	"baseBranch": "main",
 	"updateInternalDependencies": "patch",
-	"ignore": ["@anti049/test-docs"]
+	"ignore": ["@anti049/lunar-ui-docs"]
 }
 ```
 
@@ -352,7 +359,7 @@ and all four publish at the new number.
 - _For:_ one number to document and to support. "Install v2 of everything" is a
   sentence you can put in a README, and a bug report that says "2.1.0" is
   unambiguous. Peer ranges between your own packages stay trivially satisfiable.
-- _Against:_ churn. `@anti049/test-vue` publishes releases containing no change,
+- _Against:_ churn. `@anti049/lunar-ui-vue` publishes releases containing no change,
   and its changelog fills with "Updated dependencies" entries.
 
 **`linked`** — versions align only when packages happen to release together, and
@@ -400,13 +407,13 @@ seen your diff:
 
 ```md
 ---
-'@anti049/test': minor
+'@anti049/lunar-ui': minor
 ---
 
 Per-role seeds. A theme can now pin any palette to an exact colour instead of
 deriving everything from one seed:
 
-    @plugin '@anti049/test/theme' {
+    @plugin '@anti049/lunar-ui/theme' {
     	name: brand;
     	seed-primary: #0956aa;
     	seed-secondary: #52e2ac;
@@ -681,7 +688,14 @@ hooks work for anyone who clones the repository rather than only for you.
 		of everything"). The cost is version churn on packages that did not
 		change, which is cheap.
 	*/
-	"fixed": [["@anti049/test", "@anti049/test-svelte", "@anti049/test-react", "@anti049/test-vue"]],
+	"fixed": [
+		[
+			"@anti049/lunar-ui",
+			"@anti049/lunar-ui-svelte",
+			"@anti049/lunar-ui-react",
+			"@anti049/lunar-ui-vue"
+		]
+	],
 	"linked": [],
 
 	"access": "public",
@@ -693,7 +707,7 @@ hooks work for anyone who clones the repository rather than only for you.
 
 	// The docs site is private and never published. Without this, Changesets
 	// asks about it on every `bun changeset`.
-	"ignore": ["@anti049/test-docs"]
+	"ignore": ["@anti049/lunar-ui-docs"]
 }
 ```
 
@@ -957,7 +971,7 @@ git show HEAD:packages/core/probe.ts              # export const probe = 1;
 # Changesets: the plan for one minor change to the plugin.
 @'
 ---
-'@anti049/test': minor
+'@anti049/lunar-ui': minor
 ---
 
 Checkpoint entry.

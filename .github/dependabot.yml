@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # `bun`, not `npm`: the npm ecosystem does not update bun.lock, so every PR
+  # would fail `bun install --frozen-lockfile`.
+  - package-ecosystem: bun
+    directory: /
+    # Matches commitlint's scope-enum; the default `deps-dev` scope fails it.
+    commit-message: { prefix: 'chore(deps)' }
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+      tailwind:
+        patterns: ['tailwindcss', '@tailwindcss/*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }

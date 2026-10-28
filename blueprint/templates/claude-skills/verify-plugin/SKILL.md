@@ -12,7 +12,7 @@ catches those.
 ## 1. The repository's own check
 
 ```sh
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 ```
 
 Read the parity categories. Benign differences (inlined `var()` fallbacks,
@@ -42,7 +42,7 @@ bun add "$TMPDIR/$(cd packages/core && npm pack --pack-destination "$TMPDIR" | t
 ```css
 /* src/app.css */
 @import 'tailwindcss';
-@plugin '@anti049/test';
+@plugin '@anti049/lunar-ui';
 ```
 
 ```sh

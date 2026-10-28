@@ -28,10 +28,10 @@ bun blueprint/personalise.ts --scope '@Anti049' --name moonlight --owner Anti049
 ```text
 test/
 ├─ packages/
-│  ├─ core/        @anti049/test          the Tailwind plugin
-│  ├─ svelte/      @anti049/test-svelte   Svelte 5 components
-│  ├─ react/       @anti049/test-react    React 19 components
-│  ├─ vue/         @anti049/test-vue      Vue 3.5 components
+│  ├─ core/        @anti049/lunar-ui          the Tailwind plugin
+│  ├─ svelte/      @anti049/lunar-ui-svelte   Svelte 5 components
+│  ├─ react/       @anti049/lunar-ui-react    React 19 components
+│  ├─ vue/         @anti049/lunar-ui-vue      Vue 3.5 components
 │  └─ docs/        private                      the documentation site
 ├─ .github/        workflows, issue templates, agent instructions
 ├─ .vscode/        debugging, enforced conventions, recommended extensions

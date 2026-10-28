@@ -22,7 +22,7 @@ or embarrassing to fix later.
       the root one.
 - [ ] `keywords` include `tailwindcss` and `tailwind-plugin`; that is how people
       find it.
-- [ ] Names are actually available: `npm view @anti049/test`.
+- [ ] Names are actually available: `npm view @anti049/lunar-ui`.
 - [ ] The full rehearsal passes: `bun run rehearse`
       ([guide 17](17-rehearsal.md)). This is the one that sees what a consumer
       sees.
@@ -67,8 +67,8 @@ Then immediately verify from the outside, in a directory that is not the repo:
 ```powershell
 # Outside the repo, so the workspace link cannot satisfy it.
 Set-Location $env:TEMP
-npm view '@anti049/test'
-bun add '@anti049/test'   # in a scratch app; compile something with it
+npm view '@anti049/lunar-ui'
+bun add '@anti049/lunar-ui'   # in a scratch app; compile something with it
 ```
 
 `--access public` is required for the first publish of a scoped package. After
@@ -133,14 +133,14 @@ after the first 72 hours npm usually refuses it anyway. Even when it succeeds,
 that version number can never be published again.
 
 ```powershell
-npm deprecate @anti049/test@1.2.3 "Broken theme resolution; use 1.2.4"
+npm deprecate @anti049/lunar-ui@1.2.3 "Broken theme resolution; use 1.2.4"
 ```
 
 Then publish a fixed patch. The deprecation shows on install without breaking
 anyone already pinned.
 
 Deprecate the **exact version**, not a range, unless you really mean the range —
-`@anti049/test@"<2"` deprecates every 1.x release including the good ones,
+`@anti049/lunar-ui@"<2"` deprecates every 1.x release including the good ones,
 and undoing it means a second `npm deprecate` with an empty message.
 
 ---
@@ -226,7 +226,7 @@ What it changes instead:
 | `packages/*/package.json` version | `changeset version`  | Yes — in the Version PR            |
 | `packages/*/CHANGELOG.md`         | `changeset version`  | Yes — created on the first release |
 | `.changeset/*.md`                 | consumed and deleted | Yes — their removal is the diff    |
-| Git tags (`@anti049/name@1.2.0`)    | `changeset publish`  | Pushed by the release workflow     |
+| Git tags (`@anti049/name@1.2.0`)  | `changeset publish`  | Pushed by the release workflow     |
 | The npm registry                  | `changeset publish`  | Not a file, and not reversible     |
 
 Every one of these is produced by the workflow from
@@ -342,8 +342,8 @@ bun run build:packages
 bunx changeset publish
 Remove-Item Env:npm_config_registry
 
-npm view '@anti049/test' version --registry $reg          # 0.0.0
-npm view '@anti049/test-docs' --registry $reg 2>&1 | Select-String E404   # the docs site never publishes
+npm view '@anti049/lunar-ui' version --registry $reg          # 0.0.0
+npm view '@anti049/lunar-ui-docs' --registry $reg 2>&1 | Select-String E404   # the docs site never publishes
 git tag                                                    # one tag per published package
 Pop-Location
 ```
@@ -355,12 +355,12 @@ the peer graph through the registry:
 New-Item -ItemType Directory -Force "$cp\app" | Out-Null
 Push-Location "$cp\app"
 '{ "name": "consumer", "private": true, "type": "module" }' | Set-Content package.json
-npm install --no-audit --no-fund --registry $reg '@anti049/test' '@anti049/test-react' react react-dom
-npm ls '@anti049/test'                                     # one copy, deduped under the binding
+npm install --no-audit --no-fund --registry $reg '@anti049/lunar-ui' '@anti049/lunar-ui-react' react react-dom
+npm ls '@anti049/lunar-ui'                                     # one copy, deduped under the binding
 
 # Step 7: deprecate, never unpublish.
-npm deprecate '@anti049/test@0.0.0' 'Checkpoint: use 0.0.1' --registry $reg
-npm install --no-audit --no-fund --registry $reg '@anti049/test@0.0.0'   # prints the deprecation warning
+npm deprecate '@anti049/lunar-ui@0.0.0' 'Checkpoint: use 0.0.1' --registry $reg
+npm install --no-audit --no-fund --registry $reg '@anti049/lunar-ui@0.0.0'   # prints the deprecation warning
 Pop-Location
 
 # A published version cannot be replaced — only superseded.
@@ -369,7 +369,7 @@ npm publish --registry $reg; $LASTEXITCODE                 # non-zero: cannot pu
 npm version patch --no-git-tag-version
 npm publish --registry $reg
 Pop-Location
-npm view '@anti049/test' versions --registry $reg          # [ '0.0.0', '0.0.1' ]
+npm view '@anti049/lunar-ui' versions --registry $reg          # [ '0.0.0', '0.0.1' ]
 ```
 
 Then clean up: `npm logout --registry http://localhost:4873`, stop Verdaccio

@@ -71,7 +71,7 @@ restates the obvious dilutes the five above.
 ## Verifying work
 
 Run the package's own check, not just a build:
-bun run --filter '@anti049/test' check
+bun run --filter '@anti049/lunar-ui' check
 `test/e2e.test.ts` compiles every component twice — once from raw CSS, once
 through the compiled plugin — and compares selector by selector. A green run
 means the plugin still faithfully represents the CSS.
@@ -166,7 +166,7 @@ description: Add a component across the plugin and all three framework bindings,
 1. `packages/core/src/components/<name>.css` — foundation in
    `@layer <name>.l1.l2.l3`, variants in `.l1.l2`, state in `.l1`.
 2. Add it to `src/components/_index.css`.
-3. `bun run --filter '@anti049/test' build` and confirm it appears in the
+3. `bun run --filter '@anti049/lunar-ui' build` and confirm it appears in the
    bundle list.
 4. Bindings in `packages/{svelte,react,vue}` — identical props and exports.
 5. Docs page + class table generated from the registry.
@@ -245,7 +245,7 @@ alwaysApply: false
   `.l1` (state). Deeper is weaker, regardless of order.
 - `src/base/` declares tokens and no classes; `src/utilities/` holds
   non-namespaced utilities. A utility in `base/` becomes invisible context.
-- After any change: `bun run --filter '@anti049/test' check`.
+- After any change: `bun run --filter '@anti049/lunar-ui' check`.
 ```
 
 Use `alwaysApply: true` sparingly — **one** always-on rule pointing at
@@ -368,7 +368,7 @@ Cursor, paste the same questions into a chat opened on the clone:
 
 ```powershell
 claude -p "Which single command verifies a change to the plugin? Reply with the command only."
-# → bun run --filter '@anti049/test' check
+# → bun run --filter '@anti049/lunar-ui' check
 
 claude -p "To change the badge's border radius, which file do you edit? Reply with the path only."
 # → packages/core/src/components/badge.css — never generated/ or dist/
