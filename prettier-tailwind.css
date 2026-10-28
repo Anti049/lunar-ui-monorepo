@@ -10,9 +10,13 @@
 	WHY IT LOADS THE PLUGIN FROM SOURCE
 	`@plugin './packages/core/index.ts'` — a relative path to the TypeScript
 	entry, NOT the package specifier '@anti049/lunar-ui'. Tailwind loads
-	plugins through jiti, which reads TypeScript directly, so formatting never
-	depends on the package having been compiled. Point this at the built
-	`dist/` and every `prettier --check` fails on a clean checkout.
+	plugins through jiti, which reads TypeScript directly, so formatting does not
+	depend on `tsc` having run.
+
+	It DOES depend on core's generated/ (index.ts imports it), which is
+	gitignored. On a clean checkout run `bun run build:packages` first: without
+	it the plugin fails to load, classes sort as if it were absent, and
+	`prettier --check` flags files that are correctly formatted.
 */
 @import 'tailwindcss';
 @plugin './packages/core/index.ts';

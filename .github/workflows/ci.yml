@@ -18,7 +18,10 @@ jobs:
       - name: Lint commit messages
         if: github.event_name == 'pull_request'
         run: bunx commitlint --from origin/${{ github.base_ref }} --to HEAD --verbose
-      - run: bun run lint
-      # Before check: core's export-parity test imports every binding's dist/.
+      # Before lint: prettier's Tailwind plugin loads core's index.ts, which
+      # imports the gitignored generated/. Without it, classes sort differently
+      # from a local run and the check fails. Before check, too: core's
+      # export-parity test imports every binding's dist/.
       - run: bun run build:packages
+      - run: bun run lint
       - run: bun run check # build + typecheck + tests + publint
