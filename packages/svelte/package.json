@@ -1,6 +1,6 @@
 {
 	"name": "@anti049/lunar-ui-svelte",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"type": "module",
 	"license": "MIT",
 	"description": "Svelte 5 components for the test design system.",
@@ -42,7 +42,7 @@
 		"**/*.css"
 	],
 	"peerDependencies": {
-		"@anti049/lunar-ui": "^0.0.0",
+		"@anti049/lunar-ui": "^0.1.0",
 		"svelte": "^5.0.0"
 	},
 	"dependencies": {
