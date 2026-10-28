@@ -1,0 +1,30 @@
+{
+	// Conventional Commits extension
+	"conventionalCommits.scopes": ["core", "svelte", "react", "vue", "docs", "repo", "deps"],
+	"conventionalCommits.autoCommit": false,
+	"conventionalCommits.showEditor": true,
+
+	// Native git input validation — the ruler turns red past 72 characters
+	"git.inputValidation": true,
+	"git.inputValidationLength": 72,
+	"git.inputValidationSubjectLength": 72,
+
+	// Formatting
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+
+	// Tailwind IntelliSense inside cn()/clsx()/cva()
+	"tailwindCSS.experimental.classRegex": [
+		["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"],
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"]
+	],
+	"tailwindCSS.classAttributes": ["class", "className", "ngClass", "class:list"],
+
+	// The design system is authored in CSS; treat those files as Tailwind
+	"files.associations": { "*.css": "tailwindcss" },
+
+	// Don't let the editor's TS server fight the repo's version
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.tsdk.promptToUseWorkspaceVersion": true
+}

@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"vivaxy.vscode-conventional-commits", // guided commit builder in the SCM panel
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"svelte.svelte-vscode",
+		"Vue.volar",
+		"bradlc.vscode-tailwindcss",
+		"ms-vscode.vscode-typescript-next"
+	]
+}

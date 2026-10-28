@@ -1,0 +1,17 @@
+# <type>(<scope>): <subject> ≤72 chars, imperative, no full stop
+
+#
+
+# <body> what and why, not how
+
+#
+
+# BREAKING CHANGE: <what changed, and what to change it to>
+
+# Refs: #<issue>
+
+#
+
+# types: feat fix perf refactor docs test build ci chore revert
+
+# scopes: core svelte react vue docs repo deps

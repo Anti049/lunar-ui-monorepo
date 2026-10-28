@@ -1,0 +1,24 @@
+{
+	"$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
+	"baseBranch": "main",
+	"access": "public",
+	"format": "auto",
+	"changelog": [
+		"@changesets/changelog-github",
+		{
+			"repo": "Anti049/lunar-ui-monorepo"
+		}
+	],
+	"commit": false,
+	"ignore": ["@anti049/lunar-ui-docs"],
+	"fixed": [
+		[
+			"@anti049/lunar-ui",
+			"@anti049/lunar-ui-svelte",
+			"@anti049/lunar-ui-react",
+			"@anti049/lunar-ui-vue"
+		]
+	],
+	"linked": [],
+	"updateInternalDependencies": "patch"
+}
