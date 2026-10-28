@@ -1,0 +1,7 @@
+/*
+	Registers this package's components with the consumer's Tailwind scan.
+	Without this import their build never looks inside node_modules, every
+	utility class used inside these components is tree-shaken away, and the
+	components render unstyled.
+*/
+@source '../**/*.svelte';

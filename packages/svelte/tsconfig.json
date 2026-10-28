@@ -1,0 +1,24 @@
+{
+	/*
+		SvelteKit GENERATES the config this extends, at node_modules/$app/tsconfig.json,
+		with the `.svelte` file mappings, the generated route types and the right
+		module settings. Extending the repo base instead would lose all of that.
+
+		`$app/tsconfig` sets no `include` or `exclude`, so both are stated here.
+		The options below restate the few that matter for a published package.
+	*/
+	"extends": "$app/tsconfig",
+	"include": ["src", "vite.config.ts"],
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		// `svelte-package` emits the declarations; tsc here is a checker only.
+		"moduleResolution": "bundler"
+	}
+}
