@@ -48,7 +48,7 @@
 		"postcss": "^8.5.32",
 		"postcss-js": "^5.1.0",
 		"publint": "^0.3.25",
-		"typescript": "~6.0.3"
+		"typescript": "~7.0.2"
 	},
 	"dependencies": {
 		"@material/material-color-utilities": "^0.4.0"
