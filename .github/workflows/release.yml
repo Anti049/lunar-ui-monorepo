@@ -23,7 +23,7 @@ jobs:
       # Build first: core's export-parity test imports every binding's dist/.
       - run: bun run build:packages
       - run: bun run check # never publish something unverified
-      - uses: changesets/action@v1
+      - uses: changesets/action@v2
         with:
           version: bunx changeset version
           publish: bunx changeset publish
