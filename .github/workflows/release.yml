@@ -18,6 +18,8 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: actions/setup-node@v7
         with: { node-version: 22, registry-url: https://registry.npmjs.org }
+      # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
+      - run: npm install -g npm@11
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
       # Build first: core's export-parity test imports every binding's dist/.
@@ -29,7 +31,8 @@ jobs:
           publish-script: bunx changeset publish
           pr-title: 'chore: version packages'
           commit-message: 'chore: version packages'
+        # No npm token: npm authenticates through the trusted publisher
+        # configured on each package, using the id-token permission above.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
