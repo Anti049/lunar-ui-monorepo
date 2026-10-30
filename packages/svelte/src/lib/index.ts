@@ -9,8 +9,22 @@ import './styles.css';
 export { default as Button } from './components/Button.svelte';
 
 // Behaviour.
-export { ripple, rippleRoot, initRipple } from './actions/ripple.js';
+export {
+	ripple,
+	rippleRoot,
+	initRipple,
+	enableRipple,
+	disableRipple,
+	isRippleEnabled
+} from './actions/ripple.js';
 export type { RippleOptions, RippleDelegateOptions } from './actions/ripple.js';
+export {
+	initScrollbarFade,
+	enableScrollbarFade,
+	disableScrollbarFade,
+	isScrollbarFadeEnabled
+} from './actions/scrollbar.js';
+export type { ScrollbarFadeOptions } from './actions/scrollbar.js';
 
 // The class-merge helper, exported so consumers composing on top of a component
 // resolve conflicts the same way the component does.

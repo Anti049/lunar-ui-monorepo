@@ -1,3 +1,4 @@
+import { createSubscriber } from 'svelte/reactivity';
 import type { Action } from 'svelte/action';
 
 export interface RippleOptions {
@@ -325,3 +326,39 @@ export const rippleRoot: Action<HTMLElement, RippleDelegateOptions | undefined> 
 		}
 	};
 };
+
+/*
+	A document-wide switch over initRipple, for turning ripples on and off from
+	anywhere (a settings toggle, a docs page) without holding on to the cleanup
+	function yourself. One listener at most: enabling twice is a no-op.
+*/
+let stopDocumentRipple: (() => void) | null = null;
+/*
+	Makes isRippleEnabled() reactive without a rune, so this stays a plain .ts
+	module that works uncompiled (a `$state` here would need the consumer's
+	Svelte compiler to run on it). Reading it inside an effect or template
+	subscribes; enabling or disabling notifies.
+*/
+let notifyRipple = (): void => {};
+const subscribeRipple = createSubscriber((update) => {
+	notifyRipple = update;
+	return () => (notifyRipple = () => {});
+});
+
+/** Starts document-wide ripples, unless they are already on. */
+export function enableRipple(options: RippleDelegateOptions = {}): void {
+	stopDocumentRipple ??= initRipple(document, options);
+	notifyRipple();
+}
+
+/** Stops document-wide ripples. Ripples already running finish normally. */
+export function disableRipple(): void {
+	stopDocumentRipple?.();
+	stopDocumentRipple = null;
+	notifyRipple();
+}
+
+export function isRippleEnabled(): boolean {
+	subscribeRipple();
+	return stopDocumentRipple !== null;
+}
