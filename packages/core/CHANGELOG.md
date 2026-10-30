@@ -1,5 +1,11 @@
 # @anti049/lunar-ui
 
+## 0.2.0
+
+### Minor Changes
+
+- [`6effd19`](https://github.com/Anti049/lunar-ui-monorepo/commit/6effd19e125b60f60fe81fbf921b15826c713cec) Thanks [@Anti049](https://github.com/Anti049)! - Add drawer, sidebar, scaffold and scrollbar components; sidebar-rail: variant; scrollbar fade and ripple on/off switches; fix CommonJS types in the React package.
+
 ## 0.1.1
 
 ### Patch Changes
