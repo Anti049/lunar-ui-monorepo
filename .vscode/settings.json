@@ -12,7 +12,6 @@
 	// Formatting
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
 
 	// Tailwind IntelliSense inside cn()/clsx()/cva()
 	"tailwindCSS.experimental.classRegex": [
