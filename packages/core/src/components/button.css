@@ -402,8 +402,16 @@
  *   1. Explicit `.button-leading` / `.button-trailing` classes
  *      (preferred for SSR + Svelte components — deterministic)
  *   2. :has() progressive enhancement — auto-detects SVG icons in hand-written
- *      HTML. Skipped when the icon is the only child (icon-only button)
- *      or when a .sr-only sibling exists (accessible label pattern).
+ *      HTML. Applies only when the icon is the first (or last) VISIBLE
+ *      child and at least one other visible child exists. Invisible
+ *      children are skipped when counting:
+ *        .lunar-ripple   appended while pressed; counting it made the
+ *                        button change width until the ripple was removed
+ *        .sr-only        an accessible label, so `<svg/><span class="sr-only">`
+ *                        is still icon-only
+ *        .hidden, [hidden], input[type="hidden"], template, script, style
+ *      Selectors cannot see text nodes, so `<svg/> Label` counts as
+ *      icon-only. Wrap the label in a <span> to get the slot padding.
  *
  * ⚠️  Padding values match half of the base horizontal padding for each size.
  *     Keep in sync with SIZES utilities if you tune the base padding.
@@ -411,9 +419,37 @@
 @utility button {
 	@layer button.l1.l2 {
 		/* Leading icon: pad the start so the glyph is not flush to the edge. */
-		&:has(> svg:first-child:not(:only-child)):not(:has(> .sr-only)):not(.button-square):not(
-				.button-circle
-			),
+		&:has(
+				> svg:nth-child(
+						1
+							of
+							:not(
+								.lunar-ripple,
+								.sr-only,
+								.hidden,
+								[hidden],
+								input[type='hidden'],
+								template,
+								script,
+								style
+							)
+					):not(
+						:nth-last-child(
+							1
+								of
+								:not(
+									.lunar-ripple,
+									.sr-only,
+									.hidden,
+									[hidden],
+									input[type='hidden'],
+									template,
+									script,
+									style
+								)
+						)
+					)
+			):not(.button-square):not(.button-circle),
 		&:has(> .button-leading) {
 			@apply pl-2;
 			&.button-xs {
@@ -431,9 +467,37 @@
 		}
 
 		/* Trailing icon: the same, mirrored. */
-		&:has(> svg:last-child:not(:only-child)):not(:has(> .sr-only)):not(.button-square):not(
-				.button-circle
-			),
+		&:has(
+				> svg:nth-last-child(
+						1
+							of
+							:not(
+								.lunar-ripple,
+								.sr-only,
+								.hidden,
+								[hidden],
+								input[type='hidden'],
+								template,
+								script,
+								style
+							)
+					):not(
+						:nth-child(
+							1
+								of
+								:not(
+									.lunar-ripple,
+									.sr-only,
+									.hidden,
+									[hidden],
+									input[type='hidden'],
+									template,
+									script,
+									style
+								)
+						)
+					)
+			):not(.button-square):not(.button-circle),
 		&:has(> .button-trailing) {
 			@apply pr-2;
 			&.button-xs {

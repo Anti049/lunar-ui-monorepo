@@ -1,0 +1,146 @@
+/* 
+	Table
+
+	Data tables ported from DaisyUI, adapted to the lunar-ui surface palette.
+	`.table` owns the base layout, cell padding, row borders and header styling.
+	Modifiers add zebra striping and sticky rows/columns; sizes scale padding and
+	text. Compose with standard <thead>/<tbody>/<tfoot>/<tr>/<th>/<td> markup.
+*/
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * The base .table utility. Every table has this.
+ * ========================================================================== */
+@utility table {
+	@layer table.l1.l2.l3 {
+		@apply relative w-full border-separate border-spacing-0 rounded-sm surface text-left text-body-small rtl:text-right;
+
+		/* Cells */
+		:where(th, td) {
+			@apply px-4 py-3 align-middle whitespace-nowrap;
+		}
+
+		/* Header and footer */
+		:where(thead, tfoot) {
+			@apply surface-container text-on-surface-variant;
+		}
+		:where(thead, tfoot) :where(th, td) {
+			@apply font-semibold;
+		}
+
+		/* Row separators */
+		:where(tbody tr:not(:last-child)) :where(th, td) {
+			@apply border-b border-outline-variant/38;
+		}
+
+		/* Round the outer corners, since border-separate ignores the table radius */
+		:where(thead) tr:first-child :where(th, td):first-child {
+			@apply rounded-tl-sm;
+		}
+		:where(thead) tr:first-child :where(th, td):last-child {
+			@apply rounded-tr-sm;
+		}
+		:where(tbody) tr:last-child :where(th, td):first-child {
+			@apply rounded-bl-sm;
+		}
+		:where(tbody) tr:last-child :where(th, td):last-child {
+			@apply rounded-br-sm;
+		}
+	}
+}
+
+/* =============================================================================
+ * MODIFIERS (l2)
+ * Zebra striping and sticky rows/columns.
+ * ========================================================================== */
+@utility table-zebra {
+	@layer table.l1.l2 {
+		tbody tr {
+			@apply odd:surface-container-low even:surface-container-lowest;
+		}
+	}
+}
+@utility table-pin-rows {
+	@layer table.l1.l2 {
+		:where(thead, tfoot) tr {
+			@apply sticky z-1 surface-container;
+		}
+		thead tr {
+			@apply top-0;
+		}
+		tfoot tr {
+			@apply bottom-0;
+		}
+	}
+}
+@utility table-pin-cols {
+	@layer table.l1.l2 {
+		tr th {
+			@apply sticky right-0 left-0 z-1 surface-container;
+		}
+	}
+}
+
+/* =============================================================================
+ * SIZES (l2)
+ * Scale cell padding and body text.
+ * ========================================================================== */
+@utility table-xs {
+	@layer table.l1.l2 {
+		:not(thead, tfoot) tr {
+			font-size: 0.6875rem;
+		}
+
+		:where(th, td) {
+			@apply p-1;
+		}
+	}
+}
+
+@utility table-sm {
+	@layer table.l1.l2 {
+		:not(thead, tfoot) tr {
+			font-size: 0.75rem;
+		}
+
+		:where(th, td) {
+			@apply p-2;
+		}
+	}
+}
+
+@utility table-md {
+	@layer table.l1.l2 {
+		:not(thead, tfoot) tr {
+			font-size: 0.875rem;
+		}
+
+		:where(th, td) {
+			@apply p-3;
+		}
+	}
+}
+
+@utility table-lg {
+	@layer table.l1.l2 {
+		:not(thead, tfoot) tr {
+			font-size: 1.125rem;
+		}
+
+		:where(th, td) {
+			@apply p-4;
+		}
+	}
+}
+
+@utility table-xl {
+	@layer table.l1.l2 {
+		:not(thead, tfoot) tr {
+			font-size: 1.375rem;
+		}
+
+		:where(th, td) {
+			@apply p-5;
+		}
+	}
+}

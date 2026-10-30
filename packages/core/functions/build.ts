@@ -156,9 +156,16 @@ const builtinCss = runTailwind(
 	'builtins'
 );
 
+/*
+	Built-ins this library claims on purpose. `table` collides with Tailwind's
+	`display: table`, which is a no-op on the <table> it styles anyway. Only add
+	a name here when Tailwind's rule cannot fight the component's.
+*/
+const CLAIMED_BUILTINS = new Set(['table']);
+
 const builtins = new Set<string>();
 for (const match of builtinCss.matchAll(/^\s*\.([-\w]+)\s*(?:,|\{)/gm)) {
-	if (classOwners.has(match[1])) builtins.add(match[1]);
+	if (classOwners.has(match[1]) && !CLAIMED_BUILTINS.has(match[1])) builtins.add(match[1]);
 }
 for (const name of builtins) classOwners.delete(name);
 
@@ -262,7 +269,7 @@ if (unattributed.length) {
 */
 const SHAPE_TOKENS: Record<string, string> = {
 	'--radius-selector': '0.5rem',
-	'--radius-field': '0.5rem',
+	'--radius-field': '0.25rem',
 	'--radius-box': '1rem',
 	'--size-selector': '1.5rem',
 	'--size-field': '2.5rem',

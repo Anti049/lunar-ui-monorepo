@@ -15,7 +15,8 @@
 	--breakpoint-expanded: 1301px;
 	--breakpoint-large: 1600px;
 
-	/* Fonts. The consumer supplies the files; this only names them. */
-	--font-sans: 'Inter Variable', ui-sans-serif, system-ui;
+	/* Fonts */
+	--font-sans: 'Plus Jakarta Sans Variable', 'Inter Variable', ui-sans-serif, system-ui;
+	--font-serif: 'Inter Variable', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 	--font-mono: 'Fira Code Variable', ui-monospace, monospace;
 }

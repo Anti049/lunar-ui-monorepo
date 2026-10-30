@@ -1,0 +1,123 @@
+/*
+	Scaffold
+
+	The page frame, after Flutter's Scaffold. `.scaffold` is a single-column grid
+	whose slots claim fixed rows, so a slot that is absent collapses to nothing
+	and the body always takes the remaining height:
+
+	  1  appbar   .scaffold-appbar   (usually on an .appbar)
+	  2  body     .scaffold-body     the only scroll container
+	  3  sheet    .scaffold-sheet    persistent bottom sheet
+	  4  footer   .scaffold-footer   persistent footer buttons
+	  5  navbar   .scaffold-navbar   bottom navigation
+
+	Those rows fill the middle of three columns. The outer two are `auto` and
+	empty, so they collapse, until a `.sidebar` (sidebar.css) docks into one.
+
+	`.scaffold-fab` floats over the bottom of the body. Drawers and sidebars are
+	their own components (drawer.css, sidebar.css); the scaffold is the
+	positioned box a drawer fills and the grid a sidebar docks into.
+
+	Usage:
+	  <div class="scaffold h-screen">
+	    <header class="appbar scaffold-appbar">…</header>
+	    <main class="scaffold-body">…</main>
+	    <button class="button button-filled button-primary scaffold-fab">…</button>
+	    <nav class="scaffold-navbar">…</nav>
+	    <div class="drawer-scrim"></div>
+	    <aside class="drawer medium:sidebar-rail expanded:sidebar">…</aside>
+	  </div>
+
+	The scaffold fills its parent (`h-full`), so the parent needs a definite
+	height; put `h-screen` on the scaffold itself when it is the whole page.
+*/
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * The base .scaffold utility. Every scaffold has this.
+ * ========================================================================== */
+@utility scaffold {
+	@layer scaffold.l1.l2.l3 {
+		/* minmax(0, 1fr), not 1fr: a bare 1fr column grows to fit wide content
+		 * such as a table, and the page then scrolls sideways. */
+		@apply relative isolate grid h-full w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto_auto] overflow-hidden surface text-on-surface;
+	}
+}
+
+/* =============================================================================
+ * SLOTS (l2)
+ * The grid rows, and the FAB that floats above them.
+ * ========================================================================== */
+@utility scaffold-appbar {
+	@layer scaffold.l1.l2 {
+		@apply z-1 col-start-2 row-start-1;
+	}
+}
+@utility scaffold-body {
+	@layer scaffold.l1.l2 {
+		/* min-h-0 matters: a scroll container's automatic minimum is 0, but the
+		 * grid row's is not, and without it the row grows instead of scrolling. */
+		@apply relative col-start-2 row-start-2 min-h-0 min-w-0 overflow-y-auto overscroll-contain;
+	}
+}
+@utility scaffold-sheet {
+	@layer scaffold.l1.l2 {
+		@apply z-1 col-start-2 row-start-3 rounded-t-(--radius-box) surface-container-low elevation-1;
+	}
+}
+@utility scaffold-footer {
+	@layer scaffold.l1.l2 {
+		@apply z-1 col-start-2 row-start-4 flex flex-row flex-wrap items-center justify-end gap-2 border-t border-outline-variant/38 surface px-4 py-2;
+	}
+}
+@utility scaffold-navbar {
+	@layer scaffold.l1.l2 {
+		@apply z-1 col-start-2 row-start-5;
+	}
+}
+
+/*
+	The FAB shares the body's cell rather than being absolutely positioned, so it
+	always clears the sheet, footer and navbar below it, whichever are present.
+*/
+@utility scaffold-fab {
+	@layer scaffold.l1.l2 {
+		@apply relative z-2 col-start-2 row-start-2 m-4 self-end justify-self-end;
+	}
+}
+
+/* =============================================================================
+ * MODIFIERS (l1)
+ * Highest per-component priority. Re-place a slot or reshape the grid.
+ * ========================================================================== */
+@utility scaffold-fab-start {
+	@layer scaffold.l1 {
+		@apply justify-self-start;
+	}
+}
+@utility scaffold-fab-center {
+	@layer scaffold.l1 {
+		@apply justify-self-center;
+	}
+}
+
+/*
+	Flutter's extendBody and extendBodyBehindAppBar: the body runs underneath the
+	bars instead of stopping at them, for translucent or floating bars. The bars
+	already sit above it (z-1); the body is responsible for padding its own
+	content clear of them.
+*/
+@utility scaffold-extend-body {
+	@layer scaffold.l1 {
+		& > .scaffold-body {
+			@apply row-end-6;
+		}
+	}
+}
+@utility scaffold-extend-body-behind-appbar {
+	@layer scaffold.l1 {
+		& > .scaffold-body {
+			@apply row-start-1;
+		}
+	}
+}

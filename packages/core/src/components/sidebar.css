@@ -1,0 +1,189 @@
+/*
+	Sidebar
+
+	A docked, always-visible navigation panel. Inside a `.scaffold` it takes the
+	start column for the full height. Two sizes, as peers rather than a base and
+	a modifier, so each can be switched on at its own breakpoint:
+
+	  sidebar        full width (--sidebar-width, 16rem)
+	  sidebar-rail   minimized (--sidebar-rail-width, 4rem); `.sidebar-label`
+	                 children fade out, `.sidebar-item` icons are centred
+	                 without moving (see sidebar-item), and tooltips wrapping a
+	                 `.sidebar-item` switch on
+
+	Paired with `.drawer` (drawer.css), the same element is a modal drawer until
+	a sidebar class switches on, then docks:
+
+	  <aside class="drawer medium:sidebar-rail expanded:sidebar">
+	    <a class="sidebar-item"><Icon /><span class="sidebar-label">Home</span></a>
+	  </aside>
+
+	Above `expanded` both classes are active. `sidebar` wins because Tailwind
+	emits larger breakpoints later, which is the same ordering `md:w-16 xl:w-64`
+	relies on. A docked drawer ignores `data-open`.
+
+	`--sidebar-rail` (0 or 1) carries the size to descendants: labels fade and
+	item tooltips switch on from it. Use it in `calc()` for anything numeric,
+	or the `sidebar-rail:` variant (below) for anything else. It is a variable rather than a container
+	query on purpose. A container is a containing block for `position: fixed`
+	descendants, which would trap every tooltip inside the sidebar's scroll box
+	and clip it at the sidebar's edge.
+*/
+
+/* =============================================================================
+ * CUSTOM VARIANTS
+ *
+ * Lets anything inside a sidebar respond to it being minimized, e.g.
+ *   <span class="sidebar-rail:hidden">…</span>
+ *   <div class="flex-row sidebar-rail:flex-col">…</div>
+ *
+ * A style query on the inherited `--sidebar-rail`, not a class selector: with
+ * `medium:sidebar-rail expanded:sidebar` both classes are in the markup at
+ * every width, so only the variable says which one is in effect. A style
+ * query needs no `container-type`, so it does not trap fixed tooltips the way
+ * a size container would.
+ *
+ * It matches DESCENDANTS of the sidebar only. A style query reads the nearest
+ * ancestor, and the sidebar's own parent has no `--sidebar-rail`.
+ * ========================================================================== */
+@custom-variant sidebar-rail {
+	@container style(--sidebar-rail: 1) {
+		& {
+			@slot;
+		}
+	}
+}
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * The full-width sidebar.
+ * ========================================================================== */
+@utility sidebar {
+	@layer sidebar.l1.l2.l3 {
+		--sidebar-rail: 0;
+		@apply relative flex min-h-0 w-(--sidebar-width,16rem) flex-col overflow-y-auto border-e border-outline-variant/38 surface-container-low transition-[width] animated;
+
+		.scaffold > & {
+			@apply col-start-1 row-span-full;
+		}
+	}
+
+	/*
+		Docking a drawer. Written into the DRAWER's top tier, not the sidebar's
+		own layers: two components' layers have no guaranteed order between them
+		in a consumer's CSS, but drawer.l1 always outranks the drawer's base. Only
+		properties both components set belong here.
+
+		Because of the layer name, the build ships this block in the drawer
+		bundle. It only ever matches an element carrying both classes, so that
+		is harmless either way.
+	*/
+	@layer drawer.l1 {
+		&.drawer {
+			/* translate-none, not translate-x-0: any translate makes the drawer a
+			 * containing block for fixed descendants, and traps item tooltips. */
+			@apply visible relative inset-auto z-auto w-(--sidebar-width,16rem) max-w-none translate-none rounded-none elevation-0 transition-[width];
+		}
+		&.drawer-end {
+			@apply border-s border-e-0;
+		}
+
+		/* A docked drawer is not modal, so an open one must not raise the scrim. */
+		:where(:has(> &.drawer[data-open])) > .drawer-scrim {
+			@apply pointer-events-none opacity-0;
+		}
+	}
+
+	@layer sidebar.l1 {
+		.scaffold > &.drawer-end {
+			@apply col-start-3;
+		}
+	}
+}
+
+/*
+	Applies the whole of `sidebar`, then narrows it. The width is overridden in
+	the SAME tier as the sidebar's own, not a higher one, so that a later
+	breakpoint's `sidebar` can widen it again.
+*/
+@utility sidebar-rail {
+	@apply sidebar;
+
+	@layer sidebar.l1.l2.l3 {
+		--sidebar-rail: 1;
+		@apply w-(--sidebar-rail-width,4rem);
+	}
+	@layer drawer.l1 {
+		&.drawer {
+			@apply w-(--sidebar-rail-width,4rem);
+		}
+	}
+}
+
+/* =============================================================================
+ * SLOTS (l2)
+ * ========================================================================== */
+/*
+	An icon-and-label row. The icon never moves: the inline padding is chosen so
+	that, left-aligned, it already sits at the centre of the RAIL. The sidebar's
+	width then animates around a stationary icon, and only the label changes.
+
+	Centring with justify-content instead would make the icon jump the moment
+	the alignment flipped, since justify-content cannot be transitioned.
+
+	The arithmetic reads three variables, so it stays right when any is changed:
+	  --sidebar-rail-width   the rail's width
+	  --sidebar-padding      the sidebar's own inline padding (match your p-*)
+	  --sidebar-icon-size    the icon's width
+*/
+@utility sidebar-item {
+	@layer sidebar.l1.l2 {
+		@apply flex h-10 w-full min-w-0 flex-row items-center gap-3 rounded-sm text-title-small;
+		/* (rail - both sides of sidebar padding - icon) / 2 */
+		padding-inline: calc(
+			(
+					var(--sidebar-rail-width, 4rem) - 2 * var(--sidebar-padding, 0.5rem) -
+						var(--sidebar-icon-size, 1.5rem)
+				) /
+				2
+		);
+
+		/* shrink-0, or flex squeezes the icon while the width is animating. */
+		& > svg {
+			@apply size-(--sidebar-icon-size,1.5rem) shrink-0;
+		}
+	}
+}
+
+/*
+	A tooltip wrapping an item, e.g.
+	  <div class="tooltip tooltip-right" data-tooltip="Home"><a class="sidebar-item">…
+
+	It repeats the label, so it is only switched on in the rail, where the label
+	is hidden. And it is a block, not the tooltip's usual inline-block, or the
+	item inside it stops filling the sidebar's width.
+
+	Written into the TOOLTIP's top tier for the same reason the sidebar writes
+	into the drawer's: two components' layers have no guaranteed order, but
+	tooltip.l1 always outranks the tooltip's own `inline-block`.
+*/
+/* @utility sidebar-item {
+	@layer tooltip.l1 {
+		:where(.tooltip):has(> &) {
+			@apply block;
+			--tooltip-enabled: var(--sidebar-rail, 0);
+		}
+	}
+} */
+
+/*
+	Faded rather than removed, for two reasons. display: none cannot be
+	transitioned, so it snapped mid-way through the width animation; and it took
+	the item's accessible name with it, leaving a rail of unlabelled buttons.
+*/
+@utility sidebar-label {
+	@layer sidebar.l1.l2 {
+		@apply min-w-0 truncate transition-opacity animated;
+		opacity: calc(1 - var(--sidebar-rail, 0));
+	}
+}

@@ -1,0 +1,81 @@
+/*
+	Drawer
+
+	A modal panel that slides in from the start edge (add `.drawer-end` for the
+	end edge) and is hidden off-screen otherwise. It is absolutely positioned, so
+	it needs a positioned ancestor to fill; `.scaffold` is one.
+
+	Usage:
+	  <div class="scaffold h-screen">
+	    …
+	    <div class="drawer-scrim"></div>
+	    <aside class="drawer" data-open>…</aside>
+	  </div>
+
+	State: a drawer opens with `data-open`, and a `.drawer-scrim` sibling follows
+	it on its own. Toggling the attribute is the consumer's job. A closed drawer
+	is `invisible` as well as off-screen, so it cannot be tabbed into and needs
+	no `inert`.
+
+	To dock a drawer on larger layouts instead, see sidebar.css:
+	  <aside class="drawer medium:sidebar-rail expanded:sidebar">…</aside>
+*/
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * The base .drawer utility. Every drawer has this.
+ * ========================================================================== */
+
+/*
+	Visibility is transitioned alongside the translate, which keeps a closing
+	drawer visible until it has finished sliding out.
+
+	Open is `translate-none`, not `translate-x-0`. Any translate other than
+	`none`, even a zero one, makes the drawer the containing block for its
+	`position: fixed` descendants. Tooltips inside it would then be placed
+	against the drawer instead of the viewport, and the hidden bubbles of items
+	scrolled out of view in a nested list would stretch the drawer's own scroll
+	height. `none` still transitions, as the identity.
+*/
+@utility drawer {
+	@layer drawer.l1.l2.l3 {
+		@apply invisible absolute inset-y-0 inset-s-0 z-4 flex w-3/4 max-w-[calc(100%-3.5rem)] -translate-x-full flex-col overflow-y-auto rounded-e-(--radius-box) surface-container-low elevation-1 transition-[translate,visibility] animated rtl:translate-x-full;
+
+		&[data-open] {
+			@apply visible translate-none;
+		}
+	}
+}
+
+/* =============================================================================
+ * SLOTS (l2)
+ * The scrim behind an open drawer.
+ * ========================================================================== */
+
+/*
+	Matched on the shared parent rather than as a sibling combinator, so the
+	scrim and the drawer can come in either order.
+*/
+@utility drawer-scrim {
+	@layer drawer.l1.l2 {
+		@apply pointer-events-none absolute inset-0 z-3 scrim opacity-0 transition-opacity animated;
+
+		:where(:has(> .drawer[data-open])) > & {
+			@apply pointer-events-auto opacity-100;
+		}
+	}
+}
+
+/* =============================================================================
+ * MODIFIERS (l1)
+ * Highest per-component priority.
+ * ========================================================================== */
+@utility drawer-end {
+	@layer drawer.l1 {
+		@apply inset-s-auto inset-e-0 translate-x-full rounded-s-(--radius-box) rounded-e-none rtl:-translate-x-full;
+
+		&[data-open] {
+			@apply translate-none;
+		}
+	}
+}

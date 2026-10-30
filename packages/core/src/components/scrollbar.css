@@ -1,0 +1,240 @@
+/* =============================================================================
+ * SCROLLBAR
+ * =============================================================================
+ *
+ * Styles the scrollbar of the element it is on. Two axes, plus a state:
+ *   color     — surface | primary | secondary | tertiary | error
+ *                | success | warning | info | alert
+ *   size      — sm | md | lg
+ *   behaviour — scrollbar-fade (hidden until hovered, focused or scrolled)
+ *   state     — scrollbar-disabled (no scrollbar; still scrolls)
+ *
+ * Usage:
+ *   <div class="scrollbar scrollbar-primary scrollbar-sm overflow-y-auto">…</div>
+ *   <div class="scrollbar scrollbar-disabled overflow-y-auto">…</div>
+ *
+ * Names: Tailwind owns `scrollbar-none`, `scrollbar-thin`, `scrollbar-auto`,
+ * `scrollbar-thumb-*` and `scrollbar-track-*`, and the build drops any class
+ * Tailwind already defines. Hence `scrollbar-disabled`, not `-none`.
+ *
+ * No layout shift: `scrollbar-gutter: stable` reserves the scrollbar's space
+ * whether or not the content overflows, so content does not narrow (and
+ * reflow) the moment it grows long enough to scroll. A truly overlaid
+ * scrollbar is not possible in CSS; this is the closest stable behaviour.
+ * The disabled state drops the reserved space, since there is no bar.
+ *
+ * The gutter still comes out of the element's own width, so its content is
+ * narrower than siblings outside it. To keep the content full width, let the
+ * bar take the place of some end padding instead, reading --scrollbar-size:
+ *   <div class="scrollbar ps-2 pe-[max(0px,calc(0.5rem-var(--scrollbar-size)))]">
+ * With the bar no wider than the padding, the content keeps its full width.
+ * `scrollbar-disabled` sets --scrollbar-size to 0, so the full padding returns
+ * when there is no bar.
+ *
+ * Browsers: Chromium and Safari draw through `::-webkit-scrollbar`, which
+ * honours any size. Firefox only has `scrollbar-width` (thin | auto) and
+ * `scrollbar-color`, so sizes map to the nearest of those. The standard
+ * properties are kept to Firefox on purpose: once Chromium sees
+ * `scrollbar-color` or `scrollbar-width`, it ignores `::-webkit-scrollbar`.
+ *
+ * Variables, all overridable:
+ *   --scrollbar-color   thumb colour (the track is transparent)
+ *   --scrollbar-size    bar thickness, WebKit/Blink
+ *   --scrollbar-width   thin | auto, Firefox
+ *   --scrollbar-fade-delay      how long scrollbar-fade waits to hide (2s)
+ *   --scrollbar-fade-duration   how long the fade takes (300ms)
+ *
+ * Layer priority (deeper nests weaker, LOW → HIGH):
+ *   l1.l2.l3 foundation (base .scrollbar)
+ *   l1.l2    axes (colors, sizes)
+ *   l1       state (disabled)
+ * ========================================================================== */
+
+/*
+	The thumb's visibility, 0–1, multiplied into every thumb colour below.
+	Registered so it can be transitioned: scrollbar pseudo-elements ignore
+	`transition`, but they do repaint as a transitioning inherited variable
+	changes on the element.
+*/
+@property --scrollbar-opacity {
+	syntax: '<number>';
+	inherits: true;
+	initial-value: 1;
+}
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * ========================================================================== */
+@utility scrollbar {
+	@layer scrollbar.l1.l2.l3 {
+		--scrollbar-color: var(--color-outline);
+		--scrollbar-size: 0.625rem;
+		--scrollbar-width: thin;
+		scrollbar-gutter: stable;
+
+		@supports not selector(::-webkit-scrollbar) {
+			scrollbar-width: var(--scrollbar-width);
+			scrollbar-color: color-mix(
+					in oklab,
+					var(--scrollbar-color) calc(60% * var(--scrollbar-opacity)),
+					transparent
+				)
+				transparent;
+		}
+
+		&::-webkit-scrollbar {
+			width: var(--scrollbar-size);
+			height: var(--scrollbar-size);
+			background: transparent;
+		}
+		&::-webkit-scrollbar-corner {
+			background: transparent;
+		}
+		/* The transparent border is padding around the thumb: the background
+		 * stops at the padding box, so the thumb floats inside the bar. */
+		&::-webkit-scrollbar-thumb {
+			border: calc(var(--scrollbar-size) / 5) solid transparent;
+			border-radius: 9999px;
+			background-clip: padding-box;
+			background-color: color-mix(
+				in oklab,
+				var(--scrollbar-color) calc(50% * var(--scrollbar-opacity)),
+				transparent
+			);
+		}
+		&::-webkit-scrollbar-thumb:hover {
+			background-color: color-mix(
+				in oklab,
+				var(--scrollbar-color) calc(75% * var(--scrollbar-opacity)),
+				transparent
+			);
+		}
+		&::-webkit-scrollbar-thumb:active {
+			background-color: var(--scrollbar-color);
+		}
+	}
+}
+
+/* =============================================================================
+ * COLORS (l2)
+ * One variable each. Reads --color-* so scoped [data-theme] works, as buttons do.
+ * ========================================================================== */
+@utility scrollbar-surface {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-outline);
+	}
+}
+@utility scrollbar-primary {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-primary);
+	}
+}
+@utility scrollbar-secondary {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-secondary);
+	}
+}
+@utility scrollbar-tertiary {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-tertiary);
+	}
+}
+@utility scrollbar-error {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-error);
+	}
+}
+@utility scrollbar-success {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-success);
+	}
+}
+@utility scrollbar-warning {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-warning);
+	}
+}
+@utility scrollbar-info {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-info);
+	}
+}
+@utility scrollbar-alert {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-color: var(--color-alert);
+	}
+}
+
+/* =============================================================================
+ * SIZES (l2)
+ * ========================================================================== */
+@utility scrollbar-sm {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-size: 0.375rem;
+		--scrollbar-width: thin;
+	}
+}
+@utility scrollbar-md {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-size: 0.625rem;
+		--scrollbar-width: thin;
+	}
+}
+@utility scrollbar-lg {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-size: 0.875rem;
+		--scrollbar-width: auto;
+	}
+}
+
+/* =============================================================================
+ * BEHAVIOUR (l2)
+ * ========================================================================== */
+/*
+	Hidden at rest; shown while the element is hovered, holds focus, or is
+	being scrolled, and faded out again --scrollbar-fade-delay (2s) after the
+	last of those ends. Showing is immediate; only hiding waits.
+
+	"Being scrolled" needs JavaScript, since CSS cannot tell when scrolling
+	stops: `initScrollbarFade()` from @anti049/lunar-ui-svelte sets
+	`data-scrolling` while it happens. Without it, hover and focus still work.
+	`--scrollbar-fade` is the marker it looks for.
+
+	The space stays reserved while hidden, so nothing moves as it fades.
+
+	This sets `transition`, so a transition utility on the same element
+	replaces it. Put those on a child instead.
+*/
+@utility scrollbar-fade {
+	@layer scrollbar.l1.l2 {
+		--scrollbar-fade: 1;
+		--scrollbar-opacity: 0;
+		transition: --scrollbar-opacity var(--scrollbar-fade-duration, 200ms) ease
+			var(--scrollbar-fade-delay, 500ms);
+
+		&:hover,
+		&:focus-within,
+		&[data-scrolling] {
+			--scrollbar-opacity: 1;
+			transition-delay: 0s;
+		}
+	}
+}
+
+/* =============================================================================
+ * STATE (l1)
+ * No scrollbar and no reserved gutter. The element still scrolls by wheel,
+ * touch and keyboard; to stop scrolling altogether use overflow-hidden.
+ * ========================================================================== */
+@utility scrollbar-disabled {
+	@layer scrollbar.l1 {
+		/* No bar, so no width for padding compensation to give back. */
+		--scrollbar-size: 0px;
+		scrollbar-gutter: auto;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+}
