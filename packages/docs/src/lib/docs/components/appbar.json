@@ -1,0 +1,47 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "App Bar",
+	"description": "Displays information and actions relating to the current screen.",
+	"classes": [
+		{
+			"className": "appbar",
+			"type": "component",
+			"description": "App bar container."
+		},
+		{
+			"className": "appbar-leading",
+			"type": "part",
+			"description": "Leading slot, typically a navigation or menu icon."
+		},
+		{
+			"className": "appbar-body",
+			"type": "part",
+			"description": "Central body holding the title and subtitle."
+		},
+		{
+			"className": "appbar-trailing",
+			"type": "part",
+			"description": "Trailing slot for actions such as search."
+		},
+		{
+			"className": "appbar-title",
+			"type": "part",
+			"description": "Primary title text."
+		},
+		{
+			"className": "appbar-subtitle",
+			"type": "part",
+			"description": "Secondary subtitle text below the title."
+		},
+		{
+			"className": "appbar-centered",
+			"type": "style",
+			"description": "Centers the body content between the leading and trailing slots."
+		},
+		{
+			"className": "appbar-scrollable",
+			"type": "modifier",
+			"description": "Raises the elevation once the page is scrolled."
+		}
+	]
+}

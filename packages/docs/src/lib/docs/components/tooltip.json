@@ -1,0 +1,122 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Tooltip",
+	"description": "Tooltips display informative text when users hover over, focus on, or tap an element.",
+	"classes": [
+		{
+			"className": "tooltip",
+			"type": "component",
+			"description": "Tooltip trigger and positioning container."
+		},
+		{
+			"className": "tooltip-content",
+			"type": "part",
+			"description": "Custom tooltip content, used instead of the data-tooltip attribute."
+		},
+		{
+			"className": "tooltip-open",
+			"type": "modifier",
+			"description": "Forces the tooltip to stay visible."
+		},
+		{
+			"className": "tooltip-disabled",
+			"type": "modifier",
+			"description": "Silences the tooltip and any nested tooltips."
+		},
+		{
+			"className": "tooltip-top",
+			"type": "placement",
+			"description": "Places the tooltip above the trigger."
+		},
+		{
+			"className": "tooltip-bottom",
+			"type": "placement",
+			"description": "Places the tooltip below the trigger."
+		},
+		{
+			"className": "tooltip-left",
+			"type": "placement",
+			"description": "Places the tooltip to the left of the trigger."
+		},
+		{
+			"className": "tooltip-right",
+			"type": "placement",
+			"description": "Places the tooltip to the right of the trigger."
+		},
+		{
+			"className": "tooltip-start",
+			"type": "placement",
+			"description": "Aligns the tooltip to the start edge of the trigger."
+		},
+		{
+			"className": "tooltip-center",
+			"type": "placement",
+			"description": "Centers the tooltip against the trigger."
+		},
+		{
+			"className": "tooltip-end",
+			"type": "placement",
+			"description": "Aligns the tooltip to the end edge of the trigger."
+		},
+		{
+			"className": "tooltip-surface",
+			"type": "color",
+			"description": "Surface-colored tooltip."
+		},
+		{
+			"className": "tooltip-primary",
+			"type": "color",
+			"description": "Primary-colored tooltip."
+		},
+		{
+			"className": "tooltip-secondary",
+			"type": "color",
+			"description": "Secondary-colored tooltip."
+		},
+		{
+			"className": "tooltip-tertiary",
+			"type": "color",
+			"description": "Tertiary-colored tooltip."
+		},
+		{
+			"className": "tooltip-error",
+			"type": "color",
+			"description": "Error-colored tooltip."
+		},
+		{
+			"className": "tooltip-success",
+			"type": "color",
+			"description": "Success-colored tooltip."
+		},
+		{
+			"className": "tooltip-warning",
+			"type": "color",
+			"description": "Warning-colored tooltip."
+		},
+		{
+			"className": "tooltip-info",
+			"type": "color",
+			"description": "Info-colored tooltip."
+		},
+		{
+			"className": "tooltip-alert",
+			"type": "color",
+			"description": "Alert-colored tooltip."
+		},
+		{
+			"className": "tooltip-gap-*",
+			"type": "size",
+			"description": "Gap between the trigger and the tail. Takes a spacing step (`tooltip-gap-2`) or an arbitrary value (`tooltip-gap-[3px]`, `tooltip-gap-[var(--x)]`)."
+		},
+		{
+			"className": "tooltip-tail-size-*",
+			"type": "size",
+			"description": "Depth of the tail, base to tip. Takes a spacing step (`tooltip-tail-size-3`) or an arbitrary value (`tooltip-tail-size-[0.5rem]`)."
+		},
+		{
+			"className": "tooltip-tail-width-*",
+			"type": "size",
+			"description": "Width of the tail base. Takes a spacing step (`tooltip-tail-width-4`) or an arbitrary value (`tooltip-tail-width-[1rem]`)."
+		}
+	]
+}

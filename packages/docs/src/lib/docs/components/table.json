@@ -1,0 +1,52 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Table",
+	"description": "Organize data into rows and columns.",
+	"classes": [
+		{
+			"className": "table",
+			"type": "component",
+			"description": "Base table styling for thead, tbody, tfoot, tr, th and td."
+		},
+		{
+			"className": "table-zebra",
+			"type": "style",
+			"description": "Stripes alternating body rows for readability."
+		},
+		{
+			"className": "table-pin-rows",
+			"type": "modifier",
+			"description": "Sticks the header and footer rows while the body scrolls."
+		},
+		{
+			"className": "table-pin-cols",
+			"type": "modifier",
+			"description": "Sticks th cells while columns scroll horizontally."
+		},
+		{
+			"className": "table-xs",
+			"type": "size",
+			"description": "Extra-small padding and text."
+		},
+		{
+			"className": "table-sm",
+			"type": "size",
+			"description": "Small padding and text."
+		},
+		{
+			"className": "table-md",
+			"type": "size",
+			"description": "Medium padding and text."
+		},
+		{
+			"className": "table-lg",
+			"type": "size",
+			"description": "Large padding and text."
+		},
+		{
+			"className": "table-xl",
+			"type": "size",
+			"description": "Extra-large padding and text."
+		}
+	]
+}

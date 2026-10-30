@@ -1,0 +1,32 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Scaffold",
+	"description": "Application shell with header, sidebar, and main content slots.",
+	"classes": [
+		{
+			"className": "scaffold",
+			"type": "component",
+			"description": "Full-viewport grid that lays out the shell."
+		},
+		{
+			"className": "scaffold-header",
+			"type": "part",
+			"description": "Top header row."
+		},
+		{
+			"className": "scaffold-sidebar",
+			"type": "part",
+			"description": "Side navigation column."
+		},
+		{
+			"className": "scaffold-main",
+			"type": "part",
+			"description": "Scrollable main content area."
+		},
+		{
+			"className": "scaffold-content",
+			"type": "part",
+			"description": "Padded content wrapper inside the main area."
+		}
+	]
+}

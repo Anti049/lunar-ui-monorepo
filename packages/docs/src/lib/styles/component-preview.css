@@ -1,0 +1,44 @@
+/*
+	Nested in Tailwind's `components` layer, which sits below `utilities`, so a
+	utility on the element still wins. A top-level `@layer component-preview.*`
+	would be declared after Tailwind's layers and outrank every utility.
+*/
+@layer components {
+	/* FOUNDATION (l3) — the frame every preview has. */
+	@layer component-preview.l1.l2.l3 {
+		.component-preview {
+			@apply flex flex-col rounded-sm border border-on-surface-variant/15;
+		}
+	}
+
+	/* SLOTS (l2) — the parts inside the frame. */
+	@layer component-preview.l1.l2 {
+		.component-preview-header {
+			@apply flex w-full flex-col justify-center gap-2 border-b border-b-surface-container;
+		}
+
+		.component-preview-label {
+			@apply flex flex-row items-center gap-4;
+		}
+
+		.component-preview-title {
+			@apply text-title-small text-on-surface compact:text-title-medium medium:text-title-large;
+		}
+
+		.component-preview-subtitle {
+			@apply text-body-small text-on-surface-variant compact:text-body-medium medium:text-body-large;
+		}
+
+		.component-preview-anchor {
+			@apply button button-square size-8 button-outlined border-on-surface-variant/50 surface p-1;
+		}
+
+		.component-preview-body {
+			@apply flex h-fit min-h-32 w-full grow flex-row flex-wrap items-center justify-center gap-2 rounded-b-sm surface-container-lowest p-4;
+		}
+
+		.component-preview-body-pattern {
+			@apply surface-container-lowest bg-[repeating-linear-gradient(315deg,var(--color-surface-container)_0,var(--color-surface-container)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed;
+		}
+	}
+}

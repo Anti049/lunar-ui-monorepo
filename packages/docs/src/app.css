@@ -1,19 +1,23 @@
 @import 'tailwindcss';
 
 /* Fonts come from the consumer, not the plugin. */
+@import '@fontsource-variable/plus-jakarta-sans/wght.css';
 @import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/fira-code/wght.css';
+
+/*
+	The docs site's own styles. Up here because an @import is only valid
+	before every other rule; placed after the @plugin and @source lines below,
+	it is invalid CSS.
+*/
+@import './lib/styles/_index.css';
 
 /* Components, tokens and themes all arrive through the plugin. */
 @plugin '@anti049/lunar-ui';
-
-/*
-	A custom theme goes here too, once the plugin can generate one:
-
-	    @plugin '@anti049/lunar-ui/theme' { name: brand; seed-primary: #0956aa; }
-
-	That entry point does not exist yet — guide 15 builds it, and adds this
-	block back along with the alias and the SSR entry it needs.
-*/
+@plugin '@anti049/lunar-ui/theme' {
+	name: test;
+	seed-primary: #ff0000;
+}
 
 /*
 	Components live in another package, so Tailwind has to be told where. This

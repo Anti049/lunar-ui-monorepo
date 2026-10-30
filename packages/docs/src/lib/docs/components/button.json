@@ -1,0 +1,127 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Button",
+	"description": "Lets users take actions or make choices.",
+	"classes": [
+		{
+			"className": "button",
+			"type": "component",
+			"description": "Button container. Compose with a variant, color, and size."
+		},
+		{
+			"className": "button-leading",
+			"type": "part",
+			"description": "Marks a leading icon so its side padding tightens."
+		},
+		{
+			"className": "button-trailing",
+			"type": "part",
+			"description": "Marks a trailing icon so its side padding tightens."
+		},
+		{
+			"className": "button-filled",
+			"type": "style",
+			"description": "Solid fill using the button color."
+		},
+		{
+			"className": "button-tonal",
+			"type": "style",
+			"description": "Softer fill using the container color."
+		},
+		{
+			"className": "button-elevated",
+			"type": "style",
+			"description": "Raised surface background with colored text."
+		},
+		{
+			"className": "button-outlined",
+			"type": "style",
+			"description": "Transparent background with a colored border."
+		},
+		{
+			"className": "button-text",
+			"type": "style",
+			"description": "Colored text with no background or border."
+		},
+		{
+			"className": "button-square",
+			"type": "style",
+			"description": "Square aspect ratio for icon-only buttons."
+		},
+		{
+			"className": "button-circle",
+			"type": "style",
+			"description": "Circular shape for icon-only buttons."
+		},
+		{
+			"className": "button-primary",
+			"type": "color",
+			"description": "Primary color."
+		},
+		{
+			"className": "button-secondary",
+			"type": "color",
+			"description": "Secondary color."
+		},
+		{
+			"className": "button-tertiary",
+			"type": "color",
+			"description": "Tertiary color."
+		},
+		{
+			"className": "button-error",
+			"type": "color",
+			"description": "Error color."
+		},
+		{
+			"className": "button-surface",
+			"type": "color",
+			"description": "Surface color."
+		},
+		{
+			"className": "button-success",
+			"type": "color",
+			"description": "Success color."
+		},
+		{
+			"className": "button-warning",
+			"type": "color",
+			"description": "Warning color."
+		},
+		{
+			"className": "button-info",
+			"type": "color",
+			"description": "Info color."
+		},
+		{
+			"className": "button-alert",
+			"type": "color",
+			"description": "Alert color."
+		},
+		{
+			"className": "button-xs",
+			"type": "size",
+			"description": "Extra-small size."
+		},
+		{
+			"className": "button-sm",
+			"type": "size",
+			"description": "Small size."
+		},
+		{
+			"className": "button-md",
+			"type": "size",
+			"description": "Medium size (default)."
+		},
+		{
+			"className": "button-lg",
+			"type": "size",
+			"description": "Large size."
+		},
+		{
+			"className": "button-xl",
+			"type": "size",
+			"description": "Extra-large size."
+		}
+	]
+}

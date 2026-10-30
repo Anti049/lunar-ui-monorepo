@@ -1,0 +1,30 @@
+/*
+	Nested in Tailwind's `components` layer, which sits below `utilities`, so a
+	utility on the element still wins. A top-level `@layer code-block.*` would
+	be declared after Tailwind's layers and outrank every utility.
+*/
+@layer components {
+	/* FOUNDATION (l3) — everything here styles the block or its contents. */
+	@layer code-block.l1.l2.l3 {
+		.code-block {
+			@apply flex h-fit min-h-fit w-full min-w-0 items-start justify-start rounded-sm surface-container-lowest text-left;
+
+			& pre,
+			& code {
+				@apply max-w-full wrap-break-word whitespace-pre-wrap;
+			}
+
+			& .code-block-editor {
+				@apply min-h-32 w-full;
+			}
+
+			& .cm-editor {
+				@apply max-w-full bg-transparent text-on-surface;
+			}
+
+			& .cm-scroller {
+				@apply wrap-break-word whitespace-pre-wrap;
+			}
+		}
+	}
+}

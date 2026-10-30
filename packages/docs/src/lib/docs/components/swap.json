@@ -1,0 +1,32 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Swap",
+	"description": "Toggles between two elements based on a checkbox state.",
+	"classes": [
+		{
+			"className": "swap",
+			"type": "component",
+			"description": "Container that stacks the two elements and hides the driving checkbox."
+		},
+		{
+			"className": "swap-on",
+			"type": "part",
+			"description": "Shown when the checkbox is checked."
+		},
+		{
+			"className": "swap-off",
+			"type": "part",
+			"description": "Shown when the checkbox is unchecked."
+		},
+		{
+			"className": "swap-rotate",
+			"type": "style",
+			"description": "Rotates the two elements as they cross-fade."
+		},
+		{
+			"className": "swap-flip",
+			"type": "style",
+			"description": "3D flip between the two elements."
+		}
+	]
+}

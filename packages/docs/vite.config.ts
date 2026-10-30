@@ -14,6 +14,17 @@ const watcher = fileURLToPath(new URL('../core/functions/watch.ts', import.meta.
 const appCss = fileURLToPath(new URL('./src/app.css', import.meta.url));
 
 /*
+	The version of the plugin the docs are installed against, shown in the
+	header. Read from node_modules rather than imported, because the package's
+	`exports` map does not expose `./package.json`. Read once at startup, so a
+	version bump needs a dev-server restart to show.
+*/
+const pluginManifest = fileURLToPath(
+	new URL('./node_modules/@anti049/lunar-ui/package.json', import.meta.url)
+);
+const pluginVersion: string = JSON.parse(fs.readFileSync(pluginManifest, 'utf8')).version;
+
+/*
 	SvelteKit's options — what SvelteKit 2 read from svelte.config.js. `satisfies`
 	keeps literals like 'fail' typed as literals rather than widening them to string.
 */
@@ -115,6 +126,11 @@ export default defineConfig(({ command }) => ({
 		sveltekit(kit),
 		...(command === 'serve' ? [livePlugin(pluginEntry)] : [])
 	],
+
+	// Replaced in source at build time. Declared for TypeScript in app.d.ts.
+	define: {
+		__LUNAR_UI_VERSION__: JSON.stringify(pluginVersion)
+	},
 
 	resolve: {
 		/*

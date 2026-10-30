@@ -1,0 +1,102 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Checkbox",
+	"description": "Lets users select one or more items from a set.",
+	"classes": [
+		{
+			"className": "checkbox",
+			"type": "component",
+			"description": "Checkbox input. Compose with a variant, color, and size."
+		},
+		{
+			"className": "checkbox-filled",
+			"type": "style",
+			"description": "Solid fill using the checkbox color when checked."
+		},
+		{
+			"className": "checkbox-tonal",
+			"type": "style",
+			"description": "Softer fill using the container color when checked."
+		},
+		{
+			"className": "checkbox-elevated",
+			"type": "style",
+			"description": "Raised surface background with colored check."
+		},
+		{
+			"className": "checkbox-outlined",
+			"type": "style",
+			"description": "Transparent background with a colored border."
+		},
+		{
+			"className": "checkbox-primary",
+			"type": "color",
+			"description": "Primary color."
+		},
+		{
+			"className": "checkbox-secondary",
+			"type": "color",
+			"description": "Secondary color."
+		},
+		{
+			"className": "checkbox-tertiary",
+			"type": "color",
+			"description": "Tertiary color."
+		},
+		{
+			"className": "checkbox-error",
+			"type": "color",
+			"description": "Error color."
+		},
+		{
+			"className": "checkbox-surface",
+			"type": "color",
+			"description": "Surface color."
+		},
+		{
+			"className": "checkbox-success",
+			"type": "color",
+			"description": "Success color."
+		},
+		{
+			"className": "checkbox-warning",
+			"type": "color",
+			"description": "Warning color."
+		},
+		{
+			"className": "checkbox-info",
+			"type": "color",
+			"description": "Info color."
+		},
+		{
+			"className": "checkbox-alert",
+			"type": "color",
+			"description": "Alert color."
+		},
+		{
+			"className": "checkbox-xs",
+			"type": "size",
+			"description": "Extra-small size."
+		},
+		{
+			"className": "checkbox-sm",
+			"type": "size",
+			"description": "Small size."
+		},
+		{
+			"className": "checkbox-md",
+			"type": "size",
+			"description": "Medium size (default)."
+		},
+		{
+			"className": "checkbox-lg",
+			"type": "size",
+			"description": "Large size."
+		},
+		{
+			"className": "checkbox-xl",
+			"type": "size",
+			"description": "Extra-large size."
+		}
+	]
+}

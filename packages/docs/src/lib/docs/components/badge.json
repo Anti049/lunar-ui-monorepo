@@ -1,0 +1,92 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Badge",
+	"description": "A small label for counts, statuses, or indicators.",
+	"classes": [
+		{
+			"className": "badge",
+			"type": "component",
+			"description": "Badge container. Renders as a dot when empty."
+		},
+		{
+			"className": "badge-filled",
+			"type": "style",
+			"description": "Solid fill using the badge color."
+		},
+		{
+			"className": "badge-tonal",
+			"type": "style",
+			"description": "Softer fill using the container color."
+		},
+		{
+			"className": "badge-elevated",
+			"type": "style",
+			"description": "Raised surface background with colored text."
+		},
+		{
+			"className": "badge-outlined",
+			"type": "style",
+			"description": "Transparent background with a colored border."
+		},
+		{
+			"className": "badge-text",
+			"type": "style",
+			"description": "Colored text with no background or border."
+		},
+		{
+			"className": "badge-primary",
+			"type": "color",
+			"description": "Primary color."
+		},
+		{
+			"className": "badge-secondary",
+			"type": "color",
+			"description": "Secondary color."
+		},
+		{
+			"className": "badge-tertiary",
+			"type": "color",
+			"description": "Tertiary color."
+		},
+		{
+			"className": "badge-error",
+			"type": "color",
+			"description": "Error color."
+		},
+		{
+			"className": "badge-surface",
+			"type": "color",
+			"description": "Surface color."
+		},
+		{
+			"className": "badge-success",
+			"type": "color",
+			"description": "Success color."
+		},
+		{
+			"className": "badge-warning",
+			"type": "color",
+			"description": "Warning color."
+		},
+		{
+			"className": "badge-info",
+			"type": "color",
+			"description": "Info color."
+		},
+		{
+			"className": "badge-alert",
+			"type": "color",
+			"description": "Alert color."
+		},
+		{
+			"className": "badge-animate-alert",
+			"type": "modifier",
+			"description": "Emits a pulsing halo to draw attention."
+		},
+		{
+			"className": "badge-animate-bounce",
+			"type": "modifier",
+			"description": "Bounces the badge continuously."
+		}
+	]
+}

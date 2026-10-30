@@ -1,0 +1,59 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://lunar-ui/component-doc.schema.json",
+	"title": "Component Documentation",
+	"description": "Documentation for a single LunarUI component, consumed by the docs site.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["name", "description", "classes"],
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "Path to this schema for editor validation."
+		},
+		"name": {
+			"type": "string",
+			"description": "Display name, e.g. \"Tooltip\"."
+		},
+		"description": {
+			"type": "string",
+			"description": "One-line summary shown under the page title."
+		},
+		"classes": {
+			"type": "array",
+			"description": "Every utility class the component exposes.",
+			"items": { "$ref": "#/definitions/componentClass" }
+		}
+	},
+	"definitions": {
+		"componentClass": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["className", "type"],
+			"properties": {
+				"className": {
+					"type": "string",
+					"description": "The utility class name, without any configured prefix."
+				},
+				"type": {
+					"type": "string",
+					"description": "Category the class belongs to.",
+					"enum": [
+						"component",
+						"part",
+						"modifier",
+						"direction",
+						"placement",
+						"style",
+						"color",
+						"size"
+					]
+				},
+				"description": {
+					"type": "string",
+					"description": "Short explanation of what the class does."
+				}
+			}
+		}
+	}
+}
