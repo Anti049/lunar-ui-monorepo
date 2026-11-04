@@ -51,15 +51,15 @@
 	},
 	"devDependencies": {
 		"@anti049/lunar-ui": "workspace:*",
-		"@sveltejs/kit": "^3.1.0",
-		"@sveltejs/package": "^3.0.1",
+		"@sveltejs/kit": "^3.1.1",
+		"@sveltejs/package": "^3.0.2",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@tailwindcss/vite": "^4.3.3",
 		"publint": "^0.3.24",
 		"svelte": "^5.57.3",
 		"svelte-check": "^4.7.7",
 		"tailwindcss": "^4.3.3",
-		"typescript": "~6.0.3",
+		"typescript": "~7.0.2",
 		"vite": "^8.3.5"
 	},
 	"publishConfig": {
