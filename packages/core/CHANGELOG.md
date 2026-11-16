@@ -1,5 +1,11 @@
 # @anti049/lunar-ui
 
+## 0.2.1
+
+### Patch Changes
+
+- [`33d4a18`](https://github.com/Anti049/lunar-ui-monorepo/commit/33d4a1850497b23f4b3a860d6651d06c26714e45) Thanks [@Anti049](https://github.com/Anti049)! - fixed inverse surface color roles
+
 ## 0.2.0
 
 ### Minor Changes
