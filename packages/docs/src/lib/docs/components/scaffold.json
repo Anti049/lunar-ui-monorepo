@@ -1,32 +1,62 @@
 {
 	"$schema": "../component-doc.schema.json",
 	"name": "Scaffold",
-	"description": "Application shell with header, sidebar, and main content slots.",
+	"description": "The page frame: app bar, scrolling body, bottom bars and docked sidebars.",
 	"classes": [
 		{
 			"className": "scaffold",
 			"type": "component",
-			"description": "Full-viewport grid that lays out the shell."
+			"description": "Grid that fills its parent. Absent slots collapse, so the body always takes the remaining height."
 		},
 		{
-			"className": "scaffold-header",
+			"className": "scaffold-appbar",
 			"type": "part",
-			"description": "Top header row."
+			"description": "Top row, usually on an .appbar."
 		},
 		{
-			"className": "scaffold-sidebar",
+			"className": "scaffold-body",
 			"type": "part",
-			"description": "Side navigation column."
+			"description": "Main content. The scaffold's only scroll container."
 		},
 		{
-			"className": "scaffold-main",
+			"className": "scaffold-sheet",
 			"type": "part",
-			"description": "Scrollable main content area."
+			"description": "Persistent bottom sheet below the body."
 		},
 		{
-			"className": "scaffold-content",
+			"className": "scaffold-footer",
 			"type": "part",
-			"description": "Padded content wrapper inside the main area."
+			"description": "Row of persistent footer buttons, aligned to the end."
+		},
+		{
+			"className": "scaffold-navbar",
+			"type": "part",
+			"description": "Bottom navigation row."
+		},
+		{
+			"className": "scaffold-fab",
+			"type": "part",
+			"description": "Floating action button over the bottom end corner of the body. Always clears the rows below it."
+		},
+		{
+			"className": "scaffold-fab-start",
+			"type": "placement",
+			"description": "Moves the FAB to the bottom start corner."
+		},
+		{
+			"className": "scaffold-fab-center",
+			"type": "placement",
+			"description": "Centres the FAB along the bottom of the body."
+		},
+		{
+			"className": "scaffold-extend-body",
+			"type": "modifier",
+			"description": "Runs the body underneath the bottom rows, for translucent or floating bars."
+		},
+		{
+			"className": "scaffold-extend-body-behind-appbar",
+			"type": "modifier",
+			"description": "Runs the body underneath the app bar."
 		}
 	]
 }

@@ -1,0 +1,82 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Scrollbar",
+	"description": "Themed scrollbars for any scroll container.",
+	"classes": [
+		{
+			"className": "scrollbar",
+			"type": "component",
+			"description": "Styles the element's own scrollbar and reserves its gutter, so content does not shift when it starts to overflow."
+		},
+		{
+			"className": "scrollbar-disabled",
+			"type": "modifier",
+			"description": "Hides the scrollbar and its gutter. The element still scrolls by wheel, touch and keyboard."
+		},
+		{
+			"className": "scrollbar-fade",
+			"type": "modifier",
+			"description": "Hidden at rest; shown on hover, focus or while scrolling, then fades out."
+		},
+		{
+			"className": "scrollbar-surface",
+			"type": "color",
+			"description": "Surface thumb (default)."
+		},
+		{
+			"className": "scrollbar-primary",
+			"type": "color",
+			"description": "Primary thumb."
+		},
+		{
+			"className": "scrollbar-secondary",
+			"type": "color",
+			"description": "Secondary thumb."
+		},
+		{
+			"className": "scrollbar-tertiary",
+			"type": "color",
+			"description": "Tertiary thumb."
+		},
+		{
+			"className": "scrollbar-error",
+			"type": "color",
+			"description": "Error thumb."
+		},
+		{
+			"className": "scrollbar-success",
+			"type": "color",
+			"description": "Success thumb."
+		},
+		{
+			"className": "scrollbar-warning",
+			"type": "color",
+			"description": "Warning thumb."
+		},
+		{
+			"className": "scrollbar-info",
+			"type": "color",
+			"description": "Info thumb."
+		},
+		{
+			"className": "scrollbar-alert",
+			"type": "color",
+			"description": "Alert thumb."
+		},
+		{
+			"className": "scrollbar-sm",
+			"type": "size",
+			"description": "SM thickness. Firefox maps sizes to thin or auto."
+		},
+		{
+			"className": "scrollbar-md",
+			"type": "size",
+			"description": "MD thickness. Firefox maps sizes to thin or auto."
+		},
+		{
+			"className": "scrollbar-lg",
+			"type": "size",
+			"description": "LG thickness. Firefox maps sizes to thin or auto."
+		}
+	]
+}

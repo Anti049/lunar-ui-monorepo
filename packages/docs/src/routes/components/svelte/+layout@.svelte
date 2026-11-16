@@ -26,7 +26,7 @@
 <div class="scaffold">
 	<!-- Docked from `medium:` up. Below it, the root layout's drawer shows `links`. -->
 	<div
-		class="sidebar gap-2 rounded-e-none border-r border-r-surface-container surface p-2 max-medium:hidden"
+		class="sidebar scrollbar-none gap-2 rounded-e-none border-r border-r-surface-container surface p-2 max-medium:hidden"
 	>
 		{@render links()}
 	</div>

@@ -1,0 +1,47 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Indicator",
+	"description": "Pins a badge or other element to a corner or edge of another element.",
+	"classes": [
+		{
+			"className": "indicator",
+			"type": "component",
+			"description": "Positioned wrapper around the element being decorated."
+		},
+		{
+			"className": "indicator-item",
+			"type": "part",
+			"description": "The pinned element. Sits at the top end corner by default."
+		},
+		{
+			"className": "indicator-top",
+			"type": "placement",
+			"description": "Pins the item to the top edge (default)."
+		},
+		{
+			"className": "indicator-middle",
+			"type": "placement",
+			"description": "Pins the item to the vertical middle."
+		},
+		{
+			"className": "indicator-bottom",
+			"type": "placement",
+			"description": "Pins the item to the bottom edge."
+		},
+		{
+			"className": "indicator-left",
+			"type": "placement",
+			"description": "Pins the item to the left edge."
+		},
+		{
+			"className": "indicator-center",
+			"type": "placement",
+			"description": "Pins the item to the horizontal centre."
+		},
+		{
+			"className": "indicator-right",
+			"type": "placement",
+			"description": "Pins the item to the right edge (default)."
+		}
+	]
+}

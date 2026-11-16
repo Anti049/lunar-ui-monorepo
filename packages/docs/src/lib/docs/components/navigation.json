@@ -1,0 +1,32 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Navigation",
+	"description": "Items, headings and dividers that go inside a drawer or sidebar.",
+	"classes": [
+		{
+			"className": "nav-item",
+			"type": "component",
+			"description": "Icon-and-label row, as a link or button. Active with aria-current, data-active, .active or .selected; disabled with .disabled, [disabled] or aria-disabled=\"true\"."
+		},
+		{
+			"className": "nav-label",
+			"type": "part",
+			"description": "The item's text. Truncates, and fades out inside a sidebar rail."
+		},
+		{
+			"className": "nav-heading",
+			"type": "part",
+			"description": "Section title above a group of items. Lines up with the labels and fades out in a rail."
+		},
+		{
+			"className": "nav-divider",
+			"type": "part",
+			"description": "Rule between groups of items. Works on an <hr> or a <div>."
+		},
+		{
+			"className": "nav-item-plain",
+			"type": "style",
+			"description": "No fill until hovered or active, for dense lists."
+		}
+	]
+}

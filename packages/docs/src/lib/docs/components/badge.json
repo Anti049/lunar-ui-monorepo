@@ -9,6 +9,11 @@
 			"description": "Badge container. Renders as a dot when empty."
 		},
 		{
+			"className": "badge-disabled",
+			"type": "modifier",
+			"description": "Greys the badge out. .disabled and [disabled] do the same."
+		},
+		{
 			"className": "badge-filled",
 			"type": "style",
 			"description": "Solid fill using the badge color."

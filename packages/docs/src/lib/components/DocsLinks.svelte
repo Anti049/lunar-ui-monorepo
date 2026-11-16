@@ -21,4 +21,5 @@
 <NavLink label="Typography" href={resolve('/docs/typography')} />
 <NavLink label="Utilities" href={resolve('/docs/utilities')} />
 <hr class="nav-divider" />
+<NavLink label="Development" href={resolve('/docs/development')} />
 <NavLink label="FAQ" href={resolve('/docs/faq')} />

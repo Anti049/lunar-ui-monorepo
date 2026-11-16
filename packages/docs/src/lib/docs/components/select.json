@@ -1,0 +1,112 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Select",
+	"description": "Lets users pick one option from a list.",
+	"classes": [
+		{
+			"className": "select",
+			"type": "component",
+			"description": "Styled native select."
+		},
+		{
+			"className": "select-disabled",
+			"type": "modifier",
+			"description": "Greys the select out. .disabled, [disabled] and :disabled do the same."
+		},
+		{
+			"className": "select-filled",
+			"type": "style",
+			"description": "Solid fill in the select's color."
+		},
+		{
+			"className": "select-tonal",
+			"type": "style",
+			"description": "Container-tone fill (default)."
+		},
+		{
+			"className": "select-elevated",
+			"type": "style",
+			"description": "Raised surface with a shadow."
+		},
+		{
+			"className": "select-outlined",
+			"type": "style",
+			"description": "Transparent with a border."
+		},
+		{
+			"className": "select-text",
+			"type": "style",
+			"description": "Transparent, no border."
+		},
+		{
+			"className": "select-surface",
+			"type": "color",
+			"description": "Surface color (default)."
+		},
+		{
+			"className": "select-primary",
+			"type": "color",
+			"description": "Primary color."
+		},
+		{
+			"className": "select-secondary",
+			"type": "color",
+			"description": "Secondary color."
+		},
+		{
+			"className": "select-tertiary",
+			"type": "color",
+			"description": "Tertiary color."
+		},
+		{
+			"className": "select-error",
+			"type": "color",
+			"description": "Error color."
+		},
+		{
+			"className": "select-success",
+			"type": "color",
+			"description": "Success color."
+		},
+		{
+			"className": "select-warning",
+			"type": "color",
+			"description": "Warning color."
+		},
+		{
+			"className": "select-info",
+			"type": "color",
+			"description": "Info color."
+		},
+		{
+			"className": "select-alert",
+			"type": "color",
+			"description": "Alert color."
+		},
+		{
+			"className": "select-xs",
+			"type": "size",
+			"description": "XS size."
+		},
+		{
+			"className": "select-sm",
+			"type": "size",
+			"description": "SM size."
+		},
+		{
+			"className": "select-md",
+			"type": "size",
+			"description": "MD size (default)."
+		},
+		{
+			"className": "select-lg",
+			"type": "size",
+			"description": "LG size."
+		},
+		{
+			"className": "select-xl",
+			"type": "size",
+			"description": "XL size."
+		}
+	]
+}

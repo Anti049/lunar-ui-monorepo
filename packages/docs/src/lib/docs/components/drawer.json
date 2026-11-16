@@ -1,0 +1,22 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Drawer",
+	"description": "A modal panel that slides in from the edge of the screen.",
+	"classes": [
+		{
+			"className": "drawer",
+			"type": "component",
+			"description": "Off-screen panel that slides in from the start edge. Opens with the data-open attribute."
+		},
+		{
+			"className": "drawer-scrim",
+			"type": "part",
+			"description": "Dimmed overlay behind an open drawer. A sibling of the drawer; follows its data-open on its own."
+		},
+		{
+			"className": "drawer-end",
+			"type": "placement",
+			"description": "Slides the drawer in from the end edge instead of the start."
+		}
+	]
+}

@@ -1,0 +1,27 @@
+{
+	"$schema": "../component-doc.schema.json",
+	"name": "Sidebar",
+	"description": "A docked, always-visible navigation panel.",
+	"classes": [
+		{
+			"className": "sidebar",
+			"type": "component",
+			"description": "Full-width docked panel (--sidebar-width, 16rem). Docks into the start column of a scaffold."
+		},
+		{
+			"className": "sidebar-rail",
+			"type": "size",
+			"description": "Minimized panel (--sidebar-rail-width, 4rem). Fades .nav-labels and keeps item icons centred."
+		},
+		{
+			"className": "drawer-end",
+			"type": "placement",
+			"description": "Docks the sidebar into the end column of a scaffold instead of the start."
+		},
+		{
+			"className": "sidebar-rail:",
+			"type": "modifier",
+			"description": "Variant that applies a utility to descendants only while the sidebar is a rail, e.g. sidebar-rail:hidden."
+		}
+	]
+}
