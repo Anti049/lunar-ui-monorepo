@@ -34,6 +34,7 @@
 	import ComponentsLinks from '#lib/components/ComponentsLinks.svelte';
 	import navigation from '#lib/state/navigation.svelte.ts';
 	import favicon from '#lib/assets/favicon.svg';
+	import GithubIcon from '@iconify-svelte/fa7-brands/github';
 
 	let { children }: LayoutProps = $props();
 
@@ -213,6 +214,17 @@
 						<span class="hidden expanded:flex">Theme Generator</span>
 					</a>
 				</div>
+				<div
+					class="tooltip tooltip-bottom h-full tooltip-center tooltip-gap-4"
+					data-tooltip="GitHub Repository"
+				>
+					<a
+						href="https://github.com/Anti049/lunar-ui-monorepo"
+						class="button button-square button-md button-tonal button-surface"
+					>
+						<GithubIcon />
+					</a>
+				</div>
 			</div>
 		</div>
 		<div class="appbar-trailing flex flex-row-reverse medium:w-60 medium:min-w-60">
@@ -226,7 +238,7 @@
 				{/if}
 			</button>
 			<select
-				class="select select-tonal select-surface max-medium:hidden"
+				class="select h-full select-tonal select-surface max-medium:hidden"
 				onchange={changeTheme}
 				value={theme.current}
 			>
