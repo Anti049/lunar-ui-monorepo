@@ -1,5 +1,12 @@
 # @anti049/lunar-ui-vue
 
+## 0.2.0
+
+### Patch Changes
+
+- Updated dependencies [[`6effd19`](https://github.com/Anti049/lunar-ui-monorepo/commit/6effd19e125b60f60fe81fbf921b15826c713cec)]:
+  - @anti049/lunar-ui@0.2.0
+
 ## 0.1.1
 
 ### Patch Changes

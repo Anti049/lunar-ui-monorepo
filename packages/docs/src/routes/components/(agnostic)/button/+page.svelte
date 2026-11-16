@@ -89,7 +89,7 @@
 		<button class="button button-elevated button-secondary" onclick={() => (checked = !checked)}>
 			<input
 				type="checkbox"
-				class="checkbox checkbox-sm checkbox-secondary pointer-events-none button-leading"
+				class="pointer-events-none checkbox checkbox-sm button-leading checkbox-secondary"
 				tabindex="-1"
 				bind:checked
 			/>
@@ -122,7 +122,7 @@
 			<input
 				type="checkbox"
 				class={cn(
-					'checkbox checkbox-sm checkbox-outlined pointer-events-none button-leading',
+					'pointer-events-none checkbox checkbox-sm checkbox-outlined button-leading',
 					disabled && 'checkbox-primary'
 				)}
 				tabindex="-1"
