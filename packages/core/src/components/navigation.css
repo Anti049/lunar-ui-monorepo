@@ -1,0 +1,150 @@
+/*
+	Navigation
+
+	The controls that go INSIDE a navigation container: a `.drawer`, a
+	`.sidebar` / `.sidebar-rail`, or any other column. The containers live in
+	their own files (drawer.css, sidebar.css); these are the items.
+
+	  nav-item      an icon-and-label row, link or button
+	  nav-label     the item's text; fades out in a rail
+	  nav-heading   a section title above a group of items
+	  nav-divider   a rule between groups
+
+	Usage:
+	  <aside class="drawer medium:sidebar-rail expanded:sidebar p-2 gap-2">
+	    <h2 class="nav-heading">Docs</h2>
+	    <a class="nav-item" href="/intro" aria-current="page">
+	      <Icon /><span class="nav-label">Introduction</span>
+	    </a>
+	    <hr class="nav-divider" />
+	    <a class="nav-item" href="/faq"><Icon /><span class="nav-label">FAQ</span></a>
+	  </aside>
+
+	State: an item is active with `aria-current` (any value but "false"),
+	`data-active`, or the generic `.active` / `.selected` classes. Disabled with
+	`.disabled`, `[disabled]` or `aria-disabled="true"`.
+
+	Rail awareness reads the inherited `--sidebar-rail` variable (0 or 1) that
+	sidebar.css sets, not a class, so these work in any container and only
+	collapse when an ancestor really is a rail.
+*/
+
+/* =============================================================================
+ * FOUNDATION (l3)
+ * ========================================================================== */
+/*
+	The icon never moves: the inline padding is chosen so that, left-aligned, it
+	already sits at the centre of the RAIL. A sidebar's width then animates
+	around a stationary icon, and only the label changes.
+
+	Centring with justify-content instead would make the icon jump the moment
+	the alignment flipped, since justify-content cannot be transitioned.
+
+	The arithmetic reads three variables, so it stays right when any is changed:
+	  --sidebar-rail-width   the rail's width
+	  --sidebar-padding      the container's own inline padding (match your p-*)
+	  --nav-icon-size        the icon's width
+*/
+@utility nav-item {
+	@layer navigation.l1.l2.l3 {
+		@apply interactive flex h-10 w-full min-w-0 shrink-0 flex-row items-center gap-3 rounded-sm surface-container text-start text-title-small focusable select-none;
+		/* (rail - both sides of container padding - icon) / 2 */
+		padding-inline: calc(
+			(
+					var(--sidebar-rail-width, 4rem) - 2 * var(--sidebar-padding, 0.5rem) -
+						var(--nav-icon-size, 1.5rem)
+				) /
+				2
+		);
+
+		/* shrink-0, or flex squeezes the icon while a sidebar's width animates. */
+		& > svg,
+		& > img {
+			@apply size-(--nav-icon-size,1.5rem) shrink-0;
+		}
+	}
+
+	/* STATE (l1): active, then disabled, which wins over active. */
+	@layer navigation.l1 {
+		&:is([aria-current]:not([aria-current='false']), [data-active], .active, .selected) {
+			@apply primary-container;
+		}
+
+		&:is(.disabled, [disabled], :disabled, [aria-disabled='true']) {
+			@apply pointer-events-none cursor-not-allowed text-on-surface/38 before:bg-transparent;
+		}
+	}
+}
+
+/* =============================================================================
+ * VARIANTS (l2)
+ * ========================================================================== */
+/* No fill until hovered or active: the Material look, for dense lists. */
+@utility nav-item-plain {
+	@layer navigation.l1.l2 {
+		@apply bg-transparent text-on-surface-variant;
+	}
+}
+
+/* =============================================================================
+ * SLOTS (l2)
+ * ========================================================================== */
+/*
+	Faded rather than removed, for two reasons. display: none cannot be
+	transitioned, so it snapped mid-way through the width animation; and it took
+	the item's accessible name with it, leaving a rail of unlabelled buttons.
+
+	flex-1, so anything after the label (a badge, a chevron) sits at the end.
+*/
+@utility nav-label {
+	@layer navigation.l1.l2 {
+		@apply min-w-0 flex-1 truncate text-start transition-opacity animated;
+		opacity: calc(1 - var(--sidebar-rail, 0));
+	}
+}
+
+/*
+	Shares the item's inline padding so its text lines up with the labels below
+	it. Faded in a rail, where there is no room for it.
+*/
+@utility nav-heading {
+	@layer navigation.l1.l2 {
+		@apply min-w-0 shrink-0 truncate pt-2 pb-1 text-title-small text-on-surface-variant transition-opacity animated;
+		padding-inline: calc(
+			(
+					var(--sidebar-rail-width, 4rem) - 2 * var(--sidebar-padding, 0.5rem) -
+						var(--nav-icon-size, 1.5rem)
+				) /
+				2
+		);
+		opacity: calc(1 - var(--sidebar-rail, 0));
+	}
+}
+
+/* Works on an <hr> or a <div>; the border reset is for <hr>. */
+@utility nav-divider {
+	@layer navigation.l1.l2 {
+		@apply my-0 h-0.5 w-full shrink-0 rounded-full border-0 bg-surface-container;
+	}
+}
+
+/*
+	A tooltip wrapping an item, e.g.
+	  <div class="tooltip tooltip-right" data-tooltip="Home"><a class="nav-item">…
+
+	It repeats the label, so it is only switched on in the rail, where the label
+	is hidden. And it is a block, not the tooltip's usual inline-block, or the
+	item inside it stops filling the container's width.
+
+	Written into the TOOLTIP's top tier: two components' layers have no
+	guaranteed order, but tooltip.l1 always outranks the tooltip's own
+	`inline-block`.
+*/
+/* @utility nav-item {
+	@layer tooltip.l1 {
+		:where(.tooltip):has(> &) {
+			@apply block;
+			--tooltip-enabled: var(--sidebar-rail, 0);
+		}
+	}
+} */

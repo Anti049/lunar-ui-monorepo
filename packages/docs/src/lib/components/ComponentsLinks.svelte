@@ -16,7 +16,7 @@
 					<Icon />
 					<span>{label}</span>
 				</span>
-				<div class="h-0.5 w-full rounded-full surface-container"></div>
+				<hr class="nav-divider" />
 				{#each links as link (link.href)}
 					<NavLink {...link} />
 				{/each}

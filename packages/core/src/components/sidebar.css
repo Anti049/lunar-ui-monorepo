@@ -6,24 +6,23 @@
 	a modifier, so each can be switched on at its own breakpoint:
 
 	  sidebar        full width (--sidebar-width, 16rem)
-	  sidebar-rail   minimized (--sidebar-rail-width, 4rem); `.sidebar-label`
-	                 children fade out, `.sidebar-item` icons are centred
-	                 without moving (see sidebar-item), and tooltips wrapping a
-	                 `.sidebar-item` switch on
+	  sidebar-rail   minimized (--sidebar-rail-width, 4rem); `.nav-label`
+	                 children fade out and `.nav-item` icons stay centred
+	                 (navigation.css)
 
 	Paired with `.drawer` (drawer.css), the same element is a modal drawer until
 	a sidebar class switches on, then docks:
 
 	  <aside class="drawer medium:sidebar-rail expanded:sidebar">
-	    <a class="sidebar-item"><Icon /><span class="sidebar-label">Home</span></a>
+	    <a class="nav-item"><Icon /><span class="nav-label">Home</span></a>
 	  </aside>
 
 	Above `expanded` both classes are active. `sidebar` wins because Tailwind
 	emits larger breakpoints later, which is the same ordering `md:w-16 xl:w-64`
 	relies on. A docked drawer ignores `data-open`.
 
-	`--sidebar-rail` (0 or 1) carries the size to descendants: labels fade and
-	item tooltips switch on from it. Use it in `calc()` for anything numeric,
+	`--sidebar-rail` (0 or 1) carries the size to descendants: the navigation
+	controls (navigation.css) fade their labels from it. Use it in `calc()` for anything numeric,
 	or the `sidebar-rail:` variant (below) for anything else. It is a variable rather than a container
 	query on purpose. A container is a containing block for `position: fixed`
 	descendants, which would trap every tooltip inside the sidebar's scroll box
@@ -117,73 +116,5 @@
 		&.drawer {
 			@apply w-(--sidebar-rail-width,4rem);
 		}
-	}
-}
-
-/* =============================================================================
- * SLOTS (l2)
- * ========================================================================== */
-/*
-	An icon-and-label row. The icon never moves: the inline padding is chosen so
-	that, left-aligned, it already sits at the centre of the RAIL. The sidebar's
-	width then animates around a stationary icon, and only the label changes.
-
-	Centring with justify-content instead would make the icon jump the moment
-	the alignment flipped, since justify-content cannot be transitioned.
-
-	The arithmetic reads three variables, so it stays right when any is changed:
-	  --sidebar-rail-width   the rail's width
-	  --sidebar-padding      the sidebar's own inline padding (match your p-*)
-	  --sidebar-icon-size    the icon's width
-*/
-@utility sidebar-item {
-	@layer sidebar.l1.l2 {
-		@apply flex h-10 w-full min-w-0 flex-row items-center gap-3 rounded-sm text-title-small;
-		/* (rail - both sides of sidebar padding - icon) / 2 */
-		padding-inline: calc(
-			(
-					var(--sidebar-rail-width, 4rem) - 2 * var(--sidebar-padding, 0.5rem) -
-						var(--sidebar-icon-size, 1.5rem)
-				) /
-				2
-		);
-
-		/* shrink-0, or flex squeezes the icon while the width is animating. */
-		& > svg {
-			@apply size-(--sidebar-icon-size,1.5rem) shrink-0;
-		}
-	}
-}
-
-/*
-	A tooltip wrapping an item, e.g.
-	  <div class="tooltip tooltip-right" data-tooltip="Home"><a class="sidebar-item">…
-
-	It repeats the label, so it is only switched on in the rail, where the label
-	is hidden. And it is a block, not the tooltip's usual inline-block, or the
-	item inside it stops filling the sidebar's width.
-
-	Written into the TOOLTIP's top tier for the same reason the sidebar writes
-	into the drawer's: two components' layers have no guaranteed order, but
-	tooltip.l1 always outranks the tooltip's own `inline-block`.
-*/
-/* @utility sidebar-item {
-	@layer tooltip.l1 {
-		:where(.tooltip):has(> &) {
-			@apply block;
-			--tooltip-enabled: var(--sidebar-rail, 0);
-		}
-	}
-} */
-
-/*
-	Faded rather than removed, for two reasons. display: none cannot be
-	transitioned, so it snapped mid-way through the width animation; and it took
-	the item's accessible name with it, leaving a rail of unlabelled buttons.
-*/
-@utility sidebar-label {
-	@layer sidebar.l1.l2 {
-		@apply min-w-0 truncate transition-opacity animated;
-		opacity: calc(1 - var(--sidebar-rail, 0));
 	}
 }

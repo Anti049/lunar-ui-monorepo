@@ -195,7 +195,12 @@ const componentCategories: NavigationCategory[] = [
 		icon: MousePointerClick,
 		links: [
 			{ href: resolve('/components/(agnostic)/button'), label: 'Button', status: 'completed' },
-			{ href: resolve('/components/(agnostic)/fab'), label: 'FAB', status: 'planned' },
+			{
+				href: resolve('/components/(agnostic)/fab'),
+				label: 'FAB',
+				status: 'planned',
+				disabled: true
+			},
 			{ href: resolve('/components/(agnostic)/swap'), label: 'Swap', status: 'completed' },
 			{ href: resolve('/components/(agnostic)/toggle'), label: 'Toggle', status: 'planned' }
 		]

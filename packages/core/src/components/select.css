@@ -1,0 +1,191 @@
+/* 
+	Select
+
+	TODO: Add styles for the select component
+*/
+@utility select {
+	@layer select.l1.l2.l3 {
+		/* Layout */
+		@apply interactive inline-flex h-fit min-h-fit w-fit min-w-fit flex-row items-center justify-start rounded-sm border-0 border-transparent ring-0 outline-offset-2 select-none;
+
+		/* Default size */
+		@apply select-md;
+
+		/* Default variant */
+		@apply select-tonal;
+
+		/* Default color */
+		@apply select-surface;
+
+		/* Outline */
+		outline-color: var(--select-outline-color, var(--color-on-surface));
+
+		/* Transitions */
+		@apply transition-all;
+	}
+}
+
+/* State */
+@utility select-disabled {
+	@layer select.l1 {
+		@apply cursor-not-allowed border-on-surface/12 text-on-surface/38 elevation-0! before:bg-transparent;
+	}
+}
+
+/* Compound forms live in the utility so they are not plain selectors. */
+@utility select {
+	@layer select.l1 {
+		&.disabled,
+		&[disabled],
+		&:disabled {
+			@apply cursor-not-allowed border-on-surface/12 text-on-surface/38 elevation-0! before:bg-transparent;
+		}
+	}
+}
+
+/* Variants */
+@utility select-filled {
+	@layer select.l1.l2 {
+		background-color: var(--select-color, var(--color-surface));
+		color: var(--select-on-color, var(--color-on-surface));
+	}
+}
+@utility select-tonal {
+	@layer select.l1.l2 {
+		background-color: var(--select-container, var(--color-surface-container));
+		color: var(--select-on-container, var(--color-on-surface));
+	}
+}
+@utility select-elevated {
+	@layer select.l1.l2 {
+		@apply bg-surface-container enabled:elevation-1;
+		color: var(--select-color, var(--color-surface));
+	}
+}
+@utility select-outlined {
+	@layer select.l1.l2 {
+		@apply bg-transparent;
+		color: var(--select-color, var(--color-on-surface));
+		border: 1px solid
+			color-mix(in srgb, var(--select-color, var(--color-on-surface-variant)) 85%, transparent);
+	}
+}
+@utility select-text {
+	@layer select.l1.l2 {
+		@apply bg-transparent;
+		color: var(--select-color, var(--color-on-surface));
+	}
+}
+
+/* Colors */
+@utility select-surface {
+	@layer select.l1.l2 {
+		--select-color: var(--color-inverse-surface);
+		--select-on-color: var(--color-on-inverse-surface);
+		--select-container: var(--color-surface-container);
+		--select-on-container: var(--color-on-surface);
+	}
+}
+@utility select-primary {
+	@layer select.l1.l2 {
+		--select-color: var(--color-primary);
+		--select-on-color: var(--color-on-primary);
+		--select-container: var(--color-primary-container);
+		--select-on-container: var(--color-on-primary-container);
+		--select-outline-color: var(--color-primary);
+	}
+}
+@utility select-secondary {
+	@layer select.l1.l2 {
+		--select-color: var(--color-secondary);
+		--select-on-color: var(--color-on-secondary);
+		--select-container: var(--color-secondary-container);
+		--select-on-container: var(--color-on-secondary-container);
+		--select-outline-color: var(--color-secondary);
+	}
+}
+@utility select-tertiary {
+	@layer select.l1.l2 {
+		--select-color: var(--color-tertiary);
+		--select-on-color: var(--color-on-tertiary);
+		--select-container: var(--color-tertiary-container);
+		--select-on-container: var(--color-on-tertiary-container);
+		--select-outline-color: var(--color-tertiary);
+	}
+}
+@utility select-error {
+	@layer select.l1.l2 {
+		--select-color: var(--color-error);
+		--select-on-color: var(--color-on-error);
+		--select-container: var(--color-error-container);
+		--select-on-container: var(--color-on-error-container);
+		--select-outline-color: var(--color-error);
+	}
+}
+@utility select-success {
+	@layer select.l1.l2 {
+		--select-color: var(--color-success);
+		--select-on-color: var(--color-on-success);
+		--select-container: var(--color-success-container);
+		--select-on-container: var(--color-on-success-container);
+		--select-outline-color: var(--color-success);
+	}
+}
+@utility select-warning {
+	@layer select.l1.l2 {
+		--select-color: var(--color-warning);
+		--select-on-color: var(--color-on-warning);
+		--select-container: var(--color-warning-container);
+		--select-on-container: var(--color-on-warning-container);
+		--select-outline-color: var(--color-warning);
+	}
+}
+@utility select-info {
+	@layer select.l1.l2 {
+		--select-color: var(--color-info);
+		--select-on-color: var(--color-on-info);
+		--select-container: var(--color-info-container);
+		--select-on-container: var(--color-on-info-container);
+		--select-outline-color: var(--color-info);
+	}
+}
+@utility select-alert {
+	@layer select.l1.l2 {
+		--select-color: var(--color-alert);
+		--select-on-color: var(--color-on-alert);
+		--select-container: var(--color-alert-container);
+		--select-on-container: var(--color-on-alert-container);
+		--select-outline-color: var(--color-alert);
+	}
+}
+
+/* Sizes */
+@utility select-xs {
+	@layer select.l1.l2 {
+		@apply gap-1 px-2 py-1 text-caption-medium;
+	}
+}
+
+@utility select-sm {
+	@layer select.l1.l2 {
+		@apply gap-1.5 px-2 py-1.5 text-label-small;
+	}
+}
+
+@utility select-md {
+	@layer select.l1.l2 {
+		@apply gap-1.5 px-2.5 py-1.5 text-label-medium;
+	}
+}
+
+@utility select-lg {
+	@layer select.l1.l2 {
+		@apply gap-2 px-3 py-3 text-label-large;
+	}
+}
+
+@utility select-xl {
+	@layer select.l1.l2 {
+		@apply gap-3 px-4 py-4 text-label-large;
+	}
+}

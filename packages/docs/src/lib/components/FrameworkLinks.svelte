@@ -36,7 +36,7 @@
 <NavLink label="Svelte" href={resolve('/components/svelte')} icon={SvelteIcon} />
 <NavLink label="React" href={resolve('/components/react')} icon={ReactIcon} />
 <NavLink label="Vue" href={resolve('/components/vue')} icon={VuejsIcon} />
-<div class="h-0.5 w-full rounded-full surface-container"></div>
+<hr class="nav-divider" />
 <div
 	class="-mx-2 -mb-2 flex scrollbar min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain ps-2 pe-[max(0px,calc(0.5rem-var(--scrollbar-size)))] pb-2 scrollbar-fade scrollbar-sm max-compact:scrollbar-disabled"
 >

@@ -33,7 +33,7 @@
 	data-tooltip={label}
 >
 	<div class="tooltip-content flex flex-row items-center gap-2">
-		<span class="sidebar-label">{label}</span>
+		<span class="nav-label">{label}</span>
 		{#if status}
 			{@const navStatus = routeStatuses[status]}
 			<div class={cn('badge ml-auto badge-tonal', navStatus.badge)}>
@@ -43,21 +43,19 @@
 	</div>
 	<a
 		{href}
-		class={cn(
-			'interactive sidebar-item flex flex-row items-center px-2',
-			isDisabled(href) && 'disabled',
-			isActive ? 'primary-container' : 'surface-container'
-		)}
+		class={cn('nav-item', isDisabled(href) && 'disabled')}
+		aria-current={isActive ? 'page' : undefined}
+		aria-disabled={isDisabled(href) || undefined}
 	>
 		{#if icon}
 			{@const Icon = icon}
 			{#if typeof Icon === 'string'}
-				<img src={Icon} alt={`${kebabCase(label)}-icon`} class="nav-link-icon" />
+				<img src={Icon} alt={`${kebabCase(label)}-icon`} />
 			{:else}
 				<Icon />
 			{/if}
 		{/if}
-		<span class="sidebar-label">{label}</span>
+		<span class="nav-label">{label}</span>
 		{#if status}
 			{@const navStatus = routeStatuses[status]}
 			<div class={cn('badge ml-auto badge-tonal', navStatus.badge)}>

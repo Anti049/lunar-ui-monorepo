@@ -1,13 +1,17 @@
 <script lang="ts">
+	import type { ResolvedPathname } from '$app/types';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
 		title: string;
 		description?: string;
-		children: Snippet;
+		svelte?: ResolvedPathname;
+		react?: ResolvedPathname;
+		vue?: ResolvedPathname;
+		children?: Snippet;
 	}
 
-	let { title, description = '', children }: Props = $props();
+	let { title, description = '', svelte, react, vue, children }: Props = $props();
 </script>
 
 <svelte:head>
@@ -19,10 +23,10 @@
 	At least as tall as the scaffold body, never capped, so a page's content can
 	take the leftover height with `flex-1` and a long page still scrolls.
 -->
-<div class="flex min-h-full w-full flex-col gap-8">
+<div class="flex min-h-full w-full flex-col gap-4">
 	<div class="flex flex-col gap-2">
 		<h1
-			class="text-display-small-emphasized medium:text-display-medium-emphasized expanded:text-display-large-emphasized"
+			class="text-headline-medium-emphasized text-primary medium:text-display-small-emphasized expanded:text-display-medium-emphasized"
 		>
 			{title}
 		</h1>
@@ -33,7 +37,7 @@
 				{description}
 			</p>
 		{/if}
-		<div class="h-0.5 w-full rounded-full surface-container"></div>
+		<hr class="nav-divider" />
 	</div>
-	{@render children()}
+	{@render children?.()}
 </div>

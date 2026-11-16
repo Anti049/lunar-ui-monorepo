@@ -2,7 +2,7 @@
 	// The only place the stylesheet is imported. Everything below inherits it.
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import { userPrefersMode as mode, ModeWatcher, setMode } from 'mode-watcher';
+	import { userPrefersMode as mode, ModeWatcher, setMode, setTheme, theme } from 'mode-watcher';
 	import {
 		cn,
 		disableRipple,
@@ -94,6 +94,12 @@
 
 	function isActive(href: string) {
 		return page.url.pathname.startsWith(href);
+	}
+
+	function changeTheme(event: Event) {
+		const target = event.target as HTMLSelectElement;
+		const value = target.value;
+		setTheme(value);
 	}
 
 	// On for the whole site; the Ripple and Scrollbar pages can switch them off.
@@ -219,8 +225,15 @@
 					<SunMoon />
 				{/if}
 			</button>
-			<select class="select select-tonal select-surface max-medium:hidden">
+			<select
+				class="select select-tonal select-surface max-medium:hidden"
+				onchange={changeTheme}
+				value={theme.current}
+			>
+				<option value="catppuccin">Catppuccin</option>
+				<option value="default">Default</option>
 				<option value="dracula">Dracula</option>
+				<option value="gaziter">Gaziter</option>
 			</select>
 		</div>
 	</div>
@@ -231,14 +244,11 @@
 	></button>
 	<nav class="drawer gap-2 p-2" aria-label="Navigation" data-open={navigation.open ? true : null}>
 		{#if navigation.view === 'section' && (navigation.browsing || navigation.section)}
-			<button
-				class="interactive sidebar-item surface-container"
-				onclick={() => (navigation.view = 'main')}
-			>
+			<button class="nav-item" onclick={() => (navigation.view = 'main')}>
 				<ChevronLeft />
-				<span class="sidebar-label">Back</span>
+				<span class="nav-label">Back</span>
 			</button>
-			<div class="h-0.5 w-full rounded-full surface-container"></div>
+			<hr class="nav-divider" />
 			{#if navigation.browsing}
 				<navigation.browsing />
 			{:else}
@@ -248,14 +258,12 @@
 			{#each sections as { label, href, match = href, icon: Icon, links } (label)}
 				{#if links}
 					<button
-						class={cn(
-							'interactive sidebar-item',
-							isActive(match) ? 'primary-container' : 'surface-container'
-						)}
+						class="nav-item"
+						data-active={isActive(match) || undefined}
 						onclick={() => browse(links, match)}
 					>
 						<Icon />
-						<span class="sidebar-label grow text-left">{label}</span>
+						<span class="nav-label">{label}</span>
 						<ChevronRight />
 					</button>
 				{:else}
