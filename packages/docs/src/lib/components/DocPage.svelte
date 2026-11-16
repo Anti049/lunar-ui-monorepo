@@ -1,17 +1,13 @@
 <script lang="ts">
-	import type { ResolvedPathname } from '$app/types';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
 		title: string;
 		description?: string;
-		svelte?: ResolvedPathname;
-		react?: ResolvedPathname;
-		vue?: ResolvedPathname;
 		children?: Snippet;
 	}
 
-	let { title, description = '', svelte, react, vue, children }: Props = $props();
+	let { title, description = '', children }: Props = $props();
 </script>
 
 <svelte:head>
