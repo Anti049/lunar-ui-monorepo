@@ -64,8 +64,8 @@
 	--color-surface-container-highest: var(--theme-color-surface-container-highest);
 	--color-on-surface: var(--theme-color-on-surface);
 	--color-on-surface-variant: var(--theme-color-on-surface-variant);
-	--color-inverse-surface: var(--theme-color-inverse-surface);
-	--color-on-inverse-surface: var(--theme-color-on-inverse-surface);
+	--color-inverse-surface: var(--theme-color-on-surface);
+	--color-on-inverse-surface: var(--theme-color-surface);
 	--color-outline: var(--theme-color-outline);
 	--color-outline-variant: var(--theme-color-outline-variant);
 	--color-scrim: var(--theme-color-scrim);
